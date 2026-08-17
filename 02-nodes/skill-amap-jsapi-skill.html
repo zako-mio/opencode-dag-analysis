@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>amap-jsapi-skill · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>amap-jsapi-skill <span class="tag">装配层</span></h1>
+  <div class="sub">skill-amap-jsapi-skill · skill · A6k-地图 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>高德地图 JSAPI v2.0 (WebGL) 前端开发技能，用于编写/调试地图前端 JS 代码。涵盖地图生命周期、安全配置（密钥/代理）、3D 视图、覆盖物绘制、图层管理、LBS 服务集成，附完整 API 参考文档。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· references/ 主题指南 14 份（map-init/view-control/marker/vector-graphics/info-window/context-menu/events/layers/geocoder/search/routing/custom-layers/security）<br>· references/api/ 全量 API 参考 19 份<br>· AMapLoader 初始化与安全密钥配置规范（AMAP_SECURITY_JS_CODE 环境变量）<br>· skill-card.md 与 _meta.json 元数据</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-amap-lbs-skill.html'>amap-lbs-skill</a></td><td>skill-relation</td><td><small>amap-jsapi-skill SKILL.md 协作说明: 如需生成地图搜索链接 → 用 amap-lbs-skill（免费链接）</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-amap-api.html'>ext-amap-api</a></td><td>external</td><td><small>skill-amap-jsapi-skill 关联 ext-amap-api</small></td></tr><tr><td><a href='skill-amap-budget-control.html'>amap-budget-control</a></td><td>skill-relation</td><td><small>amap-budget-control SKILL.md: 三 Skill 协作策略表——编写/调试地图前端 JS 代码用 amap-jsapi-skill（免费）</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游为高德官方 JSAPI MCP 改造（35 个引用文件：references/ 16 个 + references/api/ 17 个），_meta.json 定义版本 1.1.1。引入动机：为编写/调试高德地图前端 JS 代码提供完整 API 参考（地图生命周期/安全配置/3D 视图/覆盖物绘制/图层管理/LBS 服务集成），安全密钥强制 env 配置（AMAP_SECURITY_JS_CODE）。与另两个 amap skill 构成三件套协作（早期引入，Provider 迁移同期）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>amap MCP 已禁用后随 _SKILL.md 命名存档/休眠（0815 桥接 opencode-skill-index 标注 amap-jsapi-skill 存档）。保留价值：若重新启用地图开发场景（编写/调试地图前端 JS 代码），本 skill 提供 JSAPI v2.0 (WebGL) 完整参考，且不消耗 API 配额（免费）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：地图开发、JSAPI、WebGL地图、地图初始化、覆盖物、点标记、Marker、Polyline、Polygon、InfoWindow、热力图、图层、地理编码、路径规划开发、AMap、amap-jsapi（_SKILL.md description）。当前因 _SKILL.md 命名不被 opencode glob 匹配而不会自动加载（需显式引用）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) script 标签加载 loader.js（webapi.amap.com/loader.js）；2) 强制安全密钥配置（window._AMapSecurityConfig.securityJsCode，从环境变量取，禁硬编码，生产用 serviceHost 代理）；3) AMapLoader.load({key, version 2.0, plugins}) 初始化地图（3D 视图/缩放/中心点）；4) 按场景查 references/（map-init/view-control/marker/vector-graphics/info-window/context-menu/events/layers 等）写覆盖物与交互代码。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 amap-lbs-skill（免费链接）、amap-budget-control（结构化数据计次）三 skill 协作（_SKILL.md 协作说明：本 skill 只负责前端 JS 代码）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

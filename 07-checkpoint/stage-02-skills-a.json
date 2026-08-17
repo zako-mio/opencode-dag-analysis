@@ -1,0 +1,192 @@
+[
+  {
+    "id": "skill-drawio-reference",
+    "name": "drawio-reference",
+    "source": "skills",
+    "implementation": "draw.io 图表完整参考文档，包含 XML schema 样式库、Mermaid.js 全语法参考（28 种图表类型）、shape 搜索指南与强制导出规范。为 drawio-worker 子Agent 强制加载项（含防截断规则），用于生成含嵌套容器、跨功能泳道、自定义样式、多节点(≥15)的复杂 draw.io XML 图表。内置刚性网格布局规则，由 ELK 完成路由，不做坐标数学。",
+    "provides": ["draw.io XML 样式/边/容器/泳道/图层参考", "28 种 Mermaid.js 图表语法参考", "search_shapes 使用决策指南（何时搜索领域图标）", "刚性网格布局规则（col*180+40 / row*120+40）", "强制导出规范与 reasoning budget 防截断规则"],
+    "depends_on": ["drawio-worker 子Agent（强制加载）", "@drawio/mcp v1.5.0（内容来源）", "ELK 自动路由布局"],
+    "trigger": ["drawio", "draw.io 图表", "复杂图表(≥15节点)", "嵌套容器", "泳道", "自定义样式"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\drawio-reference\\SKILL.md"
+  },
+  {
+    "id": "skill-frontend-design",
+    "name": "frontend-design",
+    "source": "skills",
+    "implementation": "前端设计双引擎系统：数据引擎（192 色板/74 字体/84 风格数据库）先推荐 Top K 候选设计系统，再由设计主管做创意裁决。覆盖网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、landing page、设计系统等场景。",
+    "provides": ["search.py 数据引擎 CLI（--design-system/--domain/--stack 22 种技术栈）", "token 设计系统构建（4-6 命名 hex + 2+ 字体角色 + ASCII wireframe）", "双轮审查（方案 vs 简报比对 + 唯一性测试）", "冲突裁决规则（Inter 字体禁用/动效上限 Subtle）", "references 三件套：design-philosophy / quick-reference / pro-rules"],
+    "depends_on": ["Python 环境（scripts/search.py）", "本地设计数据库（192 色板/74 字体/84 风格）", "项目 package.json（技术栈检测）"],
+    "trigger": ["网页设计", "UI 页面", "组件", "配色", "排版", "布局", "动效", "landing page", "设计系统", "UI 重构", "设计审查", "字体选型"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\frontend-design\\SKILL.md"
+  },
+  {
+    "id": "skill-lark-suite",
+    "name": "lark-suite",
+    "source": "skills",
+    "implementation": "飞书/Lark 全功能操作入口，通过已安装的 lark-cli v1.0.76 命令操作飞书全部业务域（日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、审批、OKR、白板、笔记、事件订阅、应用开发等）。以意图路由映射表按用户关键词加载对应域文件，未手写的域走 lark-cli skills read 动态加载 Fallback。",
+    "provides": ["意图路由映射表（IM/邮件/日历/文档/表格/多维表格/任务/云盘/幻灯片/通讯录/知识库/会议/纪要/考勤/审批/OKR/白板/笔记等 20+ 域）", "强制前置 Step 0：references/shared.md（认证/身份选择/JSON 合约/安全规则）", "Windows 下 cmd /c lark-cli 调用规范", "lark-cli skills read 动态加载 Fallback"],
+    "depends_on": ["lark-cli v1.0.76（已安装）", "references/*.md 域文件", "飞书开放平台账号与认证"],
+    "trigger": ["飞书", "lark", "lark-cli", "feishu", "消息", "群聊", "日历", "日程", "meeting", "文档", "表格", "sheet", "多维表格", "base", "任务", "待办", "邮件", "云盘", "知识库", "wiki", "审批", "考勤", "OKR", "白板", "幻灯片", "PPT", "纪要", "minutes", "通讯录", "contact"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\lark-suite\\SKILL.md"
+  },
+  {
+    "id": "skill-minimax-docx",
+    "name": "minimax-docx",
+    "source": "skills",
+    "implementation": "基于 OpenXML SDK (.NET) 的专业 DOCX 文档创建、编辑与格式化技能，三管线：从零创建新文档、填充/编辑已有文档内容、套用模板格式化并带 XSD 验证门控。任何最终输出为 .docx 的任务（写报告/起草提案/做合同/填表/套模板）都强制使用本技能。",
+    "provides": ["MiniMaxAIDocx.Cli 命令集（create/edit-content/apply-template/diff/validate/fix-order/merge-runs/analyze）", "XSD 校验器（wml-subset/aesthetic-rules/business-rules/common-types）", "CJK 排版库（Typography：CjkHelper/FontDefaults/PageSizes）", "17 份 references 文档（OpenXML 百科全书×3/设计原则/场景指南/排障）", "python-docx 文本提取 + 预览/转换脚本（docx_preview/doc_to_docx）"],
+    "depends_on": [".NET SDK 9.0（DocumentFormat.OpenXml / System.CommandLine，NuGet）", "Python 3.13 + python-docx", "ECMA-376 OOXML / GB/T 9704-2012 标准", "IEEE/ACM/APA 等学术样式指南"],
+    "trigger": ["写报告", "起草提案", "做合同", "填表", "套模板", "产出 .docx", "Word 文档", "格式化文档"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\minimax-docx\\SKILL.md"
+  },
+  {
+    "id": "skill-minimax-xlsx",
+    "name": "minimax-xlsx",
+    "source": "skills",
+    "implementation": "打开/创建/读取/分析/编辑/验证 Excel 电子表格（.xlsx/.xlsm/.csv/.tsv）。覆盖从零创建 xlsx、无格式损失编辑已有文件、公式重算与校验、专业财务格式化标准。内置 Windows 非 ASCII 编码双层防御（UTF-8 文件路由）与强制写后读回验证。",
+    "provides": ["Python 脚本集（json2xlsx/xlsx_reader/xlsx_pack/unpack/formula_check/style_audit/add_column/insert_row/shift_rows/libreoffice_recalc/shared_strings_builder）", "minimal_xlsx 模板（workbook/styles/sharedStrings）", "OOXML 速查表 + 创建/编辑/修复/格式化/验证/读取分场景 references", "Readback 验证规则（列数/行数/抽样单元格三重确认）", "编码安全两层防御规范"],
+    "depends_on": ["Python 3.13 + pandas + openpyxl（已安装）", "LibreOffice（公式重算 libreoffice_recalc）", "ECMA-376 OOXML 标准"],
+    "trigger": ["spreadsheet", "Excel", ".xlsx", ".csv", ".xlsm", "pivot table", "financial model", "formula", "表格数据", "电子表格"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\minimax-xlsx\\SKILL.md"
+  },
+  {
+    "id": "skill-pdf-ocr",
+    "name": "pdf-ocr",
+    "source": "skills",
+    "implementation": "PDF OCR 识别专项，处理扫描件、图片型 PDF、含水印/印章的文档。支持中英多语言 OCR、表格区域提取、印章检测。仅在 PDF 无文本层（read_pdf 返回空）时加载，先检测再按需补充 OCR 空页面。",
+    "provides": ["pdf-reader MCP pdf_evidence 工具调用规范（ocr_pages/extract_regions/analyze_regions/render_page）", "/pdf-ocr 与 /pdf-ocr-table 指令路由（含极简参数自动选择）", "文本层检测-补充-合并流程"],
+    "depends_on": ["pdf-reader MCP 服务器（pdf_evidence 工具）", "OCR 引擎（pdf-reader 内置，中英语言包）"],
+    "trigger": ["扫描件", "图片型 PDF", "OCR", "水印", "印章", "read_pdf 空文本层", "pdf-ocr"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\pdf-ocr\\SKILL.md"
+  },
+  {
+    "id": "skill-soe-resume",
+    "name": "soe-resume",
+    "source": "skills",
+    "implementation": "央国企/体制内简历制作、评审与优化助手。三大功能：简历评审（8 维度评分 + 红黄绿灯）、简历修改（先评审确认后改写）、从零生成（读取个人信息 + 交互问答）。内置 CV4SOE 4 维度转换方法论（动词行政化升级/视角宏观化包装/关键词安全合规/软实力组织化呈现）。",
+    "provides": ["/央国企简历评审 指令（8 模块×红黄绿灯逐模块评分）", "/央国企简历修改 指令（前置评审→方案确认→改写）", "/央国企简历生成 指令（本地文件+交互问答）", "自动识别规则（pdf/docx/md 输入→评审或修改；无文件→生成）", "reference/ 方法论文档"],
+    "depends_on": ["无外部服务；读取本地简历文件（.pdf/.docx/.md/.txt）", "方法论来源：CV4SOE (github.com/Ignareo/CV4SOE)"],
+    "trigger": ["央国企简历", "央企简历", "国企简历", "SOE简历", "体制内简历", "央企求职", "国企求职", "国家电网简历", "中石化简历"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\soe-resume\\SKILL.md"
+  },
+  {
+    "id": "skill-superpowers-feature-workflow",
+    "name": "superpowers-feature-workflow",
+    "source": "skills",
+    "implementation": "规范开发流程：需求澄清→方案设计→TDD 实现→验证。不依赖 OpenSpec CLI 的轻量级规范编程工作流。显式 opt-in 技能，仅当用户明确要求、点名 $superpowers-feature-workflow 或仓库策略强制时使用。",
+    "provides": ["10 步工作流（探索→逐条澄清→2-3 方案→设计文档→确认→实施计划→worktree→TDD→新鲜验证→记忆更新）", "docs/superpowers/specs 与 plans 目录约定", "4 条 Guardrails（无设计批准不写生产代码等）"],
+    "depends_on": [".superpowers-memory/（可选记忆目录）", "git worktree（非平凡任务）"],
+    "trigger": ["superpowers-feature-workflow", "$superpowers-feature-workflow", "规范开发流程", "TDD 实现"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-feature-workflow\\SKILL.md"
+  },
+  {
+    "id": "skill-superpowers-learning-workflow",
+    "name": "superpowers-learning-workflow",
+    "source": "skills",
+    "implementation": "会话后知识沉淀工作流，回写项目记忆、决策记录与可复用教训。将学习成果分类为持久事实、当前状态、会话结果、可复用教训四类，写入 .superpowers-memory/ 记忆文件。显式 opt-in，按需显式召唤。",
+    "provides": ["6 步学习分类工作流（回顾→分类→更新记忆文件→总结下会话应记住的内容）", "记忆文件更新（PROJECT_CONTEXT/CURRENT_STATE/journal/LEARNING_BACKLOG）", "3 条 Guardrails（稳定事实与临时笔记分离等）"],
+    "depends_on": [".superpowers-memory/（可选；不存在时告知用户安装或转普通文档）"],
+    "trigger": ["superpowers-learning-workflow", "$superpowers-learning-workflow", "知识沉淀", "保存教训", "学习总结"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-learning-workflow\\SKILL.md"
+  },
+  {
+    "id": "skill-superpowers-openspec-superpowers-workflow",
+    "name": "superpowers-openspec-superpowers-workflow",
+    "source": "skills",
+    "implementation": "完整交付流程编排器：Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档，全程门控。作为路由控制者防止误路由到 OpenSpec proposal skill，要求先完成 Superpowers 探索才允许 OpenSpec 工件生成。",
+    "provides": ["25 步编排工作流（探索→设计→OpenSpec 工件依赖序 proposal→design→spec→tasks→TDD→验证→归档）", "openspec status/instructions --json 检查流程", "交接命令（continue-dev/continue-review/continue-archive）", "严格 Guardrails（路由保护：不得先路由到 openspec-propose）"],
+    "depends_on": ["OpenSpec CLI（status/instructions/archive 命令）", "Superpowers 记忆目录（可选）", "相关 openspec-* skills（openspec-archive-change 等）"],
+    "trigger": ["superpowers-openspec-superpowers-workflow", "$superpowers-openspec-superpowers-workflow", "完整交付流程"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-openspec-superpowers-workflow\\SKILL.md"
+  },
+  {
+    "id": "skill-release-openspec",
+    "name": "release-openspec",
+    "source": "skills",
+    "implementation": "OpenSpec 自身发布管理技能，以可恢复状态机运行发布工作流：每次调用检查 GitHub 实时状态，只执行下一步安全动作，不假设前次调用已完成。仅 OpenSpec 维护者使用，Fission-AI/OpenSpec 与 origin/main 为发布源。",
+    "provides": ["发布审计流程（gh repo view / gh release list / gh pr list 检查）", "Changeset PR 与 Version Packages PR 双类型区分与处理", "临时 worktree 发布提交（脏工作区时）", "merge-queue 中间态处理（等待 mergedAt 确认）", "agents/ 与 references/ 子目录支持文档"],
+    "depends_on": ["gh CLI（已认证）+ git + pnpm", "Fission-AI/OpenSpec 仓库（canonical）", "Changesets 自动化（Version Packages PR 所有权）"],
+    "trigger": ["release-openspec", "发布 OpenSpec", "prepare release", "continue release"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\release-openspec\\SKILL.md"
+  },
+  {
+    "id": "skill-agency-agents",
+    "name": "agency-agents",
+    "source": "skill",
+    "implementation": "专业 AI 角色调度系统：任务复杂/专业时激活，覆盖工程、设计、营销、安全、测试、GIS、游戏开发等 16 个部门 260+ 专业 Agent。只做路由：判断任务是否需要专家角色→搜索匹配 Agent→加载其专业 prompt 后由 Agent 自行执行。",
+    "provides": ["search-agents.ps1 搜索索引（agent-index.json，Top 5 候选）", "/agency-search 与 /agency-rebuild 命令", "Agent prompt 加载执行机制（agency-agents/ 目录文件作为 System Prompt）"],
+    "depends_on": ["search-agents.ps1 + agent-index.json 索引", "C:\\Users\\15057\\.config\\opencode\\agency-agents\\ 目录下的 Agent 文件（git 维护）"],
+    "trigger": ["工程师", "前端", "后端", "架构", "测试", "安全", "设计", "UX", "营销", "SEO", "数据", "数据库", "DevOps", "CI/CD", "移动端", "游戏", "GIS", "地图", "财务", "法务", "HR", "产品经理", "渗透测试", "agent", "agency", "切换到XX模式"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\agency-agents\\SKILL.md"
+  },
+  {
+    "id": "skill-amap-budget-control",
+    "name": "amap-budget-control",
+    "source": "skill",
+    "implementation": "高德地图调用预算控制技能：严格管控 API 调用次数，记录用量到 amap-usage.json，接近 5000 次/天免费限额时预警，额度不足给出清晰报错与替代方案。三 skill 协作中负责结构化数据（批量 POI/路径步骤 JSON，计次），优先引导用 amap-lbs-skill 免费链接。",
+    "provides": ["触发词分级规则（一级强制触发/二级上下文判断/明确不激活场景）", "用量计数文件 C:\\Users\\15057\\.config\\opencode\\amap-usage.json", "13 个 amap_* MCP 工具授权（geocode/direction×4/poi×4/weather/distance/ip_location）", "预算预警与替代方案逻辑", "三 Skill 协作策略表"],
+    "depends_on": ["高德 Web 服务 API（免费 5000 次/天限额）", "amap MCP 工具（allowed-tools 中授权）", "与 amap-lbs-skill / amap-jsapi-skill 协作"],
+    "trigger": ["导航", "路线", "路径规划", "驾车", "公交", "地铁", "步行", "骑行", "地图", "高德", "amap", "POI", "周边搜索", "附近", "餐厅", "酒店", "加油站", "停车场", "评分榜单", "天气", "测距", "地址转坐标", "经纬度", "IP定位", "我在哪"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-budget-control\\_SKILL.md"
+  },
+  {
+    "id": "skill-amap-jsapi-skill",
+    "name": "amap-jsapi-skill",
+    "source": "skill",
+    "implementation": "高德地图 JSAPI v2.0 (WebGL) 前端开发技能，用于编写/调试地图前端 JS 代码。涵盖地图生命周期、安全配置（密钥/代理）、3D 视图、覆盖物绘制、图层管理、LBS 服务集成，附完整 API 参考文档。",
+    "provides": ["references/ 主题指南 14 份（map-init/view-control/marker/vector-graphics/info-window/context-menu/events/layers/geocoder/search/routing/custom-layers/security）", "references/api/ 全量 API 参考 19 份", "AMapLoader 初始化与安全密钥配置规范（AMAP_SECURITY_JS_CODE 环境变量）", "skill-card.md 与 _meta.json 元数据"],
+    "depends_on": ["高德 JSAPI v2.0（@amap/amap-jsapi-loader WebGL）", "Web 端开发者 Key + AMAP_SECURITY_JS_CODE 环境变量", "生产环境 serviceHost 代理"],
+    "trigger": ["地图开发", "JSAPI", "WebGL地图", "地图初始化", "覆盖物", "点标记", "Marker", "Polyline", "Polygon", "InfoWindow", "热力图", "图层", "地理编码", "路径规划开发", "AMap", "amap-jsapi"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-jsapi-skill\\_SKILL.md"
+  },
+  {
+    "id": "skill-amap-lbs-skill",
+    "name": "amap-lbs-skill",
+    "source": "skill",
+    "implementation": "高德地图综合服务：POI 搜索、路径规划、旅游规划、周边搜索、热力图数据可视化。生成免费的高德网页链接（不消耗 API 配额），优先用于简单搜索/导航/周边查询，需要结构化数据时转交 amap-budget-control。",
+    "provides": ["场景判断分流（明确类别搜索/周边搜索/热力图/POI 详情/路径规划/旅游规划）", "index.js + gaode_skill.py 服务实现", "scripts：poi-search.js / route-planning.js / travel-planner.js", "AMAP_WEBSERVICE_KEY 环境变量 + 本地持久化配置", "package.json（Node 依赖）与 config.example.json"],
+    "depends_on": ["高德 Web Service Key（AMAP_WEBSERVICE_KEY）", "Node.js 运行时（index.js/scripts）", "高德开放平台 Web 服务 API"],
+    "trigger": ["搜", "找", "查", "附近", "周边", "路线", "规划", "旅游", "热力图", "美食", "酒店", "景点", "加油站", "停车场"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-lbs-skill\\_SKILL.md"
+  },
+  {
+    "id": "skill-browser-harness",
+    "name": "browser-use",
+    "source": "skill",
+    "implementation": "统一浏览器交互入口（自动化/爬取/测试/站点应用工作）。通过 CDP 直接控制浏览器：browser-harness daemon 经 BU_CDP_URL (localhost:9222) 连接 Chrome 远程调试实例，Python 代码经管道发给 browser-harness.exe 执行，helpers 预导入。",
+    "provides": ["browser-harness.exe CLI（PowerShell @\"...\"@ heredoc 管道编程）", "预导入 helpers（new_tab/page_info 等，js() 需 return/print）", "chrome-debug.ps1 一键启动远程调试 Chrome（独立 profile）", "--doctor 连接诊断 + runtime 目录清理", "agent-workspace/agent_helpers.py 任务级编辑辅助"],
+    "depends_on": ["Chrome（远程调试端口 9222，独立 profile %LOCALAPPDATA%\\browser-harness-chrome）", "browser-harness daemon（BU_CDP_URL 环境变量）", "install.md 安装指南（github.com/browser-use/browser-harness）"],
+    "trigger": ["网页自动化", "爬取", "抓取", "网页测试", "web interaction", "browser-use", "浏览器操作", "site/app work"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\browser-harness\\SKILL.md"
+  },
+  {
+    "id": "skill-grill-me",
+    "name": "grill-me",
+    "source": "skill",
+    "implementation": "对用户的计划/设计进行持续质询直到达成共享理解，逐分支解析决策树。用 question 工具一次一问（2-4 个多选选项），强制协议：每条消息必须以 [GRILL] ack + 一个 question 调用结尾。用户想压力测试方案、被拷问设计时使用。",
+    "provides": ["提问协议（[GRILL] 确认 + question 工具同消息）", "决策树收敛流程（4 步：逐问→自探索→全分支解析→收敛总结）", "漂移护栏（one-message rule / pre-output gate / convergence audit）", "语言规则（跟随用户会话语言，UTF-8）"],
+    "depends_on": ["question 工具（结构化弹窗，UTF-8 支持）"],
+    "trigger": ["grill me", "拷问我", "面试我的方案", "压力测试方案", "stress-test plan"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\grill-me\\SKILL.md"
+  },
+  {
+    "id": "skill-headroom",
+    "name": "headroom",
+    "source": "skill",
+    "implementation": "Headroom 上下文压缩层（CLI 版）。支持 proxy/audit-reads/savings/inspect/diff/memory 命令，用于手动压缩超大工具输出、审计 Read-tool 流量、查看压缩节省统计。MCP 服务器已禁用（2026-08-12 量化亏损），CLI 仍可用。",
+    "provides": ["headroom CLI 命令表（proxy 8787 端口 / audit-reads / savings / inspect / memory）", "压缩触发阈值（>500 行文件 / >2000 字符工具输出 / >3000 字符网页）", "MCP 禁用状态说明与恢复路径（切 Claude Code/Codex 时 enabled 改回 true）"],
+    "depends_on": ["headroom CLI（本地代理 http://127.0.0.1:8787）", "无 MCP 依赖（headroom_compress/retrieve/stats 已禁用）"],
+    "trigger": ["headroom", "上下文压缩", "压缩大输出", "audit-reads", "savings"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\headroom\\SKILL.md"
+  },
+  {
+    "id": "skill-opencode-config",
+    "name": "opencode-config",
+    "source": "skill",
+    "implementation": "OpenCode 配置（opencode.jsonc）分级知识库：覆盖官方 Schema v2 全量字段、本项目实际配置的深度本地化说明、操作指南、安全规则与排障手册。LLM 通过三阶自检路由按需加载子文件，不一次加载全部。",
+    "provides": ["路由矩阵四组子文件（ref/ 官方参考 7 份、local/ 本地化 5 份、ops/ 操作指南 6 份、troubleshooting/ 排障）", "版本哈希表（配置 SHA256 01E07DA4... + 17 子文件哈希）", "修改安全链（备份→修改→JSON 验证→重算哈希→同步子文件→零旧值残留检查）", "对标 opencode 1.18.16"],
+    "depends_on": ["~/.config/opencode/opencode.jsonc（配置源）", "无外部服务依赖"],
+    "trigger": ["opencode配置", "opencode参数", "opencode.jsonc", "config schema", "permission配置", "provider配置", "mcp配置", "opencode设置", "opencode文档", "配置参考"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\opencode-config\\SKILL.md"
+  }
+]

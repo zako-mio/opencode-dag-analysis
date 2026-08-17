@@ -1,0 +1,642 @@
+[
+  {
+    "id": "skill-openspec-apply-change",
+    "name": "openspec-apply-change",
+    "source": "skills",
+    "implementation": "执行 OpenSpec 变更中 tasks.md 的实现任务，逐条完成并打勾。通过 openspec status 与 instructions apply 获取上下文文件、进度与任务列表，处理 blocked/all_done 状态。",
+    "provides": [
+      "变更选择与状态解析（schemaName/planningHome/actionContext）",
+      "apply 指令获取（contextFiles/进度/任务列表）",
+      "任务逐条执行与勾选",
+      "blocked 状态引导转 continue-change",
+      "store 感知（--store 标志）"
+    ],
+    "depends_on": [
+      "openspec CLI（bash openspec:* 命令）",
+      "store 模式需 openspec store list"
+    ],
+    "trigger": [
+      "开始编码",
+      "执行tasks",
+      "实现任务",
+      "apply change",
+      "打勾完成"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-apply-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-archive-change",
+    "name": "openspec-archive-change",
+    "source": "skills",
+    "implementation": "归档已完成的变更：将 delta spec 合并到主 spec 并移动到 archive。先加载 archive 指令上下文，检查工件与任务完成度，处理未完成警告与冲突。",
+    "provides": [
+      "归档前上下文加载（instructions archive）",
+      "工件完成度检查（done/skipped）",
+      "任务完成度检查（-[ ] 计数）",
+      "delta spec 合并到主 spec",
+      "变更归档移动"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "归档",
+      "archive",
+      "合并spec",
+      "完成变更后归档"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-archive-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-bulk-archive-change",
+    "name": "openspec-bulk-archive-change",
+    "source": "skills",
+    "implementation": "单次批量归档多个已完成变更，智能处理 spec 冲突——通过检查代码库判断实际实现。逐变更收集工件状态、任务完成度与 delta spec 列表后统一归档。",
+    "provides": [
+      "多选变更批量归档（含全选）",
+      "批量校验（工件/任务/delta spec）",
+      "冲突检查与代码库核对",
+      "窄化 delta 同步范围（排除未实现 delta）",
+      "混合 schema 独立评估"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "批量归档",
+      "bulk archive",
+      "归档多个变更"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-bulk-archive-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-continue-change",
+    "name": "openspec-continue-change",
+    "source": "skills",
+    "implementation": "继续已有变更，按 DAG 依赖顺序生成下一个未完成工件。解析状态判断 ready/blocked，获取 instructions（模板+context+rules）创建单个工件后停止，适合恢复中断工作。",
+    "provides": [
+      "变更选择（最近修改推荐）",
+      "DAG 工件状态解析（done/skipped/ready/blocked）",
+      "单工件生成（模板+context+rules+resolvedOutputPath）",
+      "skip_specs 工件跳过",
+      "依赖文件磁盘重读"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "继续变更",
+      "continue change",
+      "恢复工作",
+      "生成下一个工件"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-continue-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-explore",
+    "name": "openspec-explore",
+    "source": "skills",
+    "implementation": "探索模式立场：分析代码、理清需求、比较方案，不写代码。自由提问与 ASCII 可视化，可创建 proposal/design/specs 等思考产物（捕获思考非实施）。",
+    "provides": [
+      "问题空间探索与澄清提问",
+      "代码库调查与集成点分析",
+      "方案对比表与权衡",
+      "ASCII 图可视化",
+      "风险与未知面识别",
+      "OpenSpec 思考产物创建"
+    ],
+    "depends_on": [
+      "openspec CLI（仅创建工件时可选）"
+    ],
+    "trigger": [
+      "探索",
+      "explore",
+      "分析需求",
+      "比较方案",
+      "先思考再动手"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-explore\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-ff-change",
+    "name": "openspec-ff-change",
+    "source": "skills",
+    "implementation": "快速通道一键生成所有 OpenSpec 工件，跳过逐步交互。按 requires 依赖边传递闭包确定必建工件集合（applyRequires 可达集），循环创建 proposal/specs/design/tasks。",
+    "provides": [
+      "变更名 kebab-case 派生",
+      "依赖序工件批量生成",
+      "applyRequires 传递闭包计算",
+      "条件工件跳过（design 可选）",
+      "进度 todo 跟踪"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "快速通道",
+      "fast-forward",
+      "一键生成",
+      "ff change",
+      "直接出全部工件"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-ff-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-new-change",
+    "name": "openspec-new-change",
+    "source": "skills",
+    "implementation": "逐步交互式创建新变更，比 propose 更细粒度。仅创建变更目录并展示第一个工件模板后停止，等待用户方向，适合复杂或需精细控制的场景。",
+    "provides": [
+      "schema 选择（--schema 或 openspec schemas）",
+      "变更脚手架创建",
+      "首个工件 instructions 展示",
+      "防越步守门（不创建任何工件）",
+      "kebab-case 名称校验"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "新变更",
+      "new change",
+      "逐步创建",
+      "交互式创建变更"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-new-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-onboard",
+    "name": "openspec-onboard",
+    "source": "skills",
+    "implementation": "引导首次用户完成完整 OpenSpec 流程的教学技能，边做边讲。预检 CLI 安装后走 welcome→选任务→建变更→proposal/specs/design/tasks→实现→归档的完整周期。",
+    "provides": [
+      "CLI 安装预检",
+      "任务选择（TODO/FIXME 扫描+git 活动）",
+      "完整周期教学引导",
+      "15-20 分钟实战走查"
+    ],
+    "depends_on": [
+      "openspec CLI（必须已安装）",
+      "git"
+    ],
+    "trigger": [
+      "引导",
+      "onboard",
+      "教程",
+      "第一次用 OpenSpec",
+      "教学"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-onboard\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-propose",
+    "name": "openspec-propose",
+    "source": "skills",
+    "implementation": "一键生成变更提案：创建 change 并生成全部工件（proposal/specs/design/tasks）。明确知道要做什么时使用，生成后交给 apply-change 实施。",
+    "provides": [
+      "一键提案生成",
+      "spec-driven 四工件生成",
+      "依赖序循环生成",
+      "skip_specs 感知",
+      "接续 apply-change"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "提案",
+      "propose",
+      "创建变更",
+      "一键生成提案"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-propose\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-sync-specs",
+    "name": "openspec-sync-specs",
+    "source": "skills",
+    "implementation": "将 delta spec 同步到主 spec（不归档），agent 驱动读取 delta 并智能编辑主 spec，处理 ADDED/MODIFIED/REMOVED/RENAMED 段。仅被 archive-change 或显式召唤时使用。",
+    "provides": [
+      "delta spec 定位（existingOutputPaths 唯一来源）",
+      "主 spec 路径解析（store 感知 planningHome.root）",
+      "ADDED/MODIFIED/REMOVED/RENAMED 合并",
+      "窄化同步范围（显式名单）"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "同步spec",
+      "sync specs",
+      "合并delta",
+      "同步主spec"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-sync-specs\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-update-change",
+    "name": "openspec-update-change",
+    "source": "skills",
+    "implementation": "编辑/协调已有 OpenSpec 工件并保持一致性，处理手动修改后的重新同步。按请求做定向修改或一致性审查，逐工件确认后写入，不创建缺失工件。",
+    "provides": [
+      "一致性审查（矛盾/缺口/重复）",
+      "跨工件双向协调（任意方向）",
+      "逐工件确认写入",
+      "不创建缺失工件（指向 continue-change）"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "更新变更",
+      "update change",
+      "协调工件",
+      "同步修改工件"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-update-change\\SKILL.md"
+  },
+  {
+    "id": "skill-openspec-verify-change",
+    "name": "openspec-verify-change",
+    "source": "skills",
+    "implementation": "归档前可选校验：验证实现是否匹配 spec/design/tasks。从完整性/正确性/一致性三维度生成 CRITICAL/WARNING/SUGGESTION 级别的验证报告。",
+    "provides": [
+      "三维验证报告（完整性/正确性/一致性）",
+      "任务与 spec 覆盖核对",
+      "严重级别分类（CRITICAL/WARNING/SUGGESTION）",
+      "修复建议"
+    ],
+    "depends_on": [
+      "openspec CLI"
+    ],
+    "trigger": [
+      "验证",
+      "verify",
+      "校验实现",
+      "归档前检查"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-verify-change\\SKILL.md"
+  },
+  {
+    "id": "skill-release-openspec",
+    "name": "release-openspec",
+    "source": "skills",
+    "implementation": "OpenSpec 自身发布管理（仅维护者）：可恢复状态机驱动发布流程，每次调用审计 GitHub 实况后只做下一步安全动作。管理 Changeset PR 与 Version Packages PR 双轨。",
+    "provides": [
+      "发布审计（只读默认）",
+      "changeset/版本包双 PR 管理",
+      "worktree 隔离发布提交",
+      "merge-queue 中间态推进",
+      "人工审查门（不自动批准）"
+    ],
+    "depends_on": [
+      "gh CLI",
+      "git",
+      "pnpm",
+      "Fission-AI/OpenSpec 官方仓库",
+      "Changesets action"
+    ],
+    "trigger": [
+      "发布",
+      "release",
+      "版本包",
+      "changeset"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\release-openspec\\SKILL.md"
+  },
+  {
+    "id": "skill-recruit-assist",
+    "name": "recruit-assist",
+    "source": "skill",
+    "implementation": "简历投递辅助：投简历（浏览器打开招聘页+记录跟踪表）、识别简历（扫描表单字段匹配信息库）、维护信息库、记录投递状态、跟踪企业，飞书增量同步跟踪表。",
+    "provides": [
+      "浏览器自动化投递（browser-harness CDP）",
+      "表单字段识别与信息库匹配",
+      "Excel 跟踪表读写（tracker_writer.py）",
+      "飞书增量上传/全量下载同步（sync_feishu.py）",
+      "企业类型识别（detect_enterprise_type.py）",
+      "URL 到渠道映射（url_to_channel.py）",
+      "同步状态机（.sync_state.json）"
+    ],
+    "depends_on": [
+      "browser-harness.exe",
+      "Chrome 远程调试（chrome-debug.ps1）",
+      "飞书 API（my.feishu.cn sheets）",
+      "Python 3.13（openpyxl/zipfile/ElementTree）",
+      "本地 Excel 跟踪表（D:\\学，都可以学\\研一\\简历相关\\trace）"
+    ],
+    "trigger": [
+      "投简历",
+      "识别简历",
+      "更新信息库",
+      "记录投递",
+      "跟踪企业",
+      "上传简历跟踪",
+      "下载简历跟踪",
+      "提取表单",
+      "招聘"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\recruit-assist\\SKILL.md"
+  },
+  {
+    "id": "skill-resume-builder",
+    "name": "resume-builder",
+    "source": "skill",
+    "implementation": "简历制作助手：从零创建、ATS 优化、岗位定制（JD 关键词提取）、求职信、面试准备（STAR）与简历评分修改建议，基于 Novoresume/Jobscan 等权威来源方法论。",
+    "provides": [
+      "/resume-create 从零创建",
+      "ATS 优化与简历评分",
+      "JD 岗位定制",
+      "cover letter 生成",
+      "STAR 面试演练",
+      "6 大板块简历模板"
+    ],
+    "depends_on": [
+      "WebSearch/WebFetch（权威参考）",
+      "参考文档目录 D:\\学，都可以学\\研一\\简历相关\\opencode缓存"
+    ],
+    "trigger": [
+      "简历",
+      "resume",
+      "CV",
+      "求职信",
+      "cover letter",
+      "面试准备",
+      "改简历",
+      "写简历",
+      "优化简历",
+      "找实习",
+      "找工作",
+      "STAR",
+      "ATS"
+    ],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\resume-builder\\SKILL.md"
+  },
+  {
+    "id": "skill-agent-reflection",
+    "name": "agent-reflection",
+    "source": "reflection",
+    "implementation": "Agent 自进化系统：Plan+Build 周期后异步反思，提炼经验写入 Memory（MEMORY.md）或创建新 Skill（Reflection/skills）。经 pending.json 状态机 + reflection-worker 子Agent 处理 + /reflection 交互确认。",
+    "provides": [
+      "4 层输入封装写入 pending.json",
+      "pending.json 状态机（waiting/processing/done/confirmed）",
+      "reflection-worker 委派（仅文件读写最小集）",
+      "Memory/Skill 双轨道写入",
+      "/reflection 交互式逐条确认"
+    ],
+    "depends_on": [
+      "pending.json（D:\\Opencode_Download\\Reflection\\pending.json）",
+      "reflection-worker 子Agent（DeepSeek V4 Flash）",
+      "/reflection 命令（auto-mode 协议）",
+      "MEMORY.md 自引用规则"
+    ],
+    "trigger": [
+      "reflection",
+      "同步记忆",
+      "反思",
+      "/reflection"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\agent-reflection\\SKILL.md"
+  },
+  {
+    "id": "skill-cdisk-space-optimization",
+    "name": "cdisk-space-optimization",
+    "source": "reflection",
+    "implementation": "Windows C 盘空间优化方法论：先实测（注册表/磁盘）再动手，junction 软链接零风险迁移开发缓存，还原点等高危清理项半自动确认，双轨交付（对话+MD 手册）。",
+    "provides": [
+      "空间盘点与占用大头识别",
+      "社交数据注册表实测（微信/QQ/企微）",
+      "开发缓存 junction 搬迁（mklink /J）",
+      "高危清理项量化风险收益确认",
+      "双轨交付（对话摘要+MD 操作手册）"
+    ],
+    "depends_on": [
+      "mklink /J（junction 软链接）",
+      "注册表读取",
+      "无外部包"
+    ],
+    "trigger": [
+      "C盘空间",
+      "磁盘清理",
+      "空间优化",
+      "junction",
+      "软链接",
+      "缓存搬迁",
+      "微信数据",
+      "QQ数据",
+      "还原点",
+      "系统清理"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\system\\cdisk-space-optimization\\SKILL.md"
+  },
+  {
+    "id": "skill-cytoscape-dag-visualization",
+    "name": "cytoscape-dag-visualization",
+    "source": "reflection",
+    "implementation": "cytoscape.js 交互 DAG 可视化构建：单页组级+下钻总览与批量 HTML 页源码级动态 DAG 插入。含 DATA 按行注入、环修复方法论、disabled 节点标注、幂等防累积、VLM 双轨视觉验证。",
+    "provides": [
+      "数据合并与环修复（E3 过滤/slot 修正/dependents 不反推）",
+      "DATA 注入（按行替换 const DATA，CRLF+UTF-8 无 BOM）",
+      "两级视图（组级+下钻，缩放联动三级）",
+      "样式语义化标注（disabled 红色+图例同步）",
+      "试点先行批量插入（幂等防累积）",
+      "VLM 视觉验证（headless 截图抓盲区）"
+    ],
+    "depends_on": [
+      "cytoscape.js",
+      "cytoscape-dagre 4.0.0（vendor）",
+      "headless 截图 + VLM",
+      "共享 _shared/dag-core-methods.md"
+    ],
+    "trigger": [
+      "cytoscape",
+      "交互式DAG",
+      "DAG总览",
+      "下钻",
+      "DATA注入",
+      "disabled标注",
+      "环修复",
+      "动态DAG",
+      "模块依赖图",
+      "批量插入"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\coding\\cytoscape-dag-visualization\\SKILL.md"
+  },
+  {
+    "id": "skill-dag-tutorial-authoring",
+    "name": "dag-tutorial-authoring",
+    "source": "reflection",
+    "implementation": "DAG 教程编写方法论（零基础读者导向）：调研驱动编写（4 路并行交叉验证）、可读性规律编码为门控、统一 schema 并行写节点、双轨验证（VLM+headless）、新手走查闭环。",
+    "provides": [
+      "4 路并行调研（官方 A/B+英文 C+中文 D）",
+      "五要素可读性门控（心智模型/无孤立/术语统一/场景链/走查）",
+      "8 区块节点模板（why/intro/scenario/web/cli/terms/summary/official_links）",
+      "边方向=学习顺序约定+层序门控校验",
+      "功能 why 分层（功能层+历史层）",
+      "双轨视觉验证+新手走查"
+    ],
+    "depends_on": [
+      "headless 截图 + VLM",
+      "统一 schema 并行子Agent",
+      "build-html.py（md2html 纳入主流程）",
+      "共享 _shared/dag-core-methods.md"
+    ],
+    "trigger": [
+      "DAG教程",
+      "教程编写",
+      "学习路径",
+      "knowledge DAG",
+      "可读性门控",
+      "调研驱动编写",
+      "新手教程"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\coding\\dag-tutorial-authoring\\SKILL.md"
+  },
+  {
+    "id": "skill-github-bulk-upload",
+    "name": "github-bulk-upload",
+    "source": "reflection",
+    "implementation": "GitHub 大仓库全量上传方法论：处理嵌套 .git 被识别为 gitlink、大文件推送 schannel 中断（postBuffer 调优）、gh CLI 代理设备码登录、权限 deny 转手动 push，10 步流程含上传后验证清单。",
+    "provides": [
+      "上传前预检（README/LICENSE/.gitignore/敏感扫描）",
+      "代理设备码登录（HTTPS_PROXY=127.0.0.1:7890）",
+      "嵌套 .git 剥离（gitlink 修复）",
+      "http.postBuffer 调优",
+      "权限协作转用户手动 push",
+      "上传后验证清单+批量仓库上传"
+    ],
+    "depends_on": [
+      "gh CLI（winget 安装）",
+      "git（credential.helper store）",
+      "代理 127.0.0.1:7890",
+      "scan-secrets.py 敏感扫描"
+    ],
+    "trigger": [
+      "上传GitHub",
+      "GitHub上传",
+      "大仓库上传",
+      "gh repo create",
+      "git push",
+      "嵌套git",
+      "postBuffer",
+      "设备码登录"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\coding\\github-bulk-upload\\SKILL.md"
+  },
+  {
+    "id": "skill-large-scale-source-parse",
+    "name": "large-scale-source-parse",
+    "source": "reflection",
+    "implementation": "大规模源码库静态解析方法论：主Agent 只做调度/聚合/裁决，explore 子Agent 并行解析，三源交叉验证，分层抽象+跨层联动矩阵+端到端路径，双集群交付（MD AI 友好+HTML 人友好）。",
+    "provides": [
+      "快照准备（浅 clone+官方文档镜像双依据）",
+      "层级骨架先行（9 层抽象主线）",
+      "三源交叉验证（印证/矛盾/独家/待裁决/参考 5 类）",
+      "并行解析（三硬依据 E1/E2/E3+行引用）",
+      "口径归一化终裁（主Agent 裁决）",
+      "跨层联动矩阵+端到端路径",
+      "drawio 分批发+VLM 抽验",
+      "质量门控+checkpoint 续传"
+    ],
+    "depends_on": [
+      "git（浅 clone）",
+      "drawio 导出（每批≤30 节点 scale=2）",
+      "并行 explore 子Agent",
+      "质量门控脚本（JSON 合法/DAG 无环/HTML 断链 0）"
+    ],
+    "trigger": [
+      "源码解析",
+      "架构解析",
+      "source analysis",
+      "9层解析",
+      "DAG依赖链",
+      "跨层联动",
+      "源码clone",
+      "架构文档"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\large-scale-source-parse\\SKILL.md"
+  },
+  {
+    "id": "skill-multi-window-dag-delivery",
+    "name": "multi-window-dag-delivery",
+    "source": "reflection",
+    "implementation": "多层窗口接力 DAG 依赖链分析与交付：大型插件库拆窗口接力，每窗口完整执行（采集→建模→注入→生成→门控）并落盘 PLAN-layerN.md 接力文件，交付物同目录累计，门控逐层升级，PACKAGE-MAP 覆盖度终核。",
+    "provides": [
+      "窗口划分与 PLAN-layerN.md 接力文件",
+      "三硬依据溯源（E1 编译/E2 运行时/E3 组合+文件:行号）",
+      "build-dag.py 层次遍历（BFS 拓扑分层+无环校验）",
+      "多形态交付（HTML 插件页+MD 镜像+drawio+交互 DAG 总览）",
+      "数据源逐层合并（core→webapp→全量）",
+      "PACKAGE-MAP 覆盖度终核（缺包=0 多包=0）"
+    ],
+    "depends_on": [
+      "build-dag.py",
+      "gen-html/gen-md 生成脚本",
+      "drawio-worker",
+      "quality-gate.py（门控随层升级 L1 7 项→L3 8 项）",
+      "cytoscape 交互图（vendor cytoscape-dagre）",
+      "共享 _shared/dag-core-methods.md"
+    ],
+    "trigger": [
+      "多层窗口DAG",
+      "DAG接力",
+      "插件依赖分析",
+      "层次遍历",
+      "拓扑分层",
+      "PACKAGE-MAP覆盖度",
+      "多窗口交付"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\coding\\multi-window-dag-delivery\\SKILL.md"
+  },
+  {
+    "id": "skill-postmortem-failure-review",
+    "name": "postmortem-failure-review",
+    "source": "reflection",
+    "implementation": "失败项目复盘方法论：先区分路线错误与执行错误，五因框架分类失败，双 explore 并行探索（失败项目+参考项目），A/B/C 资产盘点，产出 v2 设计建议与 MVP 最小化清单。",
+    "provides": [
+      "根因层级判定（路线 vs 执行）",
+      "五因分类框架（路线/能力未就绪/过度工程/门控缺失/门槛过高）",
+      "双 explore 委派+dead code 审计",
+      "A/B/C 资产分级（复用价值×影响力排序）",
+      "v2 设计建议+MVP 范围最小化",
+      "5 段式复盘报告"
+    ],
+    "depends_on": [
+      "并行 explore 子Agent（explore-failed-project/explore-reference）"
+    ],
+    "trigger": [
+      "失败复盘",
+      "为什么失败",
+      "复盘",
+      "postmortem",
+      "教训",
+      "项目失败分析"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\postmortem-failure-review\\SKILL.md"
+  },
+  {
+    "id": "skill-reusable-asset-inventory",
+    "name": "reusable-asset-inventory",
+    "source": "reflection",
+    "implementation": "从失败/遗留项目提炼可复用资产：A/B/C 三级分类（直接复用/需修改/仅思路）+优先级排序公式+参考项目对标，gap 清单直接映射 v2 补全优先级。",
+    "provides": [
+      "A/B/C 三级分类标准",
+      "复用价值×影响力优先级排序",
+      "参考项目对标（组件数/核心模式/gap）",
+      "gap 清单→v2 补全优先级映射",
+      "可复用资产清单产出"
+    ],
+    "depends_on": [
+      "参考项目探索"
+    ],
+    "trigger": [
+      "可复用资产",
+      "资产盘点",
+      "复用清单",
+      "资产清单",
+      "asset inventory",
+      "代码复用评估"
+    ],
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\reusable-asset-inventory\\SKILL.md"
+  }
+]

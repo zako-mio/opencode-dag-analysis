@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>minimax-xlsx · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>minimax-xlsx <span class="tag">装配层</span></h1>
+  <div class="sub">skill-minimax-xlsx · skill · A6c-办公集成 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>打开/创建/读取/分析/编辑/验证 Excel 电子表格（.xlsx/.xlsm/.csv/.tsv）。覆盖从零创建 xlsx、无格式损失编辑已有文件、公式重算与校验、专业财务格式化标准。内置 Windows 非 ASCII 编码双层防御（UTF-8 文件路由）与强制写后读回验证。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· Python 脚本集（json2xlsx/xlsx_reader/xlsx_pack/unpack/formula_check/style_audit/add_column/insert_row/shift_rows/libreoffice_recalc/shared_strings_builder）<br>· minimal_xlsx 模板（workbook/styles/sharedStrings）<br>· OOXML 速查表 + 创建/编辑/修复/格式化/验证/读取分场景 references<br>· Readback 验证规则（列数/行数/抽样单元格三重确认）<br>· 编码安全两层防御规范</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>来自 MiniMax（skill marketplace 分发），本地重度改造：Python 管线（11 脚本）+ templates/ + references/（7 文件）。引入动机：Agent 需要程序化处理 Excel/电子表格（创建/编辑/分析/验证），且曾遭遇 Windows PowerShell 5.1 编码事故——$OutputEncoding 默认 ASCII，管道传中文导致 Python dict 静默去重（真实事故：11 列变 3 列），因此内置 UTF-8 编码双层防御（非 ASCII 入文件不走管道）+ 回读验证规则（写后必回读校验列数/行数/采样值）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>简历投递跟踪表读写（recruit-assist 的 tracker_writer.py 调用其 XML 解包-编辑-打包流程，严禁 COM）、网申数据导出、财务分析（0807 利润表任务）、create-doc preset Excel 能力。0815 补 LibreOffice 26.2.5.2 解锁动态重算 + .xls 转换（P6 实测 SUM/IF/乘法重算 + xlsx-xls-xlsx 双程无损）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发词：spreadsheet、Excel、.xlsx、.csv、pivot table、financial model、formula、或任何要求以 Excel 格式产出表格数据的请求（SKILL.md description）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 首选 json2xlsx.py：JSON 数组 + map.json 生成带样式/验证的工作簿（中文全在 UTF-8 JSON 文件，退出码 0=写并验证通过）；2) 编辑现有文件：解包后 xlsx_insert_row.py / xlsx_add_column.py 结构性修改再打包（自动更新 sharedStrings/样式/SUM 公式，零格式损失）；3) 行定位规则：grep sheet XML 找标签文本，绝不依赖预览行号；4) 每次写入后回读验证（列数/行数/采样单元格）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（tracker_writer.py 依赖）、minimax-docx（create-doc 组）、create-doc preset、LibreOffice（动态重算外部工具）协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

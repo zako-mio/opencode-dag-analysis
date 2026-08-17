@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>console-core · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>console-core </h1>
+  <div class="sub">oc-console-core · package · G16-Console · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>Console 后端领域层：基于 drizzle-orm + PlanetScale 的数据库访问、Actor 权限上下文、以及 Account/User/Workspace/Key/Billing/Subscription/Model/Provider 等 CRUD 与计费逻辑。src/drizzle/index.ts 封装事务与上下文，src/account.ts 处理账号创建/删除（含级联清理 key、coupon、auth），src/workspace.ts 创建 workspace 并默认生成管理员与 API key，src/billing.ts 对接 Stripe 做 credits 充值。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· Database 封装：PlanetScale drizzle 客户端 + 事务/上下文（src/drizzle/index.ts:36）<br>· Actor 权限上下文：请求用户/角色/workspace 断言（src/actor.ts）<br>· 账号生命周期：create/remove/fromID，删除级联清理（src/account.ts:13,27）<br>· workspace 创建与成员管理（src/workspace.ts:17）<br>· API Key 管理与角色隔离（src/key.ts:11）<br>· Stripe 计费：credits 充值/订阅/用量计费（src/billing.ts:22,29）<br>· 模型/Provider 目录与 ZenData 模型成本定义（src/model.ts）<br>· 订阅限额：free/lite/black 阶梯（src/subscription.ts:7）<br>· 全量 drizzle schema SQL（src/schema/*.sql.ts，account/auth/billing/key/model/provider/referral/user/workspace/ip/benchmark）<br>· 邀请邮件渲染（动态 import console-mail，src/user.ts:142）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-console-mail.html'>console-mail</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-core/package.json dependencies.@opencode-ai/console-mail</small></td></tr><tr><td><a href='oc-console-resource.html'>console-resource</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-core/package.json dependencies.@opencode-ai/console-resource</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-console-app.html'>console-app</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-app/package.json dependencies.@opencode-ai/console-core</small></td></tr><tr><td><a href='oc-console-function.html'>console-function</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-function/package.json dependencies.@opencode-ai/console-core</small></td></tr><tr><td><a href='oc-console-support.html'>console-support</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-support/package.json dependencies.@opencode-ai/console-core</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 namespace + fn(zod, impl) 模式把参数校验(zod) + Actor 权限上下文 + DB 事务统一封装，业务函数即 API 边界——console-function/app 直接 import 复用，避免三处重复实现；Actor（account/public/user/system 四型）贯穿所有查询做租户隔离（workspaceID 过滤），是控制台多租户安全的核心机制。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改该包；装配层对它的借用体现在方法论：本地自定义工具 read.ts 的 zod args schema、子Agent 的 JSON 返回合约、以及 mission-archiving 的 5 段报告，都沿用了 zod 定义契约 + 结构化输出这一 console-core 模式。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>被 console-app / console-function / console-support 以 workspace:* 依赖引用（exports 映射 ./src/*.ts 直读 TS 源码）。业务入口均为 fn(zodSchema, impl) 封装的函数：Actor.provide 提供 account/user/system 上下文（AsyncLocalStorage），Database.use/transaction 执行 drizzle 查询（PlanetScale/MySQL + postgres 双驱动），Key/Workspace/User/Provider/Subscription/Billing/BlackData/LiteData/Referral 等 namespace 各司其职。DB 操作经 bun sst shell drizzle-kit（script/db）迁移。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>console 全栈业务逻辑层：workspace 创建（含默认 API Key 与 billing 记录）、Key 生成（sk- + 64 随机字符）、model/provider 目录（ZenData 的 Format: anthropic|google|openai|oa-compat 与 cost/cacheRead/byok/sticky/trial 字段）、订阅限额（free/lite/black 三档 rolling/weekly/monthly 窗口）、Stripe 计费（billing.ts 的 Stripe client + 4.4% 处理费公式）、AWS SES 邮件（aws.ts）。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（35 模块 · 99 边）</h3>
+<div id="int-oc-console-core" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_console_core = {"nodes": [{"data": {"id": "account.ts", "name": "account.ts", "path": "account.ts"}, "classes": "leaf"}, {"data": {"id": "actor.ts", "name": "actor.ts", "path": "actor.ts"}, "classes": "hot"}, {"data": {"id": "aws.ts", "name": "aws.ts", "path": "aws.ts"}, "classes": "leaf"}, {"data": {"id": "billing.ts", "name": "billing.ts", "path": "billing.ts"}, "classes": "leaf"}, {"data": {"id": "black.ts", "name": "black.ts", "path": "black.ts"}, "classes": "leaf"}, {"data": {"id": "context.ts", "name": "context.ts", "path": "context.ts"}, "classes": "hot"}, {"data": {"id": "identifier.ts", "name": "identifier.ts", "path": "identifier.ts"}, "classes": "hot"}, {"data": {"id": "key.ts", "name": "key.ts", "path": "key.ts"}, "classes": "leaf"}, {"data": {"id": "lite.ts", "name": "lite.ts", "path": "lite.ts"}, "classes": "leaf"}, {"data": {"id": "model.ts", "name": "model.ts", "path": "model.ts"}, "classes": "leaf"}, {"data": {"id": "provider.ts", "name": "provider.ts", "path": "provider.ts"}, "classes": "leaf"}, {"data": {"id": "referral.ts", "name": "referral.ts", "path": "referral.ts"}, "classes": "leaf"}, {"data": {"id": "subscription.ts", "name": "subscription.ts", "path": "subscription.ts"}, "classes": "hot"}, {"data": {"id": "user.ts", "name": "user.ts", "path": "user.ts"}, "classes": "leaf"}, {"data": {"id": "workspace.ts", "name": "workspace.ts", "path": "workspace.ts"}, "classes": "leaf"}, {"data": {"id": "drizzle/index.ts", "name": "index.ts", "path": "drizzle/index.ts"}, "classes": "entry"}, {"data": {"id": "drizzle/types.ts", "name": "types.ts", "path": "drizzle/types.ts"}, "classes": "hot"}, {"data": {"id": "schema/account.sql.ts", "name": "account.sql.ts", "path": "schema/account.sql.ts"}, "classes": "hot"}, {"data": {"id": "schema/auth.sql.ts", "name": "auth.sql.ts", "path": "schema/auth.sql.ts"}, "classes": "hot"}, {"data": {"id": "schema/benchmark.sql.ts", "name": "benchmark.sql.ts", "path": "schema/benchmark.sql.ts"}, "classes": "leaf"}, {"data": {"id": "schema/billing.sql.ts", "name": "billing.sql.ts", "path": "schema/billing.sql.ts"}, "classes": "hot"}, {"data": {"id": "schema/ip.sql.ts", "name": "ip.sql.ts", "path": "schema/ip.sql.ts"}, "classes": "leaf"}, {"data": {"id": "schema/key.sql.ts", "name": "key.sql.ts", "path": "schema/key.sql.ts"}, "classes": "hot"}, {"data": {"id": "schema/model.sql.ts", "name": "model.sql.ts", "path": "schema/model.sql.ts"}, "classes": "leaf"}, {"data": {"id": "schema/provider.sql.ts", "name": "provider.sql.ts", "path": "schema/provider.sql.ts"}, "classes": "leaf"}, {"data": {"id": "schema/referral.sql.ts", "name": "referral.sql.ts", "path": "schema/referral.sql.ts"}, "classes": "leaf"}, {"data": {"id": "schema/user.sql.ts", "name": "user.sql.ts", "path": "schema/user.sql.ts"}, "classes": "hot"}, {"data": {"id": "schema/workspace.sql.ts", "name": "workspace.sql.ts", "path": "schema/workspace.sql.ts"}, "classes": "hot"}, {"data": {"id": "util/crypto.ts", "name": "crypto.ts", "path": "util/crypto.ts"}, "classes": "leaf"}, {"data": {"id": "util/date.ts", "name": "date.ts", "path": "util/date.ts"}, "classes": "leaf"}, {"data": {"id": "util/env.cloudflare.ts", "name": "env.cloudflare.ts", "path": "util/env.cloudflare.ts"}, "classes": "leaf"}, {"data": {"id": "util/fn.ts", "name": "fn.ts", "path": "util/fn.ts"}, "classes": "hot"}, {"data": {"id": "util/log.ts", "name": "log.ts", "path": "util/log.ts"}, "classes": "leaf"}, {"data": {"id": "util/memo.ts", "name": "memo.ts", "path": "util/memo.ts"}, "classes": "leaf"}, {"data": {"id": "util/price.ts", "name": "price.ts", "path": "util/price.ts"}, "classes": "hot"}], "edges": [{"data": {"source": "account.ts", "target": "util/fn.ts"}}, {"data": {"source": "account.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "account.ts", "target": "identifier.ts"}}, {"data": {"source": "account.ts", "target": "schema/account.sql.ts"}}, {"data": {"source": "account.ts", "target": "schema/auth.sql.ts"}}, {"data": {"source": "account.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "account.ts", "target": "schema/key.sql.ts"}}, {"data": {"source": "account.ts", "target": "schema/billing.sql.ts"}}, {"data": {"source": "actor.ts", "target": "context.ts"}}, {"data": {"source": "actor.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "actor.ts", "target": "util/log.ts"}}, {"data": {"source": "aws.ts", "target": "util/fn.ts"}}, {"data": {"source": "billing.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "billing.ts", "target": "schema/billing.sql.ts"}}, {"data": {"source": "billing.ts", "target": "actor.ts"}}, {"data": {"source": "billing.ts", "target": "util/fn.ts"}}, {"data": {"source": "billing.ts", "target": "identifier.ts"}}, {"data": {"source": "billing.ts", "target": "util/price.ts"}}, {"data": {"source": "billing.ts", "target": "user.ts"}}, {"data": {"source": "billing.ts", "target": "black.ts"}}, {"data": {"source": "billing.ts", "target": "lite.ts"}}, {"data": {"source": "black.ts", "target": "util/fn.ts"}}, {"data": {"source": "black.ts", "target": "schema/billing.sql.ts"}}, {"data": {"source": "black.ts", "target": "subscription.ts"}}, {"data": {"source": "key.ts", "target": "util/fn.ts"}}, {"data": {"source": "key.ts", "target": "actor.ts"}}, {"data": {"source": "key.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "key.ts", "target": "identifier.ts"}}, {"data": {"source": "key.ts", "target": "schema/key.sql.ts"}}, {"data": {"source": "key.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "key.ts", "target": "schema/auth.sql.ts"}}, {"data": {"source": "lite.ts", "target": "util/fn.ts"}}, {"data": {"source": "lite.ts", "target": "subscription.ts"}}, {"data": {"source": "model.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "model.ts", "target": "schema/model.sql.ts"}}, {"data": {"source": "model.ts", "target": "identifier.ts"}}, {"data": {"source": "model.ts", "target": "util/fn.ts"}}, {"data": {"source": "model.ts", "target": "actor.ts"}}, {"data": {"source": "provider.ts", "target": "util/fn.ts"}}, {"data": {"source": "provider.ts", "target": "actor.ts"}}, {"data": {"source": "provider.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "provider.ts", "target": "identifier.ts"}}, {"data": {"source": "provider.ts", "target": "schema/provider.sql.ts"}}, {"data": {"source": "referral.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "referral.ts", "target": "actor.ts"}}, {"data": {"source": "referral.ts", "target": "identifier.ts"}}, {"data": {"source": "referral.ts", "target": "schema/billing.sql.ts"}}, {"data": {"source": "referral.ts", "target": "schema/referral.sql.ts"}}, {"data": {"source": "referral.ts", "target": "schema/auth.sql.ts"}}, {"data": {"source": "referral.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "referral.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "referral.ts", "target": "util/price.ts"}}, {"data": {"source": "referral.ts", "target": "util/fn.ts"}}, {"data": {"source": "referral.ts", "target": "billing.ts"}}, {"data": {"source": "referral.ts", "target": "lite.ts"}}, {"data": {"source": "referral.ts", "target": "subscription.ts"}}, {"data": {"source": "subscription.ts", "target": "util/fn.ts"}}, {"data": {"source": "subscription.ts", "target": "util/price.ts"}}, {"data": {"source": "subscription.ts", "target": "util/date.ts"}}, {"data": {"source": "user.ts", "target": "util/fn.ts"}}, {"data": {"source": "user.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "user.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "user.ts", "target": "actor.ts"}}, {"data": {"source": "user.ts", "target": "identifier.ts"}}, {"data": {"source": "user.ts", "target": "aws.ts"}}, {"data": {"source": "user.ts", "target": "key.ts"}}, {"data": {"source": "user.ts", "target": "schema/key.sql.ts"}}, {"data": {"source": "user.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "user.ts", "target": "schema/auth.sql.ts"}}, {"data": {"source": "user.ts", "target": "schema/account.sql.ts"}}, {"data": {"source": "workspace.ts", "target": "util/fn.ts"}}, {"data": {"source": "workspace.ts", "target": "actor.ts"}}, {"data": {"source": "workspace.ts", "target": "drizzle/index.ts"}}, {"data": {"source": "workspace.ts", "target": "identifier.ts"}}, {"data": {"source": "workspace.ts", "target": "schema/user.sql.ts"}}, {"data": {"source": "workspace.ts", "target": "schema/billing.sql.ts"}}, {"data": {"source": "workspace.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "workspace.ts", "target": "schema/account.sql.ts"}}, {"data": {"source": "workspace.ts", "target": "key.ts"}}, {"data": {"source": "drizzle/index.ts", "target": "context.ts"}}, {"data": {"source": "drizzle/index.ts", "target": "util/memo.ts"}}, {"data": {"source": "schema/account.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/auth.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/benchmark.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/billing.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/billing.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/ip.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/key.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/key.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/model.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/model.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/provider.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/provider.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/referral.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/referral.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/user.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "schema/user.sql.ts", "target": "schema/workspace.sql.ts"}}, {"data": {"source": "schema/workspace.sql.ts", "target": "drizzle/types.ts"}}, {"data": {"source": "util/log.ts", "target": "context.ts"}}]};
+const cyoc_console_core = cytoscape({
+  container: document.getElementById('int-oc-console-core'),
+  elements: INToc_console_core,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_console_core.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

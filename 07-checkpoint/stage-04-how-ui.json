@@ -1,0 +1,158 @@
+[
+  {
+    "id": "oc-app",
+    "name": "@opencode-ai/app",
+    "how_use": [
+      "浏览器挂载入口：src/entry.tsx:162-176 render(<PlatformProvider><AppBaseProviders><AppInterface/></AppBaseProviders></PlatformProvider>)，桌面 renderer 复用同一组件树（desktop/src/renderer/index.tsx:3-17 直接 import AppBaseProviders/AppInterface/useServer 等）",
+      "公共导出面 src/index.ts:1-30：AppBaseProviders/AppInterface（app.tsx:393/557）、全套 context hooks（useServer/useSettings/useTabs/useCommand/useLanguage）、WSL 类型与 updater/desktop-menu 子路径导出（package.json exports ./desktop-menu、./updater、./wsl/types）",
+      "开发命令：bun start/vite（package.json:18-21）本地起 Vite dev server；desktop 包经 @opencode-ai/app workspace:* 依赖直接复用"
+    ],
+    "how_scenario": "作为桌面端（desktop 渲染进程）与 Web 端（vite serve）共用的 SolidJS 应用壳：desktop/renderer/index.tsx 导入 AppInterface 后只替换 Server/Platform/Updater 等实现（index.tsx:64-321 window.api 桥），实现同一 UI 两套宿主。典型协作链：app 消费 session-ui 的会话渲染组件 + ui 的基础组件 + core 的 ServerConnection，desktop 仅提供原生 IPC/菜单/更新能力。",
+    "why_design": "作为 UI 应用壳层，将 session-ui/ui 的无状态组件与 server/core 的业务逻辑粘合为完整应用，同时为 desktop 提供可复用的桌面子模块（菜单/更新/WSL）出口，避免桌面壳重复实现 UI 组装。",
+    "why_modified": "属官方底座，本机装配层（opencode.jsonc 的 agent/config/mcp/skill 节点）未引用。仅作为 DAG 中 oc-desktop 的上游被官方依赖链引用（@opencode-ai/desktop 依赖 @opencode-ai/app）。",
+    "evidence": "packages/app/package.json:6-14（exports 子路径）、src/entry.tsx:162-176（render 挂载）、src/index.ts:1-30（导出面）、desktop/src/renderer/index.tsx:3-17（复用 app）、app.tsx:393/557（AppBaseProviders/AppInterface）"
+  },
+  {
+    "id": "oc-ui",
+    "name": "@opencode-ai/ui",
+    "how_use": [
+      "按组件子路径导入：package.json:35-57 exports 将 ./components/*.tsx、./context/*、./theme/*、./hooks、./v2/* 直接映射（如 @opencode-ai/ui/context/marked、@opencode-ai/ui/theme/context），app/enterprise/session-ui 均以该方式消费（enterprise/src/app.tsx:3-10 import Font/MarkedProvider/DialogProvider/I18nProvider/ui i18n dict）",
+      "主题与样式：@opencode-ai/ui/styles（tailwind 入口）、@opencode-ai/ui/theme（theme/index.ts:1 resolve/loader）、i18n 词典（i18n/en.ts:1 dict 导出，enterprise 用它做 SSR locale 检测 app.tsx:25-30）",
+      "storybook 脚手架：./storybook/scaffold 与 ./storybook/fixtures 供组件开发预览（storybook/scaffold.tsx:30 create）"
+    ],
+    "how_scenario": "作为跨 app/session-ui/enterprise/storybook 复用的无头组件与渲染原语层：app 用 MarkedProvider+ThemeProvider 组装会话页；enterprise 用 ui 的 i18n/Font/对话框搭 SolidStart SSR 根；session-ui 用 ui 的 marked/worker-pool 实现流式 markdown。改一个基础组件（如 button）会同时影响所有上层包，是 UI 层最底层的公共依赖（G9-UI组件 Layer 0）。",
+    "why_design": "将跨 app/session-ui/enterprise 复用的无头基础组件与渲染原语独立成库，保证视觉一致性与按需导入（sideEffects 仅 css，package.json:14-16），同时承载 v2 新一代组件迁移（src/v2/）避免破坏旧接口。",
+    "why_modified": "属官方底座，本机装配层未引用（无 agent/mcp/skill 依赖它）。但它是 DAG 中被依赖最多的 UI 节点之一（app/session-ui/enterprise/storybook/tui 均依赖），改造上游 UI 时是唯一公共修改点。",
+    "evidence": "packages/ui/package.json:14-16（sideEffects 仅 css）、:35-57（exports 子路径映射）、context/marked.tsx:11（MarkedProvider）、theme/index.ts、enterprise/src/app.tsx:3-10（消费样例）"
+  },
+  {
+    "id": "oc-session-ui",
+    "name": "@opencode-ai/session-ui",
+    "how_use": [
+      "会话级组件子路径导入：package.json:7-25 exports 提供 ./session-diff、./message-file、./message-part-text、./markdown-stream、./markdown-cache、./line-comment-styles、./pierre/*、./context/* 等，app 与 enterprise 直接复用（app/src/app.tsx:6 import File from @opencode-ai/session-ui/file）",
+      "markdown 流式渲染管线：markdown-stream.ts + markdown-worker.ts + markdown-cache.tsx 组合（Worker 增量渲染），app 的会话页经 context/data.tsx Provider 消费",
+      "PromptInput v2：./v2/prompt-input（index/interaction/store/types）新一代输入框子路径导出"
+    ],
+    "how_scenario": "作为 app（桌面/Web 会话页）与 enterprise（只读分享页 routes/share/[shareID].tsx 复用 SessionTurn/SessionReview/MessageNav）共同依赖的会话表达层：app 渲染完整可交互会话，enterprise 用同一套组件渲染只读分享，避免两处重复实现会话 UI。",
+    "why_design": "把会话级渲染（消息/轮次/评审/markdown 流）从 app 中剥离，使 app 与 enterprise 共享同一套会话表达，避免重复实现；pierre/ 目录进一步抽象代码交互原语供应用层装配。",
+    "why_modified": "属官方底座，本机装配层未引用。官方依赖链中同时被 oc-app 与 oc-enterprise 依赖（package.json 均列 @opencode-ai/session-ui workspace:*），是分享场景的公共渲染源。",
+    "evidence": "packages/session-ui/package.json:7-25（exports）、app/src/app.tsx:6（File 导入）、markdown-stream.ts:12（流式管线）、context/data.tsx（数据 Provider）、enterprise routes/share/[shareID].tsx（复用）"
+  },
+  {
+    "id": "oc-desktop",
+    "name": "@opencode-ai/desktop",
+    "how_use": [
+      "开发/构建：bun predev→electron-vite dev（package.json:14-18）；打包 electron-builder --config（package.json:19-23，main 指向 ./out/main/index.js）",
+      "主进程装配 src/main/index.ts:15-51：spawnLocalServer 拉起 sidecar、registerIpcHandlers、createMenu、setupAutoUpdater、WSL 控制器、migrate 与 store 清理",
+      "渲染进程 src/renderer/index.tsx 复用 @opencode-ai/app（index.tsx:3-17），经 preload 的 window.api 桥（index.tsx:64-321）访问原生能力"
+    ],
+    "how_scenario": "作为独立于 @opencode-ai/app 的 Electron 分发层：主进程管理本地 sidecar server 生命周期（main/server.ts）、原生菜单/深链/更新；渲染进程复用 app 的 AppInterface 只替换平台实现（onboarding.tsx:1-41 用 window.api 判断首次启动）。与 cli 形成双入口：desktop 面向图形用户、cli 面向终端用户，共享同一 server/core 后端。",
+    "why_design": "为 Web UI 提供原生桌面能力（本地服务托管/更新/菜单/WSL），是独立于 @opencode-ai/app 的 Electron 分发层，将浏览器版应用无损提升为桌面应用而不污染 app 包。",
+    "why_modified": "属官方底座，本机装配层未引用。官方依赖链：desktop 依赖 @opencode-ai/app + @opencode-ai/ui（package.json:39-40），是 app 包的唯一 Electron 宿主。",
+    "evidence": "packages/desktop/package.json:19-23（electron-builder 打包）、src/main/index.ts:15-51（主进程装配）、src/renderer/index.tsx:3-17+64-321（window.api 桥）、renderer/onboarding.tsx:1-41（首启判断）"
+  },
+  {
+    "id": "oc-cli",
+    "name": "@opencode-ai/cli",
+    "how_use": [
+      "bin: lildax（package.json:7-9 bin.lildax → ./bin/lildax.cjs），build 产出跨平台二进制（script/build.ts:12 binary=lildax、:80 outfile dist/{name}/bin/lildax、:86 OPENCODE_CLI_NAME）",
+      "命令树：src/commands/commands.ts:6-50 Spec.make 声明 api/debug/migrate/service/serve 子命令，index.ts:10-25 Runtime.handlers 映射懒加载 handler",
+      "TUI 入口：src/tui.ts:1-18 runTui() 导入 @opencode-ai/tui run + AppNodeBuilder.build(Global.node) 装配完整环境"
+    ],
+    "how_scenario": "作为 v2 时代的命令行入口（OpenCode 2.0 preview）：serve 命令拉起 v2 API 服务器、service 管理后台守护进程、api 命令直接调 OpenAPI、tui 启动终端交互界面。与 web/desktop 互补：cli 是终端用户入口，内部委托 core/server/tui 包实现逻辑而非自己实现。",
+    "why_design": "作为 v2 时代的命令行入口，复用 effect CLI 生态以类型安全方式声明命令，并将实际逻辑委托给 core/server/tui 包，保证 CLI 层只做装配不做业务实现。",
+    "why_modified": "属官方底座，本机装配层未引用（本机不安装 lildax 二进制）。但本机装配层使用 opencode v1 CLI（@opencode-ai/opencode 的 yargs 命令），cli 是 v2 演进方向，改造时需注意双 CLI 并存。",
+    "evidence": "packages/cli/package.json:7-9（bin lildax）、src/index.ts:10-32（命令装配）、src/commands/commands.ts:6-50（命令树）、script/build.ts:12+80+86（二进制构建）、src/tui.ts:1-18（TUI 入口）"
+  },
+  {
+    "id": "oc-web",
+    "name": "@opencode-ai/web",
+    "how_use": [
+      "astro 命令：bun dev/start（package.json:7-12）本地文档站，dev:remote 指向线上 API（VITE_API_URL=https://api.opencode.ai）；build→astro build 产出静态站，preview 本地预览",
+      "分享页：src/pages/s/[id].astro:1-8 按短 ID 渲染分享会话（Share.tsx 经 VITE_API_URL 拉取分享数据）；docs API：pages/[...slug].md.ts:19-34 按 slug 返回 markdown",
+      "内容集：src/content.config.ts:8-16 defineCollection（docs + i18n）驱动 Starlight 多语言文档"
+    ],
+    "how_scenario": "作为独立部署的文档+分享前端：与桌面 app 完全解耦，仅通过 API URL 消费后端数据。典型协作：web 的分享页 s/[id] 展示 enterprise 创建 + function 同步的分享会话，docs API 供第三方以 markdown 拉取文档，是云端分享生态的展示层。",
+    "why_design": "独立部署的文档+分享前端，与桌面 app 完全解耦，仅通过 API URL 消费后端数据，作为云端分享生态的展示层；Starlight 承载多语言文档站与代码示例。",
+    "why_modified": "属官方底座，本机装配层未引用。devDependencies 引用 opencode 包（package.json:39 opencode workspace:*）仅用于类型导入 Session 模型（s/[id].astro:4），无运行时耦合。",
+    "evidence": "packages/web/package.json:7-12（astro 命令）、src/pages/s/[id].astro:1-8（分享页）、src/pages/[...slug].md.ts:19-34（docs API）、src/content.config.ts:8-16（内容集）"
+  },
+  {
+    "id": "oc-enterprise",
+    "name": "@opencode-ai/enterprise",
+    "how_use": [
+      "SolidStart 应用：bun dev/build/start（package.json:9-13），build:cloudflare 设 OPENCODE_DEPLOYMENT_TARGET=cloudflare 部署到 CF；shell-prod 经 sst 推生产",
+      "应用根 src/app.tsx:1-14：用 ui 的 I18nProvider/DialogProvider/MarkedProvider/Font 组装 SSR 根并 detectLocaleFromHeader（app.tsx:25-30）；API 路由 routes/api/[...path].ts:1-30 用 Hono + hono-openapi 定义 OpenAPI 与 /share 创建端点",
+      "分享页 routes/share/[shareID].tsx 复用 @opencode-ai/session-ui 的 SessionTurn/SessionReview/MessageNav 渲染只读会话；存储走 core/storage.ts（R2）"
+    ],
+    "how_scenario": "作为云端托管的企业分享服务：SSR 渲染只读分享会话 + Hono OpenAPI 端点创建分享，经 function 包（Durable Object WebSocket 同步）与 web 包（分享页展示）形成完整分享生态。典型链路：app 内点分享→enterprise /api 创建→function 同步→web /s/[id] 展示。",
+    "why_design": "作为云端托管的企业分享服务，复用 ui/session-ui 渲染能力与 core/sdk 数据模型，通过 SolidStart SSR 提供公开只读分享体验；build:cloudflare 目标使同一代码可部署到 CF Workers 边缘。",
+    "why_modified": "属官方底座，本机装配层未引用。官方依赖链：enterprise 依赖 ui/session-ui/core/sdk（package.json:16-19），与 app 共享会话渲染层。",
+    "evidence": "packages/enterprise/package.json:9-13（脚本）、src/app.tsx:1-14+25-30（SSR 根与 locale）、routes/api/[...path].ts:1-30（OpenAPI）、routes/share/[shareID].tsx（分享页）、core/storage.ts（R2）"
+  },
+  {
+    "id": "oc-function",
+    "name": "@opencode-ai/function",
+    "how_use": [
+      "Cloudflare Workers 部署（sst 管理，src/api.ts:1-7 import sst Resource + cloudflare:workers）；Hono 入口 src/api.ts:116-150 暴露 POST /share_create、/share_delete、/share_delete_admin、/share_sync 与 GET /share_poll（WebSocket 升级）、/share_data",
+      "SyncServer Durable Object（api.ts:15-114）：fetch 握手 101 + acceptWebSocket 订阅（api.ts:20-37）、publish 校验 session 前缀后写 R2 Bucket 并广播（api.ts:45-66）、share/assertSecret/clear 管理密钥与清理（api.ts:68-109）",
+      "环境变量注入：Env 类型要求 SYNC_SERVER（DO namespace）、Bucket（R2）、WEB_DOMAIN（api.ts:9-13）"
+    ],
+    "how_scenario": "作为云端分享的后端同步服务：enterprise 的 /share 创建端点调用 function 的 share_create 生成密钥，分享页订阅 WebSocket 经 share_poll 实时接收 session 变更广播，数据落 R2 供 web 分享页拉取。与 web/enterprise 构成完整云端分享闭环。",
+    "why_design": "作为云端分享的后端同步服务，利用 Cloudflare Durable Object 的 WebSocket 能力实现跨客户端实时会话同步，与 function 名（FaaS 云端函数）对应；R2 做持久化、secret 做访问控制。",
+    "why_modified": "属官方底座，本机装配层未引用（本机无 Cloudflare 环境）。与 oc-enterprise、oc-web 组成官方云端分享三件套，本机离线部署不需要。",
+    "evidence": "packages/function/src/api.ts:15-114（SyncServer DO）、:116-150（Hono 路由）、:9-13（Env 类型）、package.json（cloudflare-workers-types）"
+  },
+  {
+    "id": "oc-storybook",
+    "name": "@opencode-ai/storybook",
+    "how_use": [
+      "bun storybook（package.json:7 storybook dev -p 6006）本地组件浏览；bun build（:8 storybook build）产出静态组件文档",
+      "配置 .storybook/main.ts:13-29：storybook-solidjs-vite 框架 + addon（docs/a11y/vitest），stories glob 聚合 ../../ui、../../session-ui、../../app/src 三包 stories（main.ts:25-29）",
+      "app context mock：main.ts:36-60 用 alias 将 @solidjs/router 与 15+ app context（local/file/prompt/layout/sdk/sync/command 等）替换为 mocks 目录实现，使 app 组件可独立渲染"
+    ],
+    "how_scenario": "作为组件开发与审查环境：ui/session-ui 的组件在隔离环境下预览回归，app 的页面级组件通过 mock 掉副作用 context（router/server/language）后在 Storybook 中独立渲染。典型协作：开发 ui 新组件→写 stories→storybook 预览→a11y/vitest addon 做可访问性与行为测试。",
+    "why_design": "为组件库提供隔离的开发/审查环境，通过 mock 掉 app 的副作用 context 使跨包组件可以独立预览与回归测试，是 UI 开发流程的质量基础设施而非运行时依赖。",
+    "why_modified": "属官方底座，本机装配层未引用（本机未启用 Storybook 工作流）。devDependencies 依赖 ui/session-ui（package.json:12-13），纯开发期工具不影响运行时。",
+    "evidence": "packages/storybook/package.json:7-8（命令）、.storybook/main.ts:13-29（框架与 stories glob）、:36-60（app context mock alias）"
+  },
+  {
+    "id": "oc-script",
+    "name": "@opencode-ai/script",
+    "how_use": [
+      "exports \".\" → ./src/index.ts（package.json:12-14），作为发布脚本库被 cli 的 script/build.ts:3 import 使用（$ 从 bun、Script.version/channel 参与构建）",
+      "src/index.ts:5-76 读取仓库根 package.json 校验 bun 版本（:16-18 semver.satisfies）、按 env/分支/registry 计算 channel（latest/preview，:26-32）与 version（含 +1 patch 逻辑，:34-48）、加载 .github/TEAM_MEMBERS 团队成员（:50-58）",
+      "env 控制：OPENCODE_CHANNEL/OPENCODE_BUMP/OPENCODE_VERSION/OPENCODE_RELEASE（:20-25）"
+    ],
+    "how_scenario": "作为构建/发布共享工具库：cli 构建时用它算 channel/version 决定产物命名（script/build.ts:81 execArgv --user-agent lildax/{Script.version}），CI 流水线用它做 bump 语义与发布渠道决策。任何发布相关任务先经它统一版本决策，避免各脚本口径不一致。",
+    "why_design": "将发布流程共用的版本决策逻辑从 CI 脚本中抽离为可 import 的库，保证多个发布任务（channel 判断、bump 语义）行为一致，是官方发布流水线的单一事实源。",
+    "why_modified": "属官方底座，本机装配层未引用（本机不跑官方发布流水线）。官方依赖链：cli 的 devDependencies 引用 @opencode-ai/script（package.json:31）。",
+    "evidence": "packages/script/package.json:12-14（exports）、src/index.ts:16-18（bun 校验）、:26-48（channel/version）、:50-58（team）、cli/script/build.ts:3+81（消费样例）"
+  },
+  {
+    "id": "oc-effect-sqlite-node",
+    "name": "@opencode-ai/effect-sqlite-node",
+    "how_use": [
+      "exports \".\" → ./src/index.ts（package.json:11-13）；核心 API：make(config)（index.ts:49-52，Effect<SqliteClient>，含 filename/readonly/WAL/allowExtension 等配置 index.ts:32-43）与 layer(config)（index.ts:163-168，同时注册 SqliteClient + 泛型 Client.SqlClient 并注入 Reactivity.layer）",
+      "TypeId 标记 \"@opencode-ai/effect-sqlite-node/NodeSqliteClient\"（index.ts:20-21）区分服务身份；loadExtension 支持扩展加载（index.ts:26）",
+      "基于 node:sqlite DatabaseSync（index.ts:59-70 WAL/外键），Semaphore(1) 串行化执行（index.ts:132-134），classifySqliteError 做 Effect 错误分类（index.ts:15）"
+    ],
+    "how_scenario": "作为核心存储层的 Effect SQLite 驱动底座：core 的数据库层经 layer() 注入 SqliteClient 服务后，上层只需 Effect.provide 即可获得类型安全 SQL 能力。与 effect-drizzle-sqlite 配合：后者把 Drizzle 查询桥接到任意 Effect SqlClient（含本包实现）。",
+    "why_design": "为 opencode 核心提供零原生编译依赖的 Effect 化 SQLite 驱动（复用 node 内置 sqlite），与 @effect/sql-sqlite-node 定位一致但归属仓库自有实现，避免引入外部原生模块、保证跨平台可移植。",
+    "why_modified": "属官方底座，本机装配层未引用（本机 opencode 数据走 server 侧 SQLite，未直接 import 此包）。官方依赖链：core 存储层经 drizzle 消费（见 effect-drizzle-sqlite 说明），本包是其底层驱动候选。",
+    "evidence": "packages/effect-sqlite-node/src/index.ts:20-21（TypeId）、:32-43（配置）、:49-52（make）、:163-168（layer 双注册）、:59-70+132-134（连接与串行化）"
+  },
+  {
+    "id": "oc-effect-drizzle-sqlite",
+    "name": "@opencode-ai/effect-drizzle-sqlite",
+    "how_use": [
+      "exports：\".\"（index.ts 汇总）、./effect-sqlite（driver）、./effect-sqlite/migrator、./sqlite-core/effect（package.json:12-17）；index.ts:1-7 导出 EffectLogger、driver/session 全量与 migrate",
+      "工厂：make()（driver.ts:49-52，Effect.fn 返回 EffectSQLiteDatabase）、makeWithDefaults（driver.ts:75）；会话：EffectSQLiteSession（session.ts:35，prepareQuery + Effect 化事务）、EffectSQLiteTransaction（session.ts:206）",
+      "migrate（sqlite-core/effect/session.ts:426）执行迁移；查询构建器 sqlite-core/effect/ 提供 select/insert/update/delete/raw/count 全套 Effect 化 API"
+    ],
+    "how_scenario": "作为 Drizzle ORM 与 Effect 生态的桥接层：core 存储层定义 drizzle schema 后，经 make() 桥接到任意 Effect SqlClient（driver.ts:30-46 注释明示可配 @effect/sql-sqlite-node/bun 或本仓库 effect-sqlite-node），使查询以 Effect Effect/Stream/Layer 形式参与依赖注入与测试。",
+    "why_design": "让 Drizzle 类型安全的 schema 查询能在 Effect 生态（SqlClient/Stream/Layer）中运行，供核心存储层使用且依赖可注入、可测试，是 core 数据库层的类型安全 + 效果系统双重要求的产物。",
+    "why_modified": "属官方底座，本机装配层未引用。官方依赖链：core 的 database/sqlite.ts 使用 drizzle ORM（drizzle-orm 依赖），本包提供其 Effect 化接入面；effect-sqlite-node 是其底层驱动实现。",
+    "evidence": "packages/effect-drizzle-sqlite/package.json:12-17（exports）、src/effect-sqlite/driver.ts:15+49+75（数据库类与工厂）、session.ts:35+206（会话/事务）、sqlite-core/effect/session.ts:426（migrate）、index.ts:1-7（导出面）"
+  }
+]

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openspec-continue-change · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>openspec-continue-change <span class="tag">装配层</span></h1>
+  <div class="sub">skill-openspec-continue-change · skill · A6l-工作流 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>继续已有变更，按 DAG 依赖顺序生成下一个未完成工件。解析状态判断 ready/blocked，获取 instructions（模板+context+rules）创建单个工件后停止，适合恢复中断工作。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 变更选择（最近修改推荐）<br>· DAG 工件状态解析（done/skipped/ready/blocked）<br>· 单工件生成（模板+context+rules+resolvedOutputPath）<br>· skip_specs 工件跳过<br>· 依赖文件磁盘重读</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-apply-change.html'>openspec-apply-change</a></td><td>skill-relation</td><td><small>openspec-apply-change SKILL.md: state=blocked（缺 artifacts）时 suggest using openspec-continue-change</small></td></tr><tr><td><a href='skill-openspec-update-change.html'>openspec-update-change</a></td><td>skill-relation</td><td><small>openspec-update-change SKILL.md: 缺失工件 defer 到 /openspec-continue-change；&#x27;Do not advance the build fr</small></td></tr><tr><td><a href='skill-openspec-new-change.html'>openspec-new-change</a></td><td>skill-relation</td><td><small>openspec-new-change SKILL.md Guardrails: &#x27;If a change with that name already exists, suggest continu</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。对应 OpenSpec 工件 DAG 的&quot;增量路径&quot;：按 DAG 依赖顺序生成下一个未完成工件后停止。引入动机：恢复中断的工作——会话打断后不需重头再来，一条命令续上缺失工件。0803 解析报告明确指出 continue 走增量路径是工件 DAG 相对瀑布流程的关键优势。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>本地任务跨会话/被中断频繁（如多阶段 DAG 交付、长任务 checkpoint），continue-change 是恢复上下文的标准入口；也用于 openspec-apply-change 检测到 blocked 状态时的引导。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>继续已有变更时触发（用户说&quot;继续上次的变更&quot;）；description 触发词&quot;继续&quot;&quot;恢复中断&quot;；或显式 /openspec-continue-change。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择变更（按最近修改排序并推荐最新者）<br>· 解析 status 判断 artifacts 状态（done/skipped/ready/blocked）<br>· 对首个 ready 工件获取 instructions（模板+context+rules）创建单个工件后停止，全部完成则提示可实施或归档</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 new-change/propose（工件创建续作）；被 apply-change 在 blocked 时推荐；被 superpowers 编排器用作 continue-dev 交接命令</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

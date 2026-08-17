@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agency-agents · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>agency-agents <span class="tag">装配层</span></h1>
+  <div class="sub">skill-agency-agents · skill · A6f-角色调度 · Layer 5</div>
+
+  <h2>① 作用</h2>
+  <p>专业 AI 角色调度系统：任务复杂/专业时激活，覆盖工程、设计、营销、安全、测试、GIS、游戏开发等 16 个部门 260+ 专业 Agent。只做路由：判断任务是否需要专家角色→搜索匹配 Agent→加载其专业 prompt 后由 Agent 自行执行。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· search-agents.ps1 搜索索引（agent-index.json，Top 5 候选）<br>· /agency-search 与 /agency-rebuild 命令<br>· Agent prompt 加载执行机制（agency-agents/ 目录文件作为 System Prompt）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>skill-agency-agents 关联 oc-opencode</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 agency-agents 仓库（msitarzewski/agency-agents，260+ Agent 角色文件、16 部门），本地改造为 search-agents.ps1 集成 + SKILL.md 改写为 opencode 路由模式。引入动机：DeepSeek 纯文本模型缺乏专业领域角色 prompt，复杂/专业任务（工程/设计/安全/测试/GIS/游戏等）需要专家角色系统提示词提升输出质量。0808-MCP四件套源码深挖任务实证使用：加载 agency-agents 后用 agent-index.json 检索，命中 Codebase Onboarding Engineer 角色。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>专业任务委派前的角色路由入口：判断任务是否需要专家角色、搜索匹配、加载角色 prompt 作为 System Prompt。高频使用（0815 决策清单 item13 agent-role-library 标注高频使用（专业任务委派专家角色），流程顺）。与 plan/build 主Agent 的 Agent 调度协议（search-agents.ps1 搜索角色）互补。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：工程师、前端、后端、架构、测试、安全、设计、UX、营销、SEO、数据、数据库、DevOps、CI/CD、移动端、游戏、GIS、地图、财务、法务、HR、客服、产品经理、项目管理、写代码、重构、优化性能、部署、安全审计、渗透测试、agent、agency、切换到XX模式；复杂/专业任务时激活，简单查询不触发。命令：/agency-search &lt;query&gt;、/agency-rebuild。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 触发判断（软件开发/系统设计/专业领域/专业方法论/用户请求切角色则加载）；2) powershell search-agents.ps1 -Query &#x27;&lt;任务描述&gt;&#x27; -Top 5 搜索匹配；3) 解析 JSON 以表格呈现 1-5 供用户选择；4) 用户选择后读取 agency-agents/&lt;RelativePath&gt; 角色文件，作为 System Prompt 指导执行。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 plan/build 主Agent（Agent 调度协议中的 search-agents.ps1 角色搜索）、delegation-subagent（dsh 侧 agent-role-library 对应物，角色 prompt 注入 subagent persona）、search-agents.ps1 + agent-index.json 协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

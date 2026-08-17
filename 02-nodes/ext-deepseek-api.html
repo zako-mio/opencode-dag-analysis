@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ext-deepseek-api · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>ext-deepseek-api </h1>
+  <div class="sub">ext-deepseek-api · external · X-外部服务 · Layer 7</div>
+
+  <h2>① 作用</h2>
+  <p>deepseek-v4-pro/flash 模型 API</p>
+
+  <h2>② 提供能力</h2>
+  <p>LLM 推理</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>external</td><td><small>agent-plan 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>external</td><td><small>agent-build 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>external</td><td><small>agent-drawio-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-general.html'>general</a></td><td>external</td><td><small>agent-general 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-explore.html'>explore</a></td><td>external</td><td><small>agent-explore 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-reflection-worker.html'>reflection-worker</a></td><td>external</td><td><small>agent-reflection-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>external</td><td><small>instr-auto-mode 关联 ext-deepseek-api</small></td></tr><tr><td><a href='config-main.html'>main</a></td><td>external</td><td><small>config-main 关联 ext-deepseek-api</small></td></tr><tr><td><a href='skill-agent-reflection.html'>agent-reflection</a></td><td>external</td><td><small>skill-agent-reflection 关联 ext-deepseek-api</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">为什么需要</span><p>主模型供给：plan=deepseek-v4-pro（规划/委派推理）、build 与全部 7 个子Agent=deepseek-v4-flash（执行降本）都走 DeepSeek。解决本地要有强推理 + 低成本可商用模型的需求；无它则 opencode 无模型可跑，整个装配层（调度/委派/留档/反思）全部失效。</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>合理：opencode.jsonc 以 provider.deepseek 配置 @ai-sdk/deepseek + baseURL https://api.deepseek.com/v1，model 分 pro(0.435/0.87 刀) 与 flash(0.14/0.28 刀) 两档，daily/deep variant 分别限 max_tokens 8192/16384 + reasoning_effort high/max——与 auto-mode 门控的决策边界表严格对应；缓存前缀策略（auto-mode.md 静态置前、动态置后）就是为 DeepSeek prefix-cache 98-99% 命中设计的。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么接入</span><p>环境变量 DEEPSEEK_API_KEY（用户级已 setx，进程内不落盘）；API 端点 https://api.deepseek.com/v1/chat/completions（OpenAI 兼容）；opencode.jsonc 中 provider.deepseek.npm=@ai-sdk/deepseek + options.baseURL/timeout(300s)/headerTimeout/chunkTimeout；模型 modalities（pro 支持 image 输入、flash 仅 text）+ interleaved.reasoning_content 字段解析推理链。</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p>opencode 主进程按 agent 配置选模型：plan 回落到顶层 model（deepseek-v4-pro），build/子Agent 显式 model=deepseek-v4-flash；variant daily/deep 切换 max_tokens 与 reasoning_effort；MEMORY.md 经 instructions 注入系统提示前缀共享缓存。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

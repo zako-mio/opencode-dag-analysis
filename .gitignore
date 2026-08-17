@@ -1,0 +1,27 @@
+# 临时/验证产物不入库
+07-checkpoint/screenshots/
+07-checkpoint/shot-*.png
+07-checkpoint/shot2-*.png
+07-checkpoint/shot3-*.png
+07-checkpoint/final-*.png
+07-checkpoint/final2-*.png
+07-checkpoint/retry-*.png
+07-checkpoint/homepage.png
+07-checkpoint/_test_*.html
+04-interactive/_test_*.html
+04-interactive/_test*.html
+
+# 调试/测试脚本（保留核心流程脚本，排除一次性诊断脚本）
+07-checkpoint/debug-*.py
+07-checkpoint/diag-*.py
+07-checkpoint/test-*.html
+07-checkpoint/iso-test.py
+07-checkpoint/headless-verify2.py
+07-checkpoint/headless-verify3.py
+07-checkpoint/headless-verify4.py
+07-checkpoint/headless-verify5.py
+07-checkpoint/headless-verify6.py
+
+# Python 缓存
+__pycache__/
+*.pyc

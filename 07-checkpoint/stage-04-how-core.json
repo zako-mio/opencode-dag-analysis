@@ -1,0 +1,157 @@
+[
+  {
+    "id": "oc-opencode",
+    "name": "opencode（主应用/CLI 入口）",
+    "how_use": [
+      "入口：bin/opencode（packages/opencode/bin/opencode:1-30）——spawn 真实入口子进程并转发信号；源码入口 src/index.ts:44-126 用 yargs 组装命令树，注册 run/generate/serve/agent/mcp/tui/attach/session/db/plugin/export/import/github/pr/models/stats 等 20+ 子命令（src/index.ts:81-103），.strict() 强制精确命令。",
+      "导出 API：package.json bin: {opencode: ./bin/opencode}，exports 映射 ./src/*.ts；dev 模式 bun run --conditions=browser ./src/index.ts。主要子命令入口在 src/cli/cmd/（serve.ts/run.ts/agent.ts/tui.ts 等 25 个）。",
+      "核心聚合：src/index.ts:11-27 import InstallationVersion 与全部 Command 类，把 core（会话/存储）、llm（LLM 门面）、tui（终端 UI）、server（HTTP 服务）、plugin/codemode/sdk/protocol/schema 全部编排进 CLI 进程。"
+    ],
+    "how_scenario": "opencode 是产品的总装线：用户敲 opencode serve 拉起 HTTP 服务（src/cli/cmd/serve.ts），敲 opencode run 进入会话执行（src/session/ 目录的 session.ts/processor.ts/llm.ts/compaction.ts 驱动完整 agent 循环）；TUI 由 cli/ui.ts 或 tui 命令加载 @opencode-ai/tui（src/cli/cmd/tui.ts）。与 core 协作提供领域服务、与 llm 协作做模型请求、与 server 协作暴露 HTTP/SSE、与 protocol/schema 共享契约。",
+    "why_design": "作为可分发 CLI 二进制（bin/opencode）聚合所有上层能力，把核心服务、LLM、TUI、协议编排成终端可执行产品，同时保持与 server 分离以便 web/desktop 前端复用同一套服务。",
+    "why_modified": "本机装配层未直接引用 opencode 包本体，但 config-main（opencode.jsonc）正是 opencode 的运行时配置（provider/@ai-sdk/deepseek 直连、permission 三层纵深、compaction、skills.paths、7 agent 装配），plan/build 及其 prompt 通过 opencode 的 instructions 段注入 auto-mode.md 与 MEMORY.md；即本机以「配置 + 插件 + 指令」方式改造 opencode 行为而非改源码。",
+    "evidence": "packages/opencode/src/index.ts:44-126、packages/opencode/bin/opencode:1-30、packages/opencode/package.json、02-nodes/oc-opencode.html、总报告-opencode通信与上下文机制原理分析.md"
+  },
+  {
+    "id": "oc-core",
+    "name": "@opencode-ai/core（核心服务）",
+    "how_use": [
+      "入口/导出：package.json exports 提供 ./effect/layer-node、./effect/app-node、./session/runner、./system-context 与 ./src/*.ts 通配；src/ 下 90+ 模块（session.ts/event.ts/config.ts/permission.ts/provider.ts/tool-output-store.ts/agent.ts 等）按路径导入。",
+      "关键服务装配：src/effect/layer-node.ts 提供 LayerNode（类型化依赖节点/group 装配），src/effect/app-node.ts 提供 GlobalNode/LocationNode 分类标签；src/session/runner/index.ts:25-33 导出 SessionRunner.Service（run: 从已记录 Session history 续跑一次）。",
+      "无 bin（bin 字段实为顶层 opencode 的声明）；被 opencode/server/tui/sdk-next/app/enterprise 等以 workspace 依赖方式直接 import 服务（如 server/src/routes.ts:3-11 批量 import LayerNode/Database/EventV2/SessionV2 等 10+ 服务）。"
+    ],
+    "how_scenario": "core 是产品的能力底座：server 包把它粘成 HTTP 服务（routes.ts 的 applicationServices = LayerNode.group([Database.node, EventV2.node, ...]）），opencode 主程序用它做会话/存储/权限/工具调度，tui 用它做全局状态与安装版本。与 llm 协作（tool-output-store.ts:11 import llm 类型）完成请求-工具循环，与 plugin 协作承载插件运行时，是报告-02 所述会话生命周期与消息处理的实际执行者。",
+    "why_design": "把会话/存储/配置/权限等可复用领域逻辑从 CLI 与 HTTP 层抽离为纯 Effect 服务，供 opencode 主程序、server 包及测试直接注入依赖，实现平台无关的核心（bun/node 双实现见 package.json imports 的 #sqlite/#pty/#fff）。",
+    "why_modified": "本机装配层经 config-main 深度改造 core 的运行行为：provider 走 @ai-sdk/deepseek 直连（core/provider 路由）、permission 三层纵深（core/permission 服务）、compaction 参数（core/session 的 compaction）、Reflection 系统的 pending.json 与指令加载；plan/build/explore/general 等 7 个 agent 全部依赖 provider/deepseek 经 core 的模型路由与权限服务。即 core 是被引用最多的官方底座（modified-dag 中 8 个节点依赖它）。",
+    "evidence": "packages/core/package.json、packages/core/src/effect/layer-node.ts、packages/core/src/effect/app-node.ts、packages/core/src/session/runner/index.ts:25-33、packages/server/src/routes.ts:3-11、modified-dag.json（reverse[oc-core] 8 引用）、02-nodes/oc-core.html"
+  },
+  {
+    "id": "oc-schema",
+    "name": "@opencode-ai/schema（数据模型）",
+    "how_use": [
+      "入口：src/index.ts:1-28 统一 re-export 40+ 模型（Agent/Command/Event/Session/SessionMessage/Provider/Model/Permission/Prompt/Skill/Question 等）；src/schema.ts:3-10 提供 AbsolutePath/RelativePath/DateTimeUtc 等基础 branded schema。",
+      "导出：package.json exports {'.': ./src/index.ts, './*': ./src/*.ts}，仅依赖 effect。所有领域类型都是 Effect Schema（运行时校验 + 类型推导二合一），可被任意包按路径导入单个模型（如 @opencode-ai/schema/event）。"
+    ],
+    "how_scenario": "schema 是依赖链最底层的单一事实源：llm/protocol/core/client/app 全部以它为数据契约（official-dag 中 6 个节点直接依赖）。协议端点的请求/响应类型、事件清单、session 消息模型都由它定义，报告-02 对 SessionMessage/Part 的逐字段分析即基于该包；改契约只需改 schema 一处，各包类型与运行时校验自动对齐。",
+    "why_design": "作为依赖链最底层的单一事实源，所有包共享同一套 Effect Schema 数据契约，保证类型与运行时校验一致，避免跨包重复定义与 drift。",
+    "why_modified": "本机装配层未直接引用 schema（plugin-vision-interceptor 用的是 @opencode-ai/plugin 的 server export，经插件 SDK 间接消费 schema 的 Event/Part 类型），属官方底座；但 vision 插件把图片 part 转文字的核心修复（experimental.chat.messages.transform）正是作用于 schema 定义的 message part 结构——改造发生在数据契约之上而非之内。",
+    "evidence": "packages/schema/src/index.ts:1-28、packages/schema/package.json、02-nodes/oc-schema.html、报告-02-会话与消息生命周期.md"
+  },
+  {
+    "id": "oc-llm",
+    "name": "@opencode-ai/llm（LLM 请求层）",
+    "how_use": [
+      "入口：src/index.ts 导出 LLMClient、Auth、Provider、Tool/ToolRuntime、LLM 命名空间与 schema 全量；核心 API 是 LLM.generate / LLM.stream（src/llm.ts:88-89 直通 LLMClient.generate/stream）。",
+      "子路径导出（package.json exports 21 项）：./route（Route/LLMClient/Transport/Protocol/Framing/Endpoint）、./provider（ProviderDefinition）、./providers/*（Anthropic/OpenAI/Google/Bedrock/OpenRouter/XAI 等 14 家）、./protocols/*（openai-chat/openai-responses/anthropic-messages/gemini/bedrock-converse 等）。",
+      "典型调用：llm.ts:31-37 定义 RequestInput（system/prompt/messages/tools/toolChoice/generation/providerOptions），generate/stream 以它发起一次请求；tool.ts 与 tool-runtime.ts 提供工具定义与派发（toDefinitions/ToolRuntime）。"
+    ],
+    "how_scenario": "llm 是模型接入的统一门面：core 的会话执行（session/llm.ts）经它向 DeepSeek/Anthropic/OpenAI 等发请求，opencode 主程序在 providers 命令中用它枚举模型（src/cli/cmd/providers.ts）。报告-03 的完整请求链路（route 选择→protocol 适配→framing→transport HTTP/WS）与缓存策略（cache-policy.ts）即本包的核心机制；devDependency 引 http-recorder 使请求可录制回放。",
+    "why_design": "将多提供商/多协议的请求差异隔离在路由与协议适配层之下，向上提供单一 LLM 门面，支持 HTTP/WS 双通道并可被 http-recorder 录制回放（llm devDependency 依赖 recorder）。",
+    "why_modified": "本机经 config-main 深度改造 llm 的 provider 侧：provider.deepseek 用 @ai-sdk/deepseek（baseURL https://api.deepseek.com/v1、超时 300/120/60s、daily/deep 双 variant + 成本表 cache_read 0.003625），plan/build 与 5 子 agent 全部经此路由；即本机不是改 llm 源码，而是通过配置层为 llm 提供 DeepSeek provider 与模型路由策略（modified-dag 中 agent-plan/agent-build 的 depends_on provider/deepseek）。",
+    "evidence": "packages/llm/src/index.ts、packages/llm/src/llm.ts:31-37,88-89、packages/llm/src/cache-policy.ts、packages/llm/DESIGN.md、02-nodes/oc-llm.html、报告-03-LLM请求链路与缓存.md"
+  },
+  {
+    "id": "oc-plugin",
+    "name": "@opencode-ai/plugin（插件 SDK）",
+    "how_use": [
+      "入口：src/index.ts 定义插件类型面（ProviderContext/WorkspaceAdapter/ToolDefinition/TUI 类型等）并 re-export tool.js；导出路径 ./tool、./tui、./v2/effect（v2/effect/plugin、v2/effect/integration）、./v2/promise。",
+      "插件写法：export server(ctx) 挂钩子（如 plugin-vision-interceptor 的 chat.message 与 experimental.chat.messages.transform）；ToolContext（src/tool.ts:1-24）提供 sessionID/messageID/agent/directory/worktree/abort/metadata/ask；tui.ts 提供 TUI 渲染插槽类型（@opentui/core 的 Renderable/SlotMode）。",
+      "v2 面：src/v2/effect/plugin.ts + registration.ts 提供 Effect 原生插件注册与生命周期（agent/command/event/fs/location/reference/skill 等子模块），发布到 npm（files 只含 dist）。"
+    ],
+    "how_scenario": "plugin 是第三方扩展面：core 内部承载插件运行时，tui 经 ./tui 暴露 UI 插槽，opencode 主程序加载插件配置。本机正是它的直接使用者——plugin-vision-interceptor（modified-dag 中 depends_on_raw: '@opencode-ai/plugin（server export 接口）'）用双钩子把图片转 VLM 文字再送 LLM，是报告-01 分析的 VLM 双通道的核心实现。",
+    "why_design": "作为第三方扩展的稳定 SDK 面（发布到 npm，files 只含 dist），把 opencode 对插件的实现细节隔离在 core 内部，对外只暴露类型化、版本化的注册 API。",
+    "why_modified": "本机直接引用：plugin-vision-interceptor 依赖 @opencode-ai/plugin 的 server export 接口，通过 chat.message + experimental.chat.messages.transform 双钩子实现 VLM 双通道（付费 glm-4.6v 优先 + 429 降级免费 glm-4.6v-flash + processedImages 内存缓存防重复扣费）；这是本机唯一一个以官方插件 SDK 编写并挂载进装配层的组件，是官方包「接口化改造」的典型。",
+    "evidence": "packages/plugin/src/index.ts、packages/plugin/src/tool.ts:1-24、packages/plugin/src/tui.ts、packages/plugin/src/v2/effect/plugin.ts、modified-dag.json（plugin-vision-interceptor）、02-nodes/oc-plugin.html、报告-01-VLM双通道与插件钩子.md"
+  },
+  {
+    "id": "oc-sdk",
+    "name": "@opencode-ai/sdk（客户端 SDK，js/）",
+    "how_use": [
+      "入口：sdk/js/src/index.ts；核心 client 工厂 createOpencodeClient(config)（src/client.ts:55-76，把 directory 注入 x-opencode-directory 头并 wrap 错误）；类型面 re-export 自 src/gen/（openapi.json 编译产物）。",
+      "导出（package.json exports）：./client、./server、./v2、./v2/client、./v2/gen/client、./v2/server、./v2/types；server.ts:17-40 createOpencodeServer(options) 用 cross-spawn 拉起 opencode serve 子进程（hostname/port/signal 托管），process.ts 提供 stop/bindAbort（win32 下 taskkill 树杀）。",
+      "v2：src/v2/client.ts、src/v2/server.ts、src/v2/data.ts、src/v2/index.ts 提供 Effect 原生类型面（plugin/tui/enterprise/slack 均消费 @opencode-ai/sdk/v2）。"
+    ],
+    "how_scenario": "sdk 是官方对外发布（npm）的客户端：第三方应用用 createOpencodeClient 连远程 server、用 createOpencodeServer 进程内托管本地服务；plugin 包 import 它做 SDK 类型（plugin/src/index.ts:1-12），tui/enterprise/slack 均依赖（official-dag 中 8 个反向引用）。报告-03 对请求链路/缓存的分析中 SDK 出现 40 次，是协议端到端消费的关键路径。",
+    "why_design": "对外发布（npm 包）的官方 SDK，将 opencode 内部 server 的 openapi.json 编译为类型安全的客户端，同时提供进程级 server 托管，供第三方应用与 plugin 使用。",
+    "why_modified": "本机未直接引用 sdk（vision 插件经 @opencode-ai/plugin 消费类型，agent 经 CLI/HTTP 而非 SDK 连接），属官方底座；本机的改造接口是配置层（opencode.jsonc）与插件层（plugin-vision-interceptor），不触及 SDK 客户端面。",
+    "evidence": "packages/sdk/js/src/client.ts:55-76、packages/sdk/js/src/server.ts:17-40、packages/sdk/js/src/process.ts:1-20、packages/sdk/js/package.json、02-nodes/oc-sdk.html、报告-03-LLM请求链路与缓存.md"
+  },
+  {
+    "id": "oc-server",
+    "name": "@opencode-ai/server（HTTP/SSE 服务器）",
+    "how_use": [
+      "入口：src/api.ts:1-6 —— Api = makeDefaultApi({locationMiddleware, sessionLocationMiddleware})，把 @opencode-ai/protocol/api 声明的协议绑定上具体中间件；src/routes.ts:1-16 组装 applicationServices = LayerNode.group([...10+ 服务]) 并 createRoutes/createEmbeddedRoutes 两个工厂（带/不带 password 认证）。",
+      "导出：package.json exports ./src/*.ts；依赖仅 @opencode-ai/core、@opencode-ai/protocol、drizzle-orm、effect（不依赖 CLI）。被 opencode serve 命令、sdk createOpencodeServer、sdk-next 的 createEmbeddedRoutes（进程内内存路由）三方复用。",
+      "服务端实现：src/handlers.ts、src/auth.ts、src/cors.ts、src/pty-environment.ts 提供具体 handler/认证/CORS/PTY 环境。"
+    ],
+    "how_scenario": "server 把 core 领域服务粘合成可运行的 HTTP 服务：routes.ts 里 LayerNode.group 注入 Database/EventV2/SessionV2/PermissionSaved/PtyTicket 等 10+ 服务，协议中间件（authorization/schema-error/session-location）在此装配。opencode 主程序经 serve 子命令启动它，sdk/sdk-next 进程内复用它（createEmbeddedRoutes 无端口跑内存 fetch）；报告-02 所述 HTTP/SSE 通信骨架即本包 + protocol 的组合。",
+    "why_design": "把 Effect HttpApi 与 core 领域服务粘合为可运行的 HTTP 服务（不依赖 CLI），使 opencode 主程序、sdk createOpencodeServer 与其他宿主都能复用同一套服务端装配。",
+    "why_modified": "本机未直接修改/引用 server 源码，但运行时通过它承载装配层：config-main 的 model 路由（provider/deepseek）与权限配置最终经 server 的 HTTP 层暴露给所有 agent 调用；本机对服务端的影响是「配置注入」（OPENCODE_CONFIG_CONTENT 式的 config 覆盖 + 权限 deny/allow），而非替换服务实现。",
+    "evidence": "packages/server/src/api.ts:1-6、packages/server/src/routes.ts:1-16、packages/server/package.json、02-nodes/oc-server.html、报告-02-会话与消息生命周期.md"
+  },
+  {
+    "id": "oc-protocol",
+    "name": "@opencode-ai/protocol（通信协议）",
+    "how_use": [
+      "入口：src/api.ts:1-38 —— 用 Effect HttpApi 声明完整端点树：makeApiFromGroup 聚合 HealthGroup/LocationGroup/AgentGroup/SessionGroup/MessageGroup/ModelGroup/ProviderGroup/PermissionGroup/EventGroup/PtyGroup/QuestionGroup/ReferenceGroup/IntegrationGroup/CredentialGroup/ProjectCopyGroup 等 19 个 group；src/api.ts:25 注释明示「Protocol 拥有中间件位置，Server 注入具体 key」。",
+      "导出：package.json exports ./src/*.ts；src/errors.ts 定义协议级错误类型；依赖仅 @opencode-ai/schema + effect（纯契约层）。",
+      "消费方：server/src/api.ts:1-3 makeDefaultApi 绑定中间件；client 的生成器读 server/api 编译出客户端（client/README.md:14-15）。"
+    ],
+    "how_scenario": "protocol 是协议契约的单一所有权者：server 注入中间件/服务实现，client 从同一份协议编译客户端，cli 也消费同一类型面——三方对同一协议的不同实现共享同一契约，避免端点 drift。报告-02 所述消息/事件的 HTTP+SSE 传输模型即由 EventGroup/SessionGroup 等声明。",
+    "why_design": "协议与实现分离：protocol 只声明端点/中间件/错误的契约（server 注入具体服务身份，见 src/api.ts:25 注释），使 server、client、cli 对同一协议的不同实现方共享同一类型面。",
+    "why_modified": "本机未直接引用 protocol（vision 插件与 agent 都不触碰协议层），属官方底座；本机改造全部发生在协议「之上」的配置/插件层，协议契约保持不变，从而 server/client/sdk 三端自动同步。",
+    "evidence": "packages/protocol/src/api.ts:1-38、packages/protocol/src/errors.ts、packages/protocol/package.json、packages/server/src/api.ts:1-3、02-nodes/oc-protocol.html"
+  },
+  {
+    "id": "oc-client",
+    "name": "@opencode-ai/client（客户端库）",
+    "how_use": [
+      "入口：src/index.ts:1-2 re-export generated/index 与 OpenCodeEvent 类型；src/effect.ts 提供 Effect 原生客户端。package.json exports：'.'（Promise 版，src/index.ts）与 './effect'（Effect 版）。",
+      "生成制：由 @opencode-ai/server/api 经 httpapi-codegen 生成 src/generated/*（client.ts/types.ts/client-error.ts/index.ts）；README.md:8-12 要求改契约后 bun run generate + check:generated 防漂移。",
+      "用法示例（client/README.md:29-38）：import { OpenCode } from '@opencode-ai/client/effect'，OpenCode.make({baseUrl}) 后 client.sessions.create/prompt 直接用 canonical 类型（Session.ID/Location.Ref/Prompt）。"
+    ],
+    "how_scenario": "client 面向 app/web/session-ui 前端生成类型安全 HTTP 客户端：零 Effect 依赖的 Promise 根（无 core/server 依赖），/effect 子路径依赖 Effect+Schema+Protocol 且浏览器打包安全。协议层复用服务端同款端点契约，前端因此获得与 server 完全一致的端点类型；sdk-next/app/session-ui 三个官方包依赖它（official-dag reverse）。",
+    "why_design": "面向 app/web 前端生成类型安全的 HTTP 客户端，并通过协议层复用服务端同款端点契约；强调不得反向依赖 core/server（src/effect.ts:1-2），保持客户端纯净。",
+    "why_modified": "本机未直接引用 client（本机界面是终端 CLI + 浏览器，不使用 app/web 前端与 client 包），属官方底座；但 client 与 sdk 同源（协议生成），本机若未来走 HTTP 集成可无成本接入同一契约。",
+    "evidence": "packages/client/src/index.ts:1-2、packages/client/src/effect.ts、packages/client/README.md:8-12,29-38、packages/client/package.json、02-nodes/oc-client.html"
+  },
+  {
+    "id": "oc-tui",
+    "name": "@opencode-ai/tui（终端 UI）",
+    "how_use": [
+      "入口：src/index.tsx:1 —— export { run, type TuiInput } from './app'；src/app.tsx:1-15 用 @opentui/solid 的 render/useRenderer + @opentui/keymap 构建终端渲染循环，import @opencode-ai/core 的 Global/Flag/InstallationVersion 做运行状态。",
+      "36 个深路径导出（package.json exports）：./builtins、./config（keybind）、./context/*（args/epilogue/exit/kv/project/runtime/sdk/sync/theme/editor/clipboard）、./attention、./editor、./plugin/runtime、./plugin/slots、./ui/dialog、./ui/spinner、./ui/toast、./keymap 等，供宿主与 TUI 插件按需加载。",
+      "加载方式：被 opencode 的 cli/tui 命令（src/cli/cmd/tui.ts）与 cli/tui/layer.ts 动态加载；TUI 插件经 @opencode-ai/plugin/tui 的类型面挂 UI 插槽（plugin/src/tui.ts 的 Renderable/SlotMode）。"
+    ],
+    "how_scenario": "tui 是终端交互层：opencode 主程序加载它渲染会话/输入/工具状态 UI，TUI 插件经 plugin/tui 暴露的 slot 注入自定义组件（报告-01 插件钩子的一部分）；与 core 协作读全局状态（Global/Flag），与 sdk 协作连后端。claude-code 式交互、桌面端复用同一交互逻辑（cli 与 desktop 共用）。",
+    "why_design": "将终端交互封装为独立可复用包，经 opencode 的 cli/tui/layer.ts 加载，同时支持 TUI 插件扩展（@opencode-ai/plugin/tui），使 CLI 与桌面端共用交互逻辑。",
+    "why_modified": "本机未直接修改 tui（本机主 Agent 以 CLI 非交互/自动化方式运行，未挂载自定义 TUI 插件），属官方底座；vision 插件只处理 chat.messages.transform，不涉及 TUI 渲染面，装配层没有对 tui 的引用点。",
+    "evidence": "packages/tui/src/index.tsx:1、packages/tui/src/app.tsx:1-15、packages/tui/package.json（36 exports）、packages/plugin/src/tui.ts、02-nodes/oc-tui.html、报告-01-VLM双通道与插件钩子.md"
+  },
+  {
+    "id": "oc-codemode",
+    "name": "@opencode-ai/codemode（Code Mode 沙箱）",
+    "how_use": [
+      "入口：src/index.ts:1-4 —— export * as CodeMode / Tool / OpenAPI，export { ToolError, toolError }；core 的 tool/code-mode.ts 桥接使用（official-dag edge evidence）。",
+      "API（README.md:10-18）：一次性 CodeMode.execute({tools, code}) 与可复用 CodeMode.make({tools, limits}) → runtime.execute(code)；模型写受限 JS 程序，只能调用宿主显式提供的 schema 描述工具。",
+      "实现：src/interpreter/（受限解释器）、src/stdlib/（工具标准库）、src/openapi/（OpenAPI 工具面，含 TODO）；依赖仅 acorn/effect/typescript（Effect-native）。"
+    ],
+    "how_scenario": "codemode 为 LLM 提供可审计、受限、确定性的代码执行环境：模型把多步工具调用编排成单个 JS 程序一次执行（省上下文、省 agent 往返），无环境授权（无文件/进程/网络/模块权限）。被 opencode 的 tool/code-mode.ts 桥接为常规工具，报告未深度覆盖但属 G12-沙箱 组的官方能力。",
+    "why_design": "为 LLM 提供可审计、受限、确定性的代码执行环境（Effect-native），并支持基于 schema 描述的工具集，避免开放 shell 的安全风险（被 opencode 的 tool/code-mode.ts 桥接使用）。",
+    "why_modified": "本机未直接引用 codemode（装配层无沙箱类工具依赖，subagent 权限由 permission 层控制而非 codemode 沙箱），属官方底座；但本机权限三层纵深（L1 全局 deny bash 危险命令）与 codemode 的「最小授权」设计哲学同源，可视为同一安全目标在配置层的替代实现。",
+    "evidence": "packages/codemode/src/index.ts:1-4、packages/codemode/README.md:10-18、packages/codemode/codemode.md、packages/codemode/package.json、02-nodes/oc-codemode.html"
+  },
+  {
+    "id": "oc-http-recorder",
+    "name": "@opencode-ai/http-recorder（HTTP 录制）",
+    "how_use": [
+      "入口：src/index.ts:1-11 —— export const HttpRecorder = { http, socket }（HTTP + WebSocket 双通道录制）；namespace 导出 CassetteMetadata/RecorderOptions/RedactOptions/RequestMatcher/RequestSnapshot 类型。",
+      "用法（README.md:8-21）：@effect/vitest 测试中把 HttpClientRequest 挂上 recorder 录制成 JSON cassette，测试时确定性回放（VCR 模式）；redaction.ts/redactor.ts 提供密钥/头脱敏。",
+      "依赖仅 @effect/platform-node(-shared)，Node 22+/Bun；核心文件 cassette.ts（cassette 读写）、matching.ts（请求匹配）、recorder.ts、socket.ts/websocket.ts。"
+    ],
+    "how_scenario": "http-recorder 是测试基础设施：llm 的 devDependency 引它（llm/package.json），使 LLM provider 请求（HTTP/WS 双通道）可录制回放，CI 中测试不依赖网络、不产生真实 token 计费；redact 机制保证录制文件不含密钥。core/llm 的开发与测试流程（报告-03 的请求链路分析依赖可复现请求）均受益。",
+    "why_design": "作为测试基础设施：让 LLM 请求与 HTTP 流量可确定性回放（VCR 模式），保证 CI 中测试不依赖网络与真实 token 计费；被 core/llm 的测试与开发流程引用。",
+    "why_modified": "本机未直接引用 http-recorder（装配层不做 LLM 请求录制，成本优化走 DeepSeek prefix-cache 而非 VCR 回放），属官方底座；本机在测试/复现需求上以 config 级缓存（cache_read 0.003625）替代录制方案，二者是同一「降本/确定性」目标的不同路径。",
+    "evidence": "packages/http-recorder/src/index.ts:1-11、packages/http-recorder/README.md:8-21、packages/llm/package.json（devDependencies @opencode-ai/http-recorder）、packages/http-recorder/package.json、02-nodes/oc-http-recorder.html"
+  }
+]

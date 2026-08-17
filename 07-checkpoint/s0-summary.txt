@@ -1,0 +1,119 @@
+packages_total: 35
+packages_console_stats: 9
+packages_main: 26
+skills_total: 43
+skills_by_source: {'skills': 23, 'reflection': 9, 'skill': 11}
+agents_total: 7
+plugins_total: 1
+tools_total: 1
+commands_total: 1
+mcp_total: 6
+mcp_enabled: 2
+instructions_total: 2
+assembly_total: 61
+
+--- PACKAGES ---
+app (1.18.14) deps=['@opencode-ai/client', '@opencode-ai/core', '@opencode-ai/schema', '@opencode-ai/sdk', '@opencode-ai/session-ui', '@opencode-ai/ui'] ext=39 ts=180 path=packages/app
+cli (1.18.14) deps=['@opencode-ai/core', '@opencode-ai/sdk', '@opencode-ai/server', '@opencode-ai/tui'] ext=6 ts=16 path=packages/cli
+client (?) deps=['@opencode-ai/schema', '@opencode-ai/protocol'] ext=0 ts=10 path=packages/client
+codemode (1.18.14) deps=[] ext=3 ts=25 path=packages/codemode
+console-app (1.18.14) deps=['@opencode-ai/console-core', '@opencode-ai/console-mail', '@opencode-ai/console-resource', '@opencode-ai/ui'] ext=19 ts=86 path=packages/console/app
+console-core (1.18.14) deps=['@opencode-ai/console-mail', '@opencode-ai/console-resource'] ext=9 ts=35 path=packages/console/core
+console-function (1.18.14) deps=['@opencode-ai/console-core', '@opencode-ai/console-resource'] ext=6 ts=3 path=packages/console/function
+console-mail (1.18.14) deps=[] ext=6 ts=0 path=packages/console/mail
+console-resource (?) deps=[] ext=1 ts=0 path=packages/console/resource
+console-support (1.18.14) deps=['@opencode-ai/console-core'] ext=7 ts=1 path=packages/console/support
+core (1.18.14) deps=['@opencode-ai/effect-drizzle-sqlite', '@opencode-ai/effect-sqlite-node', '@opencode-ai/llm', '@opencode-ai/schema', '@opencode-ai/plugin'] ext=59 ts=315 path=packages/core
+desktop (1.18.14) deps=[] ext=8 ts=72 path=packages/desktop
+effect-drizzle-sqlite (1.18.14) deps=[] ext=2 ts=19 path=packages/effect-drizzle-sqlite
+effect-sqlite-node (1.18.14) deps=[] ext=1 ts=1 path=packages/effect-sqlite-node
+enterprise (1.18.14) deps=['@opencode-ai/core', '@opencode-ai/session-ui', '@opencode-ai/ui'] ext=13 ts=3 path=packages/enterprise
+function (1.18.14) deps=[] ext=4 ts=1 path=packages/function
+http-recorder (1.18.14) deps=[] ext=2 ts=13 path=packages/http-recorder
+httpapi-codegen (?) deps=[] ext=2 ts=1 path=packages/httpapi-codegen
+llm (1.18.14) deps=['@opencode-ai/schema'] ext=4 ts=56 path=packages/llm
+plugin (1.18.14) deps=['@opencode-ai/sdk'] ext=3 ts=34 path=packages/plugin
+protocol (?) deps=['@opencode-ai/schema'] ext=1 ts=22 path=packages/protocol
+schema (?) deps=[] ext=1 ts=64 path=packages/schema
+script (?) deps=[] ext=1 ts=1 path=packages/script
+sdk (1.18.14) deps=[] ext=1 ts=39 path=packages/sdk/js
+sdk-next (?) deps=['@opencode-ai/client', '@opencode-ai/core', '@opencode-ai/server'] ext=1 ts=3 path=packages/sdk-next
+server (1.18.14) deps=['@opencode-ai/core', '@opencode-ai/protocol'] ext=2 ts=28 path=packages/server
+session-ui (1.18.14) deps=['@opencode-ai/client', '@opencode-ai/core', '@opencode-ai/sdk', '@opencode-ai/ui'] ext=22 ts=33 path=packages/session-ui
+slack (1.18.14) deps=['@opencode-ai/sdk'] ext=1 ts=1 path=packages/slack
+stats-app (1.18.14) deps=['@opencode-ai/stats-core', '@opencode-ai/ui'] ext=15 ts=29 path=packages/stats/app
+stats-core (1.18.14) deps=[] ext=5 ts=17 path=packages/stats/core
+stats-server (1.18.14) deps=['@opencode-ai/stats-core'] ext=4 ts=5 path=packages/stats/server
+storybook (?) deps=[] ext=0 ts=0 path=packages/storybook
+tui (1.18.14) deps=['@opencode-ai/core', '@opencode-ai/plugin', '@opencode-ai/sdk', '@opencode-ai/ui'] ext=12 ts=49 path=packages/tui
+ui (1.18.14) deps=[] ext=25 ts=45 path=packages/ui
+web (1.18.14) deps=[] ext=22 ts=4 path=packages/web
+
+--- SKILLS ---
+[skill] agency-agents (files=3): 专业AI角色调度系统。当用户任务较为复杂/专业时激活，根据任务内容自动匹配最合适的AI Agent角色，加载其专业prompt后执行。覆盖工程、设计、营销、安全
+[skill] amap-budget-control (files=1): 高德地图调用预算控制。仅在用户明确提及地图/导航/位置/POI/天气/路径规划等关键词时激活。严格控制API调用次数，记录用量，接近5000次/天的免费限额时预
+[skill] amap-jsapi-skill (files=36): 高德地图 JSAPI v2.0 (WebGL) 开发技能。涵盖地图生命周期、安全配置、3D 视图、覆盖物绘制、图层管理、LBS 服务集成。触发关键词：地图开发、
+[skill] amap-lbs-skill (files=9): 高德地图综合服务，支持POI搜索、路径规划、旅游规划、周边搜索和热力图数据可视化。生成免费的高德网页链接，不消耗API配额。触发关键词：搜、找、查、附近、周边、
+[skill] browser-use (files=1): "Always use browser-use for any web interaction: automation, scraping, testing, 
+[skill] grill-me (files=3): Interview the user relentlessly about a plan or design until reaching shared und
+[skill] headroom (files=1): Headroom 上下文压缩层（CLI 版）。支持 headroom proxy / audit-reads / savings / inspect / dif
+[skill] model-switcher (files=1): DeepSeek 模型参数切换技能。支持 daily（日常快速）与 deep（深度推理）双模式，以及基于任务复杂度的自适应自动切换。当用户需要切换思考深度、调整
+[skill] opencode-config (files=18): OpenCode 配置（opencode.jsonc）分级知识库。覆盖官方 Schema v2 全部字段、本项目实际配置的本地化说明、操作指南、安全规则和排障手
+[skill] recruit-assist (files=5): 简历投递辅助。支持投简历（打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、更新信息库、记录投递状态、跟踪企业、上传简历跟踪（本地→飞书增量同步）
+[skill] resume-builder (files=1): 当用户请求制作简历、修改简历、优化简历、写CV、写求职信、准备面试或咨询求职相关问题时必须主动使用此技能。支持简历内容创作、ATS优化、岗位定制、成就公式指导、
+[skills] drawio-reference (files=1): draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型）、shape 搜索指南、强制导出规范。对
+[skills] frontend-design (files=43): 前端设计双引擎系统。先数据驱动 Top K 候选推荐，后设计主管创意裁决。覆盖网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、
+[skills] lark-suite (files=4): 飞书/Lark 全功能操作入口。通过 lark-cli 命令操作飞书资源，覆盖日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视
+[skills] minimax-docx (files=198): >
+[skills] minimax-xlsx (files=26): "Open, create, read, analyze, edit, or validate Excel/spreadsheet files (.xlsx, 
+[skills] openspec-apply-change (files=1): 执行 tasks.md 中的实现任务——逐条完成并打勾。tasks.md 就绪后开始编码时使用。
+[skills] openspec-archive-change (files=1): 归档已完成的变更——合并 delta spec 到主 spec 并移动到 archive。实现完成并验证通过后使用。
+[skills] openspec-bulk-archive-change (files=1): 批量归档多个已完成的变更。
+[skills] openspec-continue-change (files=1): 继续已有的变更——按 DAG 顺序生成下一个未完成的工件。适合恢复中断的工作。
+[skills] openspec-explore (files=1): 探索模式——分析代码、理清需求、比较方案。不确定要做什么或需要先思考再动手时使用。不写代码。
+[skills] openspec-ff-change (files=1): 快速通道——跳过逐步交互，一键生成所有 OpenSpec 工件。适合有经验的用户或简单变更。
+[skills] openspec-new-change (files=1): 逐步创建新变更——比 propose 更细粒度，逐个工件交互式创建。适合复杂或需精细控制的场景。
+[skills] openspec-onboard (files=1): OpenSpec 引导教程——手把手带领首次使用的用户完成完整流程。
+[skills] openspec-propose (files=1): 创建变更提案——一键生成 proposal/design/specs/tasks。明确知道要做什么时使用。
+[skills] openspec-sync-specs (files=1): 同步 delta spec 到主 spec（不归档）。仅被 archive-change 或显式召唤时使用。
+[skills] openspec-update-change (files=1): 编辑/协调已有的 OpenSpec 工件。处理手动修改后的重新同步。
+[skills] openspec-verify-change (files=1): 验证实现是否匹配 spec/design。归档前的可选校验步骤。
+[skills] pdf-ocr (files=1): PDF OCR 识别专项。处理扫描件、图片型 PDF、含水印/印章的文档。支持多语言 OCR（中英）、表格区域提取、印章检测。仅在 PDF 无文本层（扫描件/图
+[skills] release-openspec (files=3): OpenSpec 自身发布管理。仅 OpenSpec 维护者使用。
+[skills] soe-resume (files=4): "央国企/体制内简历制作、评审与优化。支持三大功能：简历评审（8维度评分+红黄绿灯）、简历修改（先评审确认后改写）、从零生成（读取个人信息+交互问答）。内置CV
+[skills] superpowers-feature-workflow (files=1): 规范开发流程——需求澄清→方案设计→TDD 实现→验证。不依赖 OpenSpec CLI，轻量级规范编程。
+[skills] superpowers-learning-workflow (files=1): 会话后知识沉淀——回写项目记忆、决策记录、可复用教训。按需显式召唤。
+[skills] superpowers-openspec-superpowers-workflow (files=1): 完整交付流程——Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档。全程门控，需显式召唤。
+[reflection] agent-reflection (files=1): Fork Agent 自进化系统 —— Plan+Build 周期后异步反思，提炼经验存入 Memory 缓存或创建新 Skill。触发关键词：reflecti
+[reflection] cytoscape-dag-visualization (files=1): cytoscape.js 交互 DAG 可视化构建方法论。当任务涉及构建组级+下钻交互 DAG 总览、向页面注入 DATA、环修复、disabled 节点标注、
+[reflection] dag-tutorial-authoring (files=1): DAG 教程编写方法论（零基础读者导向）。当任务涉及编写面向初学者的概念/技能 DAG 教程、将可读性规律编码为门控、调研驱动编写、双轨验证(VLM+headl
+[reflection] github-bulk-upload (files=1): GitHub 大仓库全量上传方法论。当任务涉及将大型交付物/源码克隆(100+MB/数千文件)上传至 GitHub 仓库、处理嵌套.git被识别为gitlink
+[reflection] multi-window-dag-delivery (files=1): 多层窗口接力 DAG 依赖链分析与交付方法论。当任务涉及将大型源码/插件库拆分为多窗口接力分析 DAG 依赖、每窗口产出 PLAN-layerN.md 接力文件
+[reflection] large-scale-source-parse (files=1): 大规模源码库静态解析方法论。当任务涉及解析大型开源项目源码架构（数百至数万文件）、建立分层抽象、跨模块联动分析、产出结构文档时使用。触发关键词：源码解析、架构解
+[reflection] postmortem-failure-review (files=1): 失败项目复盘方法论。对失败的自动化/工程/交付项目进行根因分析与经验提炼。覆盖：路线错误识别（架构方向 vs 执行质量）、五因框架、过度工程检测、质量门控审计、
+[reflection] reusable-asset-inventory (files=1): 从失败/遗留项目中提炼可复用资产的方法论。三级分类（可直接复用/需修改复用/仅参考思路）+ 优先级排序 + 参考项目对标。触发关键词：可复用资产、资产盘点、复用
+[reflection] cdisk-space-optimization (files=1): Windows C盘空间优化方法论。当任务涉及C盘空间不足分析、社交软件数据目录定位、开发缓存搬迁、junction软链接、系统清理高危项处理时使用。触发关键词
+
+--- AGENTS ---
+plan (main)
+build (main)
+pdf-worker (subagent)
+drawio-worker (subagent)
+general (main)
+explore (main)
+reflection-worker (subagent)
+
+--- MCP ---
+vscode-mcp-server enabled=False
+amap enabled=False
+pdf-reader enabled=True
+drawio enabled=True
+drawio-local enabled=False
+headroom enabled=False
+
+--- PLUGINS/TOOLS/COMMANDS/INSTRUCTIONS ---
+[plugins] vision-interceptor.js
+[tools] read.ts
+[commands] reflection.md
+[instructions] auto-mode.md
+[instructions] MEMORY.md

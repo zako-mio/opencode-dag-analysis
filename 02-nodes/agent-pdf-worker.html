@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pdf-worker · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>pdf-worker <span class="tag">装配层</span></h1>
+  <div class="sub">agent-pdf-worker · agent · A1-Agents · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>PDF 专家子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（PDF 提取无需 Pro 推理）。permission 仅放行 pdf-reader_* 工具（L3 最小权限注入），与全局 deny 构成三层纵深。主Agent 的 MCP 路由规则将 PDF/OCR/文档分析任务固定委派给它。</p>
+
+  <h2>② 提供能力</h2>
+  <p>PDF 文本提取、OCR、文档分析（经 pdf-reader MCP 的 4 工具）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\instructions\agent-protocol.md L63: PDF读取/OCR/文档分析 → 委派 pdf-worker 子</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 新增：pdf-worker 配置 Flash 模型（L27），子Agent 路由到 Flash；0802 盘点：4 个自定义 subagent 之一，permission 仅放行 pdf-reader_* 工具；MCP 路由规则确立：PDF 读取/OCR/文档分析 → 委派 pdf-worker（必要时加载 pdf-ocr skill）；0813 skill 更新：修正 replaceAll 误加的&#x27;0806 临时降级&#x27;注释（子Agent 固定 Flash）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>固定 Flash（PDF 提取无需 Pro 推理）；mode=subagent + hidden=true；L3 最小权限注入（仅 pdf-reader_* allow），与全局 deny 构成三层纵深防御；描述明确&#x27;Use for any task involving PDF files&#x27;。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>mcp-pdf-reader（唯一工具源）、pdf-ocr skill（OCR 兜底）、plan/build（MCP 路由规则委派）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图1 · 官方原版包级 DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; height:100vh; overflow:hidden; }
+  header { position:fixed; top:0; left:0; right:0; z-index:10; background:var(--panel); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  header h1 { font-size:16px; font-weight:600; }
+  .badge { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .badge.ext { background:#1f3a2a; color:#5fd08a; }
+  header a { color:var(--accent); text-decoration:none; font-size:13px; }
+  header a:hover { text-decoration:underline; }
+  .hint { color:var(--dim); font-size:12px; }
+  #graph { position:fixed; top:54px; left:0; right:0; bottom:0; min-height:600px; }
+  #side { position:fixed; right:0; top:54px; bottom:0; width:300px; background:var(--panel); border-left:1px solid var(--border); padding:16px; overflow:auto; z-index:9; }
+  #side h2 { font-size:14px; margin-bottom:10px; color:var(--dim); }
+  #side .legend { font-size:12px; color:var(--dim); line-height:1.8; }
+  #side .legend b { color:var(--text); }
+  #zoominfo { position:fixed; bottom:14px; left:20px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:12px; color:var(--dim); z-index:9; }
+  #zoominfo b { color:var(--text); }
+  .node-pkg { background:#3a4a6b; }
+  .node-asm { background:#2d6b5f; }
+  .node-skill { background:#6b4a7a; }
+  .node-ext { background:#4a6b3a; }
+  .node-mod { border:2px solid #e0b25e; }
+  .node-disabled { opacity:0.4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>图1 · 官方原版包级 DAG <span class="badge">opencode DAG</span></h1>
+  <a href="../index.html">← 根入口</a>
+  <span class="hint">节点 35 · 边 66 · 组 19 · 层 6</span>
+</header>
+<div id="side">
+  <h2>图例</h2>
+  <div class="legend">
+    <b>节点</b>：包(灰蓝)/装配(青)/skill(紫)/外部服务(绿)<br>
+    <b>边</b>：A→B 表示 A 依赖 B<br>
+    <b>官方基线</b>：35 workspace 包，workspace/import 依赖（v1.18.14 源码）<br>
+    交互：点击节点跳转详情页；拖拽平移；滚轮缩放；shift+点击多选。
+    </div>
+  <h2 style="margin-top:14px;">组配色</h2>
+  <div id="glegend"></div>
+</div>
+<div id="zoominfo">缩放 <b id="zval">1.00</b> · 节点 <b id="zcount">0</b></div>
+<div id="graph"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const DATA = {"nodes": [{"data": {"id": "oc-opencode", "name": "opencode", "group": "G19-主入口", "kind": "package", "layer": 4, "status": "", "color": "hsl(0, 55%, 45%)", "url": "../02-nodes/oc-opencode.html"}, "classes": "pkg"}, {"data": {"id": "oc-core", "name": "core", "group": "G6-核心服务", "kind": "package", "layer": 2, "status": "", "color": "hsl(137, 55%, 45%)", "url": "../02-nodes/oc-core.html"}, "classes": "pkg"}, {"data": {"id": "oc-schema", "name": "schema", "group": "G1-数据模型", "kind": "package", "layer": 0, "status": "", "color": "hsl(274, 55%, 45%)", "url": "../02-nodes/oc-schema.html"}, "classes": "pkg"}, {"data": {"id": "oc-llm", "name": "llm", "group": "G5-LLM请求层", "kind": "package", "layer": 1, "status": "", "color": "hsl(51, 55%, 45%)", "url": "../02-nodes/oc-llm.html"}, "classes": "pkg"}, {"data": {"id": "oc-plugin", "name": "plugin", "group": "G7-插件SDK", "kind": "package", "layer": 1, "status": "", "color": "hsl(188, 55%, 45%)", "url": "../02-nodes/oc-plugin.html"}, "classes": "pkg"}, {"data": {"id": "oc-sdk", "name": "sdk", "group": "G3-客户端", "kind": "package", "layer": 0, "status": "", "color": "hsl(325, 55%, 45%)", "url": "../02-nodes/oc-sdk.html"}, "classes": "pkg"}, {"data": {"id": "oc-server", "name": "server", "group": "G4-服务端", "kind": "package", "layer": 3, "status": "", "color": "hsl(102, 55%, 45%)", "url": "../02-nodes/oc-server.html"}, "classes": "pkg"}, {"data": {"id": "oc-protocol", "name": "protocol", "group": "G2-通信协议", "kind": "package", "layer": 1, "status": "", "color": "hsl(239, 55%, 45%)", "url": "../02-nodes/oc-protocol.html"}, "classes": "pkg"}, {"data": {"id": "oc-client", "name": "client", "group": "G3-客户端", "kind": "package", "layer": 2, "status": "", "color": "hsl(325, 55%, 45%)", "url": "../02-nodes/oc-client.html"}, "classes": "pkg"}, {"data": {"id": "oc-tui", "name": "tui", "group": "G8-终端UI", "kind": "package", "layer": 3, "status": "", "color": "hsl(16, 55%, 45%)", "url": "../02-nodes/oc-tui.html"}, "classes": "pkg"}, {"data": {"id": "oc-codemode", "name": "codemode", "group": "G12-沙箱", "kind": "package", "layer": 0, "status": "", "color": "hsl(153, 55%, 45%)", "url": "../02-nodes/oc-codemode.html"}, "classes": "pkg"}, {"data": {"id": "oc-http-recorder", "name": "http-recorder", "group": "G14-工具", "kind": "package", "layer": 0, "status": "", "color": "hsl(290, 55%, 45%)", "url": "../02-nodes/oc-http-recorder.html"}, "classes": "pkg"}, {"data": {"id": "oc-app", "name": "app", "group": "G10-应用", "kind": "package", "layer": 4, "status": "", "color": "hsl(67, 55%, 45%)", "url": "../02-nodes/oc-app.html"}, "classes": "pkg"}, {"data": {"id": "oc-ui", "name": "ui", "group": "G9-UI组件", "kind": "package", "layer": 0, "status": "", "color": "hsl(204, 55%, 45%)", "url": "../02-nodes/oc-ui.html"}, "classes": "pkg"}, {"data": {"id": "oc-session-ui", "name": "session-ui", "group": "G9-UI组件", "kind": "package", "layer": 3, "status": "", "color": "hsl(204, 55%, 45%)", "url": "../02-nodes/oc-session-ui.html"}, "classes": "pkg"}, {"data": {"id": "oc-desktop", "name": "desktop", "group": "G10-应用", "kind": "package", "layer": 5, "status": "", "color": "hsl(67, 55%, 45%)", "url": "../02-nodes/oc-desktop.html"}, "classes": "pkg"}, {"data": {"id": "oc-cli", "name": "cli", "group": "G10-应用", "kind": "package", "layer": 4, "status": "", "color": "hsl(67, 55%, 45%)", "url": "../02-nodes/oc-cli.html"}, "classes": "pkg"}, {"data": {"id": "oc-web", "name": "web", "group": "G11-文档站点", "kind": "package", "layer": 0, "status": "", "color": "hsl(341, 55%, 45%)", "url": "../02-nodes/oc-web.html"}, "classes": "pkg"}, {"data": {"id": "oc-enterprise", "name": "enterprise", "group": "G10-应用", "kind": "package", "layer": 4, "status": "", "color": "hsl(67, 55%, 45%)", "url": "../02-nodes/oc-enterprise.html"}, "classes": "pkg"}, {"data": {"id": "oc-function", "name": "function", "group": "G13-边缘服务", "kind": "package", "layer": 0, "status": "", "color": "hsl(118, 55%, 45%)", "url": "../02-nodes/oc-function.html"}, "classes": "pkg"}, {"data": {"id": "oc-storybook", "name": "storybook", "group": "G11-文档站点", "kind": "package", "layer": 4, "status": "", "color": "hsl(341, 55%, 45%)", "url": "../02-nodes/oc-storybook.html"}, "classes": "pkg"}, {"data": {"id": "oc-script", "name": "script", "group": "G14-工具", "kind": "package", "layer": 0, "status": "", "color": "hsl(290, 55%, 45%)", "url": "../02-nodes/oc-script.html"}, "classes": "pkg"}, {"data": {"id": "oc-effect-sqlite-node", "name": "effect-sqlite-node", "group": "G15-存储适配", "kind": "package", "layer": 0, "status": "", "color": "hsl(255, 55%, 45%)", "url": "../02-nodes/oc-effect-sqlite-node.html"}, "classes": "pkg"}, {"data": {"id": "oc-effect-drizzle-sqlite", "name": "effect-drizzle-sqlite", "group": "G15-存储适配", "kind": "package", "layer": 0, "status": "", "color": "hsl(255, 55%, 45%)", "url": "../02-nodes/oc-effect-drizzle-sqlite.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-app", "name": "console-app", "group": "G16-Console", "kind": "package", "layer": 2, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-app.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-core", "name": "console-core", "group": "G16-Console", "kind": "package", "layer": 1, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-core.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-function", "name": "console-function", "group": "G16-Console", "kind": "package", "layer": 2, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-function.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-mail", "name": "console-mail", "group": "G16-Console", "kind": "package", "layer": 0, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-mail.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-resource", "name": "console-resource", "group": "G16-Console", "kind": "package", "layer": 0, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-resource.html"}, "classes": "pkg"}, {"data": {"id": "oc-console-support", "name": "console-support", "group": "G16-Console", "kind": "package", "layer": 2, "status": "", "color": "hsl(32, 55%, 45%)", "url": "../02-nodes/oc-console-support.html"}, "classes": "pkg"}, {"data": {"id": "oc-stats-app", "name": "stats-app", "group": "G17-Stats", "kind": "package", "layer": 1, "status": "", "color": "hsl(169, 55%, 45%)", "url": "../02-nodes/oc-stats-app.html"}, "classes": "pkg"}, {"data": {"id": "oc-stats-core", "name": "stats-core", "group": "G17-Stats", "kind": "package", "layer": 0, "status": "", "color": "hsl(169, 55%, 45%)", "url": "../02-nodes/oc-stats-core.html"}, "classes": "pkg"}, {"data": {"id": "oc-stats-server", "name": "stats-server", "group": "G17-Stats", "kind": "package", "layer": 1, "status": "", "color": "hsl(169, 55%, 45%)", "url": "../02-nodes/oc-stats-server.html"}, "classes": "pkg"}, {"data": {"id": "oc-sdk-next", "name": "sdk-next", "group": "G3-客户端", "kind": "package", "layer": 4, "status": "", "color": "hsl(325, 55%, 45%)", "url": "../02-nodes/oc-sdk-next.html"}, "classes": "pkg"}, {"data": {"id": "oc-slack", "name": "slack", "group": "G18-集成", "kind": "package", "layer": 1, "status": "", "color": "hsl(306, 55%, 45%)", "url": "../02-nodes/oc-slack.html"}, "classes": "pkg"}], "edges": [{"data": {"id": "e0", "source": "oc-app", "target": "oc-client", "mechanism": "workspace-dep"}}, {"data": {"id": "e1", "source": "oc-app", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e2", "source": "oc-app", "target": "oc-schema", "mechanism": "workspace-dep"}}, {"data": {"id": "e3", "source": "oc-app", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e4", "source": "oc-app", "target": "oc-session-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e5", "source": "oc-app", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e6", "source": "oc-cli", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e7", "source": "oc-cli", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e8", "source": "oc-cli", "target": "oc-server", "mechanism": "workspace-dep"}}, {"data": {"id": "e9", "source": "oc-cli", "target": "oc-tui", "mechanism": "workspace-dep"}}, {"data": {"id": "e10", "source": "oc-client", "target": "oc-schema", "mechanism": "workspace-dep"}}, {"data": {"id": "e11", "source": "oc-client", "target": "oc-protocol", "mechanism": "workspace-dep"}}, {"data": {"id": "e12", "source": "oc-console-app", "target": "oc-console-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e13", "source": "oc-console-app", "target": "oc-console-mail", "mechanism": "workspace-dep"}}, {"data": {"id": "e14", "source": "oc-console-app", "target": "oc-console-resource", "mechanism": "workspace-dep"}}, {"data": {"id": "e15", "source": "oc-console-app", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e16", "source": "oc-console-core", "target": "oc-console-mail", "mechanism": "workspace-dep"}}, {"data": {"id": "e17", "source": "oc-console-core", "target": "oc-console-resource", "mechanism": "workspace-dep"}}, {"data": {"id": "e18", "source": "oc-console-function", "target": "oc-console-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e19", "source": "oc-console-function", "target": "oc-console-resource", "mechanism": "workspace-dep"}}, {"data": {"id": "e20", "source": "oc-console-support", "target": "oc-console-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e21", "source": "oc-core", "target": "oc-effect-drizzle-sqlite", "mechanism": "workspace-dep"}}, {"data": {"id": "e22", "source": "oc-core", "target": "oc-effect-sqlite-node", "mechanism": "workspace-dep"}}, {"data": {"id": "e23", "source": "oc-core", "target": "oc-llm", "mechanism": "workspace-dep"}}, {"data": {"id": "e24", "source": "oc-core", "target": "oc-schema", "mechanism": "workspace-dep"}}, {"data": {"id": "e25", "source": "oc-core", "target": "oc-plugin", "mechanism": "workspace-dep"}}, {"data": {"id": "e26", "source": "oc-enterprise", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e27", "source": "oc-enterprise", "target": "oc-session-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e28", "source": "oc-enterprise", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e29", "source": "oc-llm", "target": "oc-schema", "mechanism": "workspace-dep"}}, {"data": {"id": "e30", "source": "oc-plugin", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e31", "source": "oc-protocol", "target": "oc-schema", "mechanism": "workspace-dep"}}, {"data": {"id": "e32", "source": "oc-sdk-next", "target": "oc-client", "mechanism": "workspace-dep"}}, {"data": {"id": "e33", "source": "oc-sdk-next", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e34", "source": "oc-sdk-next", "target": "oc-server", "mechanism": "workspace-dep"}}, {"data": {"id": "e35", "source": "oc-server", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e36", "source": "oc-server", "target": "oc-protocol", "mechanism": "workspace-dep"}}, {"data": {"id": "e37", "source": "oc-session-ui", "target": "oc-client", "mechanism": "workspace-dep"}}, {"data": {"id": "e38", "source": "oc-session-ui", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e39", "source": "oc-session-ui", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e40", "source": "oc-session-ui", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e41", "source": "oc-slack", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e42", "source": "oc-stats-app", "target": "oc-stats-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e43", "source": "oc-stats-app", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e44", "source": "oc-stats-server", "target": "oc-stats-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e45", "source": "oc-tui", "target": "oc-core", "mechanism": "workspace-dep"}}, {"data": {"id": "e46", "source": "oc-tui", "target": "oc-plugin", "mechanism": "workspace-dep"}}, {"data": {"id": "e47", "source": "oc-tui", "target": "oc-sdk", "mechanism": "workspace-dep"}}, {"data": {"id": "e48", "source": "oc-tui", "target": "oc-ui", "mechanism": "workspace-dep"}}, {"data": {"id": "e49", "source": "oc-desktop", "target": "oc-app", "mechanism": "import"}}, {"data": {"id": "e50", "source": "oc-opencode", "target": "oc-core", "mechanism": "semantic-dep"}}, {"data": {"id": "e51", "source": "oc-opencode", "target": "oc-llm", "mechanism": "semantic-dep"}}, {"data": {"id": "e52", "source": "oc-opencode", "target": "oc-plugin", "mechanism": "semantic-dep"}}, {"data": {"id": "e53", "source": "oc-opencode", "target": "oc-protocol", "mechanism": "semantic-dep"}}, {"data": {"id": "e54", "source": "oc-opencode", "target": "oc-schema", "mechanism": "semantic-dep"}}, {"data": {"id": "e55", "source": "oc-opencode", "target": "oc-sdk", "mechanism": "semantic-dep"}}, {"data": {"id": "e56", "source": "oc-opencode", "target": "oc-server", "mechanism": "semantic-dep"}}, {"data": {"id": "e57", "source": "oc-opencode", "target": "oc-tui", "mechanism": "semantic-dep"}}, {"data": {"id": "e58", "source": "oc-opencode", "target": "oc-codemode", "mechanism": "semantic-dep"}}, {"data": {"id": "e59", "source": "oc-opencode", "target": "oc-http-recorder", "mechanism": "semantic-dep"}}, {"data": {"id": "e60", "source": "oc-core", "target": "oc-http-recorder", "mechanism": "semantic-dep"}}, {"data": {"id": "e61", "source": "oc-desktop", "target": "oc-ui", "mechanism": "semantic-dep"}}, {"data": {"id": "e62", "source": "oc-cli", "target": "oc-script", "mechanism": "semantic-dep"}}, {"data": {"id": "e63", "source": "oc-enterprise", "target": "oc-sdk", "mechanism": "semantic-dep"}}, {"data": {"id": "e64", "source": "oc-storybook", "target": "oc-ui", "mechanism": "semantic-dep"}}, {"data": {"id": "e65", "source": "oc-storybook", "target": "oc-session-ui", "mechanism": "semantic-dep"}}]};
+const GROUP_COLORS = {"G19-主入口": "hsl(0, 55%, 45%)", "G6-核心服务": "hsl(137, 55%, 45%)", "G1-数据模型": "hsl(274, 55%, 45%)", "G5-LLM请求层": "hsl(51, 55%, 45%)", "G7-插件SDK": "hsl(188, 55%, 45%)", "G3-客户端": "hsl(325, 55%, 45%)", "G4-服务端": "hsl(102, 55%, 45%)", "G2-通信协议": "hsl(239, 55%, 45%)", "G8-终端UI": "hsl(16, 55%, 45%)", "G12-沙箱": "hsl(153, 55%, 45%)", "G14-工具": "hsl(290, 55%, 45%)", "G10-应用": "hsl(67, 55%, 45%)", "G9-UI组件": "hsl(204, 55%, 45%)", "G11-文档站点": "hsl(341, 55%, 45%)", "G13-边缘服务": "hsl(118, 55%, 45%)", "G15-存储适配": "hsl(255, 55%, 45%)", "G16-Console": "hsl(32, 55%, 45%)", "G17-Stats": "hsl(169, 55%, 45%)", "G18-集成": "hsl(306, 55%, 45%)", "X-外部服务": "hsl(83, 55%, 45%)", "A1-Agents": "hsl(220, 55%, 45%)", "A2-MCP": "hsl(357, 55%, 45%)", "A3-插件工具": "hsl(134, 55%, 45%)", "A4-命令指令": "hsl(271, 55%, 45%)", "A5-配置本体": "hsl(48, 55%, 45%)", "A6a-图表": "hsl(185, 55%, 45%)", "A6b-前端设计": "hsl(322, 55%, 45%)", "A6c-办公集成": "hsl(99, 55%, 45%)", "A6d-文档处理": "hsl(236, 55%, 45%)", "A6e-简历求职": "hsl(13, 55%, 45%)", "A6l-工作流": "hsl(150, 55%, 45%)", "A6f-角色调度": "hsl(287, 55%, 45%)", "A6k-地图": "hsl(64, 55%, 45%)", "A6h-浏览器": "hsl(201, 55%, 45%)", "A6i-上下文压缩": "hsl(338, 55%, 45%)", "A6j-配置知识": "hsl(115, 55%, 45%)", "A6m-自进化": "hsl(252, 55%, 45%)", "A6n-系统优化": "hsl(29, 55%, 45%)"};
+const cy = cytoscape({
+  container: document.getElementById('graph'),
+  elements: DATA,
+  style: [
+    { selector: 'node', style: {
+        'background-color': 'data(color)', 'label': 'data(name)', 'color': '#e6e8ee',
+        'font-size': '11px', 'text-valign': 'bottom', 'text-margin-y': 2,
+        'width': 'mapData(layer, 0, 8, 36, 48)', 'height': 'mapData(layer, 0, 8, 36, 48)',
+        'shape': 'round-rectangle', 'border-width': 1, 'border-color': '#2a2f3a',
+    } },
+    { selector: 'node.pkg', style: { 'border-color': '#4f8cff' } },
+    { selector: 'node.asm', style: { 'border-color': '#5fd08a' } },
+    { selector: 'node.skill', style: { 'border-color': '#b48ae0' } },
+    { selector: 'node.ext', style: { 'border-color': '#5fd08a', 'shape': 'ellipse' } },
+    { selector: 'node.mod', style: { 'border-color': '#e0b25e', 'border-width': 3 } },
+    { selector: 'node.disabled', style: { 'opacity': 0.4 } },
+    { selector: 'edge', style: {
+        'width': 1.5, 'line-color': '#3a4a6b', 'target-arrow-color': '#3a4a6b',
+        'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.8,
+    } },
+    { selector: 'edge[mechanism = "external"]', style: { 'line-color': '#5fd08a', 'target-arrow-color': '#5fd08a', 'line-style': 'dashed' } },
+    { selector: 'edge[mechanism = "delegate"]', style: { 'line-color': '#b48ae0', 'target-arrow-color': '#b48ae0', 'line-style': 'dashed' } },
+    { selector: 'edge[mechanism = "assembly-to-pkg"]', style: { 'line-color': '#e0b25e', 'target-arrow-color': '#e0b25e' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 24, edgeSep: 12, rankSep: 90 },
+  wheelSensitivity: 0.2,
+});
+// 图例组配色
+const gl = document.getElementById('glegend');
+for (const [g, c] of Object.entries(GROUP_COLORS)) {
+  const d = document.createElement('div');
+  d.style.cssText = 'display:flex;align-items:center;gap:8px;margin:3px 0;font-size:11px;color:var(--dim);';
+  d.innerHTML = `<span style="width:12px;height:12px;border-radius:3px;background:${c};display:inline-block;"></span> ${g}`;
+  gl.appendChild(d);
+}
+// 缩放信息
+cy.on('zoom', () => { document.getElementById('zval').textContent = cy.zoom().toFixed(2); });
+cy.on('layoutstop', () => { document.getElementById('zcount').textContent = cy.nodes().length; });
+// 兜底：layout 完成后延迟更新 zcount（防止事件时序错过）
+setTimeout(() => {
+  const zc = document.getElementById('zcount');
+  if (zc && cy) zc.textContent = cy.nodes().length;
+}, 500);
+setTimeout(() => {
+  const zc = document.getElementById('zcount');
+  if (zc && cy) zc.textContent = cy.nodes().length;
+}, 3000);
+// 点击节点跳详情
+cy.on('tap', 'node', (evt) => {
+  const n = evt.target;
+  const url = n.data('url');
+  if (url) window.open(url, '_blank');
+});
+// 颜色双击还原
+cy.on('dbltap', 'node', (evt) => {
+  const n = evt.target;
+  const grp = n.data('group');
+  n.style('background-color', GROUP_COLORS[grp] || '#666');
+});
+</script>
+</body>
+</html>

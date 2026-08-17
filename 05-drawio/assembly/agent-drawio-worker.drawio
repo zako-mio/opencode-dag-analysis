@@ -1,0 +1,43 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="d-agent-drawio-worker" name="agent-drawio-worker">
+    <mxGraphModel dx="800" dy="600" page="1" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1100" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="c" value="agent-drawio-worker&#xa;drawio 子Agent" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="400" y="280" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="u1" value="ext-drawio-service&#xa;(drawio MCP v1.5.0)" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="u2" value="ext-deepseek-api" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="agent-plan" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="760" y="160" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="agent-build" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="760" y="320" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="skill-drawio-reference" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="760" y="480" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="u1" target="c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="u2" target="c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="c" target="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="c" target="d2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="c" target="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ext-glm-api · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>ext-glm-api </h1>
+  <div class="sub">ext-glm-api · external · X-外部服务 · Layer 7</div>
+
+  <h2>① 作用</h2>
+  <p>VLM 图片转文字服务（glm-4.6v / glm-4.6v-flash）</p>
+
+  <h2>② 提供能力</h2>
+  <p>图片描述</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='plugin-vision-interceptor.html'>vision-interceptor</a></td><td>external</td><td><small>plugin-vision-interceptor 关联 ext-glm-api</small></td></tr><tr><td><a href='tool-read.html'>read</a></td><td>external</td><td><small>tool-read 关联 ext-glm-api</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">为什么需要</span><p>补 DeepSeek-flash 无视觉能力的短板：read.ts 工具把图片文件经 GLM-4V 转文字描述（DeepSeek 纯文本模型才能理解）；vision-interceptor.js 插件在 chat.message 与 experimental.chat.messages.transform 钩子把用户上传图片替换为 VLM 描述文本，解决 does not support image input 报错。被依赖方：tools/read.ts、plugins/vision-interceptor.js，下游是 opencode 全部读图/图表校验流程（0807 起含 drawio 导出 PNG 的 VLM 校验）。</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>合理但有过改动史：0807 修复前 glm-4.6v-flash（免费）高峰 429，改为付费 glm-4.6v 优先、429 降级免费 flash 的双模型链；Key 硬编码回退到环境变量 ZHIPU_API_KEY（用户级已 setx），避免明文泄露；插件侧用 Map 缓存 URL→描述防止历史消息重复计费。2026-08 仍为唯一视觉通道。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么接入</span><p>环境变量 ZHIPU_API_KEY；端点 POST https://open.bigmodel.cn/api/paas/v4/chat/completions，Header Authorization: Bearer &lt;key&gt;，body: {model:glm-4.6v 或 glm-4.6v-flash, messages:[{role:user, content:[{type:image_url, image_url:{url: 图片URL 或 data:image/png;base64,...}}, {type:text, text:描述提示词}]}], max_tokens:4096, temperature:0.3}；响应取 choices[0].message.content。</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p>read.ts 的 describeImage()：Bun.file→base64→按扩展名映射 mime→付费优先降级循环→返回描述文本；vision-interceptor.js 的 transformParts()：识别 part.type=file 且 mime 以 image/ 开头→调 describeImage→替换为 synthetic text part，并写日志 vision-int.log 记录 FIRED/SKIP/VLM OK 计数。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

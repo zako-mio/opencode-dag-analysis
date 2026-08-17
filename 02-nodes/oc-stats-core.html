@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>stats-core · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>stats-core </h1>
+  <div class="sub">oc-stats-core · package · G17-Stats · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>Stats 后端核心（Effect + drizzle + PlanetScale）。src/athena.ts 封装 AWS Athena 查询服务（StartQuery/轮询/取结果），src/database.ts 提供 Effect 风格 DatabaseConfig/DrizzleClient，src/domain/ 下按 model/provider/geo/home/inference 分域定义聚合类型与查询，src/stat-sync.ts 实现 Athena → 数据库的增量/全量同步管线。src/index.ts 聚合导出全部命名空间。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· Athena 查询服务：执行/轮询/分页取数（src/athena.ts:45）<br>· Effect 化数据库层：PlanetScale drizzle + schema + 迁移（src/database.ts:24,40）<br>· 统计领域模型：StatBaseAggregate 聚合结构与 grain day/week（src/domain/stat.ts:6）<br>· Model/Provider/Geo 统计仓库与 upsert（src/domain/model.ts 等）<br>· 首页聚合查询（getStatsHomeData，src/domain/home.ts:9）<br>· 统计同步管线：Athena 查询 → 聚合 → 写入（src/stat-sync.ts:23）<br>· App 配置（stage/publicUrl）与运行时（src/config.ts、src/runtime.ts）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-stats-app.html'>stats-app</a></td><td>workspace-dep</td><td><small>@opencode-ai/stats-app/package.json dependencies.@opencode-ai/stats-core</small></td></tr><tr><td><a href='oc-stats-server.html'>stats-server</a></td><td>workspace-dep</td><td><small>@opencode-ai/stats-server/package.json dependencies.@opencode-ai/stats-core</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 Effect 服务（Context.Service + Layer）组织全部依赖（Athena/Database/Config），运行时以 Layer 注入——与 console-core 的 fn 风格不同，stats 选择了纯函数式依赖注入，便于 Lambda/Server 两种宿主复用同一套查询/同步逻辑；Athena 只扫一次源表的 GROUPING SETS 设计明确为降成本优化。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改。装配层在多源数据归一化统计（如 0817 DAG 的包统计、github-dag 的 commit 统计）上复用了其思路：统一 schema 归一化 + 增量锚点窗口，但用 Python 而非 Effect。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>Effect 生态服务包：Athena service（@aws-sdk/client-athena，StartQueryExecution→GetQueryExecution→GetQueryResults 轮询 300 次，WorkGroup/Catalog/Database 来自 Resource.InferenceEvent）；Database service（@planetscale/database + drizzle-orm/planetscale-serverless，DATABASE_URL 或 Resource.StatsDatabase.url）；domain/ 下 inference/model/provider/geo/stat（buildStatsQuery 用 GROUPING SETS 一次扫描聚合 sessions/requests/tokens/cost/duration/TPS 等指标）；stat-sync.ts 增量/全量同步（锚定 ISO 周、5 分钟摄取滞后、56 天展示窗口）。scripts: db:migrate / db:push / honeycomb:backfill / ensure-unique-users。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>统计数据的采集-聚合-落库核心：Lambda（stats/function→core）与 stats-server 共用；honeycomb-backfill 把历史遥测灌入 Athena；migrate/ensure-unique-users 维护 PlanetScale 统计表。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（17 模块 · 39 边）</h3>
+<div id="int-oc-stats-core" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_stats_core = {"nodes": [{"data": {"id": "athena.ts", "name": "athena.ts", "path": "athena.ts"}, "classes": "leaf"}, {"data": {"id": "config.ts", "name": "config.ts", "path": "config.ts"}, "classes": "leaf"}, {"data": {"id": "database.ts", "name": "database.ts", "path": "database.ts"}, "classes": "hot"}, {"data": {"id": "ensure-unique-users.ts", "name": "ensure-unique-users.ts", "path": "ensure-unique-users.ts"}, "classes": "leaf"}, {"data": {"id": "honeycomb-backfill.ts", "name": "honeycomb-backfill.ts", "path": "honeycomb-backfill.ts"}, "classes": "leaf"}, {"data": {"id": "index.ts", "name": "index.ts", "path": "index.ts"}, "classes": "entry"}, {"data": {"id": "migrate.ts", "name": "migrate.ts", "path": "migrate.ts"}, "classes": "leaf"}, {"data": {"id": "runtime.ts", "name": "runtime.ts", "path": "runtime.ts"}, "classes": "leaf"}, {"data": {"id": "stat-sync.ts", "name": "stat-sync.ts", "path": "stat-sync.ts"}, "classes": "leaf"}, {"data": {"id": "database/schema.ts", "name": "schema.ts", "path": "database/schema.ts"}, "classes": "hot"}, {"data": {"id": "domain/geo.ts", "name": "geo.ts", "path": "domain/geo.ts"}, "classes": "hot"}, {"data": {"id": "domain/home.ts", "name": "home.ts", "path": "domain/home.ts"}, "classes": "leaf"}, {"data": {"id": "domain/inference.ts", "name": "inference.ts", "path": "domain/inference.ts"}, "classes": "leaf"}, {"data": {"id": "domain/model-normalization.ts", "name": "model-normalization.ts", "path": "domain/model-normalization.ts"}, "classes": "hot"}, {"data": {"id": "domain/model.ts", "name": "model.ts", "path": "domain/model.ts"}, "classes": "hot"}, {"data": {"id": "domain/provider.ts", "name": "provider.ts", "path": "domain/provider.ts"}, "classes": "hot"}, {"data": {"id": "domain/stat.ts", "name": "stat.ts", "path": "domain/stat.ts"}, "classes": "hot"}], "edges": [{"data": {"source": "database.ts", "target": "database/schema.ts"}}, {"data": {"source": "honeycomb-backfill.ts", "target": "database/schema.ts"}}, {"data": {"source": "honeycomb-backfill.ts", "target": "domain/model-normalization.ts"}}, {"data": {"source": "honeycomb-backfill.ts", "target": "domain/stat.ts"}}, {"data": {"source": "migrate.ts", "target": "database.ts"}}, {"data": {"source": "runtime.ts", "target": "config.ts"}}, {"data": {"source": "runtime.ts", "target": "database.ts"}}, {"data": {"source": "runtime.ts", "target": "domain/geo.ts"}}, {"data": {"source": "runtime.ts", "target": "domain/model.ts"}}, {"data": {"source": "runtime.ts", "target": "domain/provider.ts"}}, {"data": {"source": "stat-sync.ts", "target": "athena.ts"}}, {"data": {"source": "stat-sync.ts", "target": "database.ts"}}, {"data": {"source": "stat-sync.ts", "target": "domain/geo.ts"}}, {"data": {"source": "stat-sync.ts", "target": "domain/inference.ts"}}, {"data": {"source": "stat-sync.ts", "target": "domain/model.ts"}}, {"data": {"source": "stat-sync.ts", "target": "domain/provider.ts"}}, {"data": {"source": "stat-sync.ts", "target": "domain/stat.ts"}}, {"data": {"source": "domain/geo.ts", "target": "database.ts"}}, {"data": {"source": "domain/geo.ts", "target": "database/schema.ts"}}, {"data": {"source": "domain/geo.ts", "target": "domain/model-normalization.ts"}}, {"data": {"source": "domain/geo.ts", "target": "domain/stat.ts"}}, {"data": {"source": "domain/home.ts", "target": "database.ts"}}, {"data": {"source": "domain/home.ts", "target": "domain/geo.ts"}}, {"data": {"source": "domain/home.ts", "target": "domain/model.ts"}}, {"data": {"source": "domain/home.ts", "target": "domain/provider.ts"}}, {"data": {"source": "domain/inference.ts", "target": "athena.ts"}}, {"data": {"source": "domain/inference.ts", "target": "domain/geo.ts"}}, {"data": {"source": "domain/inference.ts", "target": "domain/model.ts"}}, {"data": {"source": "domain/inference.ts", "target": "domain/model-normalization.ts"}}, {"data": {"source": "domain/inference.ts", "target": "domain/provider.ts"}}, {"data": {"source": "domain/inference.ts", "target": "domain/stat.ts"}}, {"data": {"source": "domain/model.ts", "target": "database.ts"}}, {"data": {"source": "domain/model.ts", "target": "database/schema.ts"}}, {"data": {"source": "domain/model.ts", "target": "domain/model-normalization.ts"}}, {"data": {"source": "domain/model.ts", "target": "domain/stat.ts"}}, {"data": {"source": "domain/provider.ts", "target": "database.ts"}}, {"data": {"source": "domain/provider.ts", "target": "database/schema.ts"}}, {"data": {"source": "domain/provider.ts", "target": "domain/model-normalization.ts"}}, {"data": {"source": "domain/provider.ts", "target": "domain/stat.ts"}}]};
+const cyoc_stats_core = cytoscape({
+  container: document.getElementById('int-oc-stats-core'),
+  elements: INToc_stats_core,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_stats_core.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

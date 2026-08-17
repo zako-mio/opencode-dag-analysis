@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>server · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>server </h1>
+  <div class="sub">oc-server · package · G4-服务端 · Layer 3</div>
+
+  <h2>① 作用</h2>
+  <p>HTTP/SSE 服务器实现层。src/api.ts:5-8 用 @opencode-ai/protocol/api 的 makeDefaultApi 装配 HttpApi，并注入 LocationMiddleware/SessionLocationMiddleware 具体中间件；src/routes.ts:1-13 把 core 的各类服务（SessionV2/SessionExecution/LocationServiceMap/Database/ToolOutputStore 等）装配为 Effect Layer；src/handlers.ts:1-40 合并 19 个 handler（session/message/agent/model/provider/fs/event/pty 等），每个 handler 将 HTTP 请求桥接到 core 领域服务。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· HttpApi 装配与中间件注入（packages/server/src/api.ts:5-8）<br>· 19 个资源 handler（packages/server/src/handlers.ts:21-40）<br>· core 服务到 HTTP 层的 Effect Layer 桥接（packages/server/src/routes.ts:1-13）<br>· 授权/会话定位中间件（packages/server/src/middleware/authorization.ts、session-location.ts）<br>· CORS 与 auth 基础（packages/server/src/cors.ts、auth.ts）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>workspace-dep</td><td><small>@opencode-ai/server/package.json dependencies.@opencode-ai/core</small></td></tr><tr><td><a href='oc-protocol.html'>protocol</a></td><td>workspace-dep</td><td><small>@opencode-ai/server/package.json dependencies.@opencode-ai/protocol</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-cli.html'>cli</a></td><td>workspace-dep</td><td><small>@opencode-ai/cli/package.json dependencies.@opencode-ai/server</small></td></tr><tr><td><a href='oc-sdk-next.html'>sdk-next</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/server</small></td></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>semantic-dep</td><td><small>stage-01 opencode</small></td></tr><tr><td><a href='mcp-vscode-mcp-server.html'>vscode-mcp-server</a></td><td>assembly-to-pkg</td><td><small>mcp-vscode-mcp-server 关联 oc-server</small></td></tr><tr><td><a href='mcp-amap.html'>amap</a></td><td>assembly-to-pkg</td><td><small>mcp-amap 关联 oc-server</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>把 Effect HttpApi 与 core 领域服务粘合为可运行的 HTTP 服务（不依赖 CLI），使 opencode 主程序、sdk createOpencodeServer 与其他宿主都能复用同一套服务端装配。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未直接修改/引用 server 源码，但运行时通过它承载装配层：config-main 的 model 路由（provider/deepseek）与权限配置最终经 server 的 HTTP 层暴露给所有 agent 调用；本机对服务端的影响是「配置注入」（OPENCODE_CONFIG_CONTENT 式的 config 覆盖 + 权限 deny/allow），而非替换服务实现。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· 入口：src/api.ts:1-6 —— Api = makeDefaultApi({locationMiddleware, sessionLocationMiddleware})，把 @opencode-ai/protocol/api 声明的协议绑定上具体中间件；src/routes.ts:1-16 组装 applicationServices = LayerNode.group([...10+ 服务]) 并 createRoutes/createEmbeddedRoutes 两个工厂（带/不带 password 认证）。<br>· 导出：package.json exports ./src/*.ts；依赖仅 @opencode-ai/core、@opencode-ai/protocol、drizzle-orm、effect（不依赖 CLI）。被 opencode serve 命令、sdk createOpencodeServer、sdk-next 的 createEmbeddedRoutes（进程内内存路由）三方复用。<br>· 服务端实现：src/handlers.ts、src/auth.ts、src/cors.ts、src/pty-environment.ts 提供具体 handler/认证/CORS/PTY 环境。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>server 把 core 领域服务粘合成可运行的 HTTP 服务：routes.ts 里 LayerNode.group 注入 Database/EventV2/SessionV2/PermissionSaved/PtyTicket 等 10+ 服务，协议中间件（authorization/schema-error/session-location）在此装配。opencode 主程序经 serve 子命令启动它，sdk/sdk-next 进程内复用它（createEmbeddedRoutes 无端口跑内存 fetch）；报告-02 所述 HTTP/SSE 通信骨架即本包 + protocol 的组合。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（28 模块 · 61 边）</h3>
+<div id="int-oc-server" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_server = {"nodes": [{"data": {"id": "api.ts", "name": "api.ts", "path": "api.ts"}, "classes": "hot"}, {"data": {"id": "auth.ts", "name": "auth.ts", "path": "auth.ts"}, "classes": "leaf"}, {"data": {"id": "cors.ts", "name": "cors.ts", "path": "cors.ts"}, "classes": "leaf"}, {"data": {"id": "handlers.ts", "name": "handlers.ts", "path": "handlers.ts"}, "classes": "leaf"}, {"data": {"id": "location.ts", "name": "location.ts", "path": "location.ts"}, "classes": "hot"}, {"data": {"id": "pty-environment.ts", "name": "pty-environment.ts", "path": "pty-environment.ts"}, "classes": "leaf"}, {"data": {"id": "routes.ts", "name": "routes.ts", "path": "routes.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/agent.ts", "name": "agent.ts", "path": "handlers/agent.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/command.ts", "name": "command.ts", "path": "handlers/command.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/credential.ts", "name": "credential.ts", "path": "handlers/credential.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/event.ts", "name": "event.ts", "path": "handlers/event.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/fs.ts", "name": "fs.ts", "path": "handlers/fs.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/health.ts", "name": "health.ts", "path": "handlers/health.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/integration.ts", "name": "integration.ts", "path": "handlers/integration.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/location.ts", "name": "location.ts", "path": "handlers/location.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/message.ts", "name": "message.ts", "path": "handlers/message.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/model.ts", "name": "model.ts", "path": "handlers/model.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/permission.ts", "name": "permission.ts", "path": "handlers/permission.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/project-copy.ts", "name": "project-copy.ts", "path": "handlers/project-copy.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/provider.ts", "name": "provider.ts", "path": "handlers/provider.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/pty.ts", "name": "pty.ts", "path": "handlers/pty.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/question.ts", "name": "question.ts", "path": "handlers/question.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/reference.ts", "name": "reference.ts", "path": "handlers/reference.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/session.ts", "name": "session.ts", "path": "handlers/session.ts"}, "classes": "leaf"}, {"data": {"id": "handlers/skill.ts", "name": "skill.ts", "path": "handlers/skill.ts"}, "classes": "leaf"}, {"data": {"id": "middleware/authorization.ts", "name": "authorization.ts", "path": "middleware/authorization.ts"}, "classes": "leaf"}, {"data": {"id": "middleware/schema-error.ts", "name": "schema-error.ts", "path": "middleware/schema-error.ts"}, "classes": "leaf"}, {"data": {"id": "middleware/session-location.ts", "name": "session-location.ts", "path": "middleware/session-location.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "api.ts", "target": "location.ts"}}, {"data": {"source": "api.ts", "target": "middleware/session-location.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/message.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/model.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/provider.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/session.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/permission.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/fs.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/command.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/skill.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/event.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/agent.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/health.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/pty.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/question.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/reference.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/location.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/integration.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/credential.ts"}}, {"data": {"source": "handlers.ts", "target": "handlers/project-copy.ts"}}, {"data": {"source": "routes.ts", "target": "api.ts"}}, {"data": {"source": "routes.ts", "target": "auth.ts"}}, {"data": {"source": "routes.ts", "target": "handlers.ts"}}, {"data": {"source": "routes.ts", "target": "middleware/authorization.ts"}}, {"data": {"source": "routes.ts", "target": "middleware/schema-error.ts"}}, {"data": {"source": "routes.ts", "target": "pty-environment.ts"}}, {"data": {"source": "routes.ts", "target": "location.ts"}}, {"data": {"source": "routes.ts", "target": "middleware/session-location.ts"}}, {"data": {"source": "handlers/agent.ts", "target": "api.ts"}}, {"data": {"source": "handlers/agent.ts", "target": "location.ts"}}, {"data": {"source": "handlers/command.ts", "target": "api.ts"}}, {"data": {"source": "handlers/command.ts", "target": "location.ts"}}, {"data": {"source": "handlers/credential.ts", "target": "api.ts"}}, {"data": {"source": "handlers/event.ts", "target": "api.ts"}}, {"data": {"source": "handlers/fs.ts", "target": "api.ts"}}, {"data": {"source": "handlers/fs.ts", "target": "location.ts"}}, {"data": {"source": "handlers/health.ts", "target": "api.ts"}}, {"data": {"source": "handlers/integration.ts", "target": "api.ts"}}, {"data": {"source": "handlers/integration.ts", "target": "location.ts"}}, {"data": {"source": "handlers/location.ts", "target": "api.ts"}}, {"data": {"source": "handlers/message.ts", "target": "api.ts"}}, {"data": {"source": "handlers/model.ts", "target": "api.ts"}}, {"data": {"source": "handlers/model.ts", "target": "location.ts"}}, {"data": {"source": "handlers/permission.ts", "target": "api.ts"}}, {"data": {"source": "handlers/permission.ts", "target": "location.ts"}}, {"data": {"source": "handlers/project-copy.ts", "target": "api.ts"}}, {"data": {"source": "handlers/provider.ts", "target": "api.ts"}}, {"data": {"source": "handlers/provider.ts", "target": "location.ts"}}, {"data": {"source": "handlers/pty.ts", "target": "api.ts"}}, {"data": {"source": "handlers/pty.ts", "target": "cors.ts"}}, {"data": {"source": "handlers/pty.ts", "target": "location.ts"}}, {"data": {"source": "handlers/pty.ts", "target": "pty-environment.ts"}}, {"data": {"source": "handlers/question.ts", "target": "api.ts"}}, {"data": {"source": "handlers/question.ts", "target": "location.ts"}}, {"data": {"source": "handlers/reference.ts", "target": "api.ts"}}, {"data": {"source": "handlers/reference.ts", "target": "location.ts"}}, {"data": {"source": "handlers/session.ts", "target": "api.ts"}}, {"data": {"source": "handlers/skill.ts", "target": "api.ts"}}, {"data": {"source": "handlers/skill.ts", "target": "location.ts"}}, {"data": {"source": "middleware/authorization.ts", "target": "auth.ts"}}, {"data": {"source": "middleware/session-location.ts", "target": "location.ts"}}]};
+const cyoc_server = cytoscape({
+  container: document.getElementById('int-oc-server'),
+  elements: INToc_server,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_server.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

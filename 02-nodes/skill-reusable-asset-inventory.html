@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>reusable-asset-inventory · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>reusable-asset-inventory <span class="tag">装配层</span></h1>
+  <div class="sub">skill-reusable-asset-inventory · skill · A6m-自进化 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>从失败/遗留项目提炼可复用资产：A/B/C 三级分类（直接复用/需修改/仅思路）+优先级排序公式+参考项目对标，gap 清单直接映射 v2 补全优先级。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· A/B/C 三级分类标准<br>· 复用价值×影响力优先级排序<br>· 参考项目对标（组件数/核心模式/gap）<br>· gap 清单→v2 补全优先级映射<br>· 可复用资产清单产出</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-postmortem-failure-review.html'>postmortem-failure-review</a></td><td>skill-relation</td><td><small>postmortem-failure-review SKILL.md: Step 3 资产盘点（A/B/C 三级分类）产出可复用资产清单——与 reusable-asset-inventory 方法论</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-05 23:43 创建（文件 CreationTime 证据），由 0805-网申扩展失败复盘提炼（推断：与 postmortem-failure-review 同批固化）。0805-网申扩展失败复盘的可复用资产清单.md 是其直接原型：从自制扩展+参考塔塔网申神器两项目中提取 A/B/C 三级资产（A1 Handler trigger 逻辑 54 个函数、A2 表单扫描管道、A3 XPath 生成工具、A4 CSS、A5 元素分组系统），按&quot;复用价值×影响力&quot;排序，gap 清单映射 v2 补全优先级。本 skill 将&quot;失败项目≠全盘皆输&quot;的抢救方法论固化为独立 skill：三级分类标准 + 优先级排序公式 + 参考项目对标。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>项目失败或重写 v2 前抢救可复用资产的标准流程；客观评估哪些代码值得保留、哪些该丢弃；与 postmortem 配对构成&quot;失败→抢救&quot;闭环（失败复盘后必接资产盘点）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：可复用资产、资产盘点、复用清单、资产清单、asset inventory、代码复用评估；项目失败/重写前需要盘点旧资产时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· A/B/C 三级分类：A 可直接复用（成熟独立已验证）→ 直接移植；B 需修改复用（耦合旧架构）→ 列修改点再移植；C 仅参考思路（依赖已废弃路线）→ 只提取设计思路<br>· 优先级排序：复用价值（独立完整性×逻辑成熟度）× 影响力（对填入成功率/核心能力贡献），输出&quot;最高优先级 &gt; ... &gt; 最低&quot;<br>· 对标参考项目：统计关键组件数（如 Handler 数）+ 提炼核心模式（如&quot;服务端驱动+4 级 fallback 链&quot;）+ 找 gap → gap 清单直接映射 v2 补全优先级</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>被 postmortem-failure-review Step3 调用（资产盘点环节）；产出供 v2 重写规划；参考项目探索依赖 explore 子Agent</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

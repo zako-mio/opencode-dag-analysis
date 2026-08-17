@@ -1,0 +1,450 @@
+{
+  "skills": [
+    {
+      "id": "skill-agency-agents",
+      "name": "agency-agents",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\agency-agents",
+      "source": "skill",
+      "desc": "专业AI角色调度系统。当用户任务较为复杂/专业时激活，根据任务内容自动匹配最合适的AI Agent角色，加载其专业prompt后执行。覆盖工程、设计、营销、安全、测试、GIS、游戏开发等16个部门260+专业Agent。触发关键词：工程师、前端、后端、架构、测试、安全、设计、UX、营销、SEO、数据、数据库、DevOps、CI/CD、移动端、游戏、GIS、地图、财务、法务、HR、客服、产品经理、项",
+      "sub_files": 3
+    },
+    {
+      "id": "skill-amap-budget-control",
+      "name": "amap-budget-control",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-budget-control",
+      "source": "skill",
+      "desc": "高德地图调用预算控制。仅在用户明确提及地图/导航/位置/POI/天气/路径规划等关键词时激活。严格控制API调用次数，记录用量，接近5000次/天的免费限额时预警，额度不足时给出清晰报错与替代方案。触发关键词：导航、路线、路径规划、驾车、公交、地铁、步行、骑行、地图、高德、POI、周边搜索、附近、餐厅、酒店、加油站、停车场、搜索地点、评分榜单、天气、测距、距离、地址转坐标、坐标转地址、经纬度、IP",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-amap-jsapi-skill",
+      "name": "amap-jsapi-skill",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-jsapi-skill",
+      "source": "skill",
+      "desc": "高德地图 JSAPI v2.0 (WebGL) 开发技能。涵盖地图生命周期、安全配置、3D 视图、覆盖物绘制、图层管理、LBS 服务集成。触发关键词：地图开发、JSAPI、WebGL地图、地图初始化、覆盖物、点标记、Marker、Polyline、Polygon、InfoWindow、热力图、图层、地理编码、路径规划开发、AMap、amap-jsapi。",
+      "sub_files": 36
+    },
+    {
+      "id": "skill-amap-lbs-skill",
+      "name": "amap-lbs-skill",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-lbs-skill",
+      "source": "skill",
+      "desc": "高德地图综合服务，支持POI搜索、路径规划、旅游规划、周边搜索和热力图数据可视化。生成免费的高德网页链接，不消耗API配额。触发关键词：搜、找、查、附近、周边、路线、规划、旅游、热力图、美食、酒店、景点、加油站、停车场。",
+      "sub_files": 9
+    },
+    {
+      "id": "skill-browser-use",
+      "name": "browser-use",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\browser-harness",
+      "source": "skill",
+      "desc": "\"Always use browser-use for any web interaction: automation, scraping, testing, or site/app work.\"",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-grill-me",
+      "name": "grill-me",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\grill-me",
+      "source": "skill",
+      "desc": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when the user wants to stress-test a plan, get grilled on th",
+      "sub_files": 3
+    },
+    {
+      "id": "skill-headroom",
+      "name": "headroom",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\headroom",
+      "source": "skill",
+      "desc": "Headroom 上下文压缩层（CLI 版）。支持 headroom proxy / audit-reads / savings / inspect / diff / memory 等命令，用于手动压缩超大工具输出、审计 Read-tool 流量、查看压缩节省统计。注意：headroom MCP 服务器已禁用（2026-08-12 量化亏损），CLI 仍可用。触发关键词：headroom、上下文压",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-model-switcher",
+      "name": "model-switcher",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\model-switcher",
+      "source": "skill",
+      "desc": "DeepSeek 模型参数切换技能。支持 daily（日常快速）与 deep（深度推理）双模式，以及基于任务复杂度的自适应自动切换。当用户需要切换思考深度、调整模型参数、切换简单/复杂任务模式时使用。触发关键词：切换模式、模型参数、思考深度、深度推理、快速模式、日常模式、慢思考、调整参数、max_tokens、reasoning_effort、慢一点、深入一点、deep mode、daily mo",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-opencode-config",
+      "name": "opencode-config",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\opencode-config",
+      "source": "skill",
+      "desc": "OpenCode 配置（opencode.jsonc）分级知识库。覆盖官方 Schema v2 全部字段、本项目实际配置的本地化说明、操作指南、安全规则和排障手册。LLM 通过三阶自检路由按需加载子文件。当用户需要查看、修改、编写、验证 opencode 配置时使用。触发关键词：opencode配置、opencode参数、opencode.jsonc、config schema、permissio",
+      "sub_files": 18
+    },
+    {
+      "id": "skill-recruit-assist",
+      "name": "recruit-assist",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\recruit-assist",
+      "source": "skill",
+      "desc": "简历投递辅助。支持投简历（打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、更新信息库、记录投递状态、跟踪企业、上传简历跟踪（本地→飞书增量同步）、下载简历跟踪（飞书→本地全量覆盖）、提取表单（归档表单填写记录）。触发关键词：投简历、识别简历、更新信息库、记录投递、跟踪企业、招聘、简历投递、上传简历跟踪、下载简历跟踪、提取表单。",
+      "sub_files": 5
+    },
+    {
+      "id": "skill-resume-builder",
+      "name": "resume-builder",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skill\\resume-builder",
+      "source": "skill",
+      "desc": "当用户请求制作简历、修改简历、优化简历、写CV、写求职信、准备面试或咨询求职相关问题时必须主动使用此技能。支持简历内容创作、ATS优化、岗位定制、成就公式指导、求职信撰写、面试准备、简历评分与修改建议。触发关键词：简历、resume、CV、求职、面试、cover letter、求职信、改简历、写简历、优化简历、简历模板、简历格式、STAR、实习申请、找实习、找工作。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-drawio-reference",
+      "name": "drawio-reference",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\drawio-reference",
+      "source": "skills",
+      "desc": "draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型）、shape 搜索指南、强制导出规范。对 drawio-worker 子Agent 为强制加载项（含防截断规则），不可跳过。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-frontend-design",
+      "name": "frontend-design",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\frontend-design",
+      "source": "skills",
+      "desc": "前端设计双引擎系统。先数据驱动 Top K 候选推荐，后设计主管创意裁决。覆盖网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、前端开发、landing page、设计系统。适用场景：新建页面/组件、UI 重构、设计审查、配色选型、字体选型。",
+      "sub_files": 43
+    },
+    {
+      "id": "skill-lark-suite",
+      "name": "lark-suite",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\lark-suite",
+      "source": "skills",
+      "desc": "飞书/Lark 全功能操作入口。通过 lark-cli 命令操作飞书资源，覆盖日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、会议纪要、考勤、审批、OKR、白板、笔记、思维笔记、事件订阅、应用开发等全部业务域。触发关键词：飞书、lark、lark-cli、feishu、消息、发消息、群聊、日程、日历、meeting、schedule、文档、创建文档、编辑文",
+      "sub_files": 4
+    },
+    {
+      "id": "skill-minimax-docx",
+      "name": "minimax-docx",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\minimax-docx",
+      "source": "skills",
+      "desc": ">",
+      "sub_files": 198
+    },
+    {
+      "id": "skill-minimax-xlsx",
+      "name": "minimax-xlsx",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\minimax-xlsx",
+      "source": "skills",
+      "desc": "\"Open, create, read, analyze, edit, or validate Excel/spreadsheet files (.xlsx, .xlsm, .csv, .tsv). Use when the user asks to create, build, modify, analyze, read, validate, or format any Excel spread",
+      "sub_files": 26
+    },
+    {
+      "id": "skill-openspec-apply-change",
+      "name": "openspec-apply-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-apply-change",
+      "source": "skills",
+      "desc": "执行 tasks.md 中的实现任务——逐条完成并打勾。tasks.md 就绪后开始编码时使用。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-archive-change",
+      "name": "openspec-archive-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-archive-change",
+      "source": "skills",
+      "desc": "归档已完成的变更——合并 delta spec 到主 spec 并移动到 archive。实现完成并验证通过后使用。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-bulk-archive-change",
+      "name": "openspec-bulk-archive-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-bulk-archive-change",
+      "source": "skills",
+      "desc": "批量归档多个已完成的变更。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-continue-change",
+      "name": "openspec-continue-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-continue-change",
+      "source": "skills",
+      "desc": "继续已有的变更——按 DAG 顺序生成下一个未完成的工件。适合恢复中断的工作。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-explore",
+      "name": "openspec-explore",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-explore",
+      "source": "skills",
+      "desc": "探索模式——分析代码、理清需求、比较方案。不确定要做什么或需要先思考再动手时使用。不写代码。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-ff-change",
+      "name": "openspec-ff-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-ff-change",
+      "source": "skills",
+      "desc": "快速通道——跳过逐步交互，一键生成所有 OpenSpec 工件。适合有经验的用户或简单变更。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-new-change",
+      "name": "openspec-new-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-new-change",
+      "source": "skills",
+      "desc": "逐步创建新变更——比 propose 更细粒度，逐个工件交互式创建。适合复杂或需精细控制的场景。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-onboard",
+      "name": "openspec-onboard",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-onboard",
+      "source": "skills",
+      "desc": "OpenSpec 引导教程——手把手带领首次使用的用户完成完整流程。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-propose",
+      "name": "openspec-propose",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-propose",
+      "source": "skills",
+      "desc": "创建变更提案——一键生成 proposal/design/specs/tasks。明确知道要做什么时使用。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-sync-specs",
+      "name": "openspec-sync-specs",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-sync-specs",
+      "source": "skills",
+      "desc": "同步 delta spec 到主 spec（不归档）。仅被 archive-change 或显式召唤时使用。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-update-change",
+      "name": "openspec-update-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-update-change",
+      "source": "skills",
+      "desc": "编辑/协调已有的 OpenSpec 工件。处理手动修改后的重新同步。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-openspec-verify-change",
+      "name": "openspec-verify-change",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-verify-change",
+      "source": "skills",
+      "desc": "验证实现是否匹配 spec/design。归档前的可选校验步骤。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-pdf-ocr",
+      "name": "pdf-ocr",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\pdf-ocr",
+      "source": "skills",
+      "desc": "PDF OCR 识别专项。处理扫描件、图片型 PDF、含水印/印章的文档。支持多语言 OCR（中英）、表格区域提取、印章检测。仅在 PDF 无文本层（扫描件/图片型）时加载。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-release-openspec",
+      "name": "release-openspec",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\release-openspec",
+      "source": "skills",
+      "desc": "OpenSpec 自身发布管理。仅 OpenSpec 维护者使用。",
+      "sub_files": 3
+    },
+    {
+      "id": "skill-soe-resume",
+      "name": "soe-resume",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\soe-resume",
+      "source": "skills",
+      "desc": "\"央国企/体制内简历制作、评审与优化。支持三大功能：简历评审（8维度评分+红黄绿灯）、简历修改（先评审确认后改写）、从零生成（读取个人信息+交互问答）。内置CV4SOE的4维度转换方法论（动词行政化升级/视角宏观化包装/关键词安全合规/软实力组织化呈现）。触发关键词：央国企简历、央企简历、国企简历、SOE简历、体制内简历、央企求职、国企求职、国家电网简历、中石化简历。\"",
+      "sub_files": 4
+    },
+    {
+      "id": "skill-superpowers-feature-workflow",
+      "name": "superpowers-feature-workflow",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-feature-workflow",
+      "source": "skills",
+      "desc": "规范开发流程——需求澄清→方案设计→TDD 实现→验证。不依赖 OpenSpec CLI，轻量级规范编程。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-superpowers-learning-workflow",
+      "name": "superpowers-learning-workflow",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-learning-workflow",
+      "source": "skills",
+      "desc": "会话后知识沉淀——回写项目记忆、决策记录、可复用教训。按需显式召唤。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-superpowers-openspec-superpowers-workflow",
+      "name": "superpowers-openspec-superpowers-workflow",
+      "path": "C:\\Users\\15057\\.config\\opencode\\skills\\superpowers-openspec-superpowers-workflow",
+      "source": "skills",
+      "desc": "完整交付流程——Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档。全程门控，需显式召唤。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-agent-reflection",
+      "name": "agent-reflection",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\agent-reflection",
+      "source": "reflection",
+      "desc": "Fork Agent 自进化系统 —— Plan+Build 周期后异步反思，提炼经验存入 Memory 缓存或创建新 Skill。触发关键词：reflection、同步记忆、反思、/reflection。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-cytoscape-dag-visualization",
+      "name": "cytoscape-dag-visualization",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\coding\\cytoscape-dag-visualization",
+      "source": "reflection",
+      "desc": "cytoscape.js 交互 DAG 可视化构建方法论。当任务涉及构建组级+下钻交互 DAG 总览、向页面注入 DATA、环修复、disabled 节点标注、批量 HTML 页插入源码级动态 DAG、染色/排版/幂等防累积、VLM 验证渲染时使用。触发关键词：cytoscape、交互式DAG、DAG总览、下钻、DATA注入、disabled标注、环修复、动态DAG、模块依赖图、批量插入。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-dag-tutorial-authoring",
+      "name": "dag-tutorial-authoring",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\coding\\dag-tutorial-authoring",
+      "source": "reflection",
+      "desc": "DAG 教程编写方法论（零基础读者导向）。当任务涉及编写面向初学者的概念/技能 DAG 教程、将可读性规律编码为门控、调研驱动编写、双轨验证(VLM+headless)时使用。触发关键词：DAG教程、教程编写、学习路径、knowledge DAG、可读性门控、调研驱动编写、新手教程。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-github-bulk-upload",
+      "name": "github-bulk-upload",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\coding\\github-bulk-upload",
+      "source": "reflection",
+      "desc": "GitHub 大仓库全量上传方法论。当任务涉及将大型交付物/源码克隆(100+MB/数千文件)上传至 GitHub 仓库、处理嵌套.git被识别为gitlink、大文件推送schannel中断、gh CLI代理登录、权限deny转手动push时使用。触发关键词：上传GitHub、GitHub上传、大仓库上传、gh repo create、git push、嵌套git、postBuffer、设备码登",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-multi-window-dag-delivery",
+      "name": "multi-window-dag-delivery",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\coding\\multi-window-dag-delivery",
+      "source": "reflection",
+      "desc": "多层窗口接力 DAG 依赖链分析与交付方法论。当任务涉及将大型源码/插件库拆分为多窗口接力分析 DAG 依赖、每窗口产出 PLAN-layerN.md 接力文件、HTML/MD/drawio/交互图多形态交付、三硬依据溯源时使用。触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-large-scale-source-parse",
+      "name": "large-scale-source-parse",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\large-scale-source-parse",
+      "source": "reflection",
+      "desc": "大规模源码库静态解析方法论。当任务涉及解析大型开源项目源码架构（数百至数万文件）、建立分层抽象、跨模块联动分析、产出结构文档时使用。触发关键词：源码解析、架构解析、source analysis、9层解析、DAG依赖链、跨层联动、源码clone、架构文档。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-postmortem-failure-review",
+      "name": "postmortem-failure-review",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\postmortem-failure-review",
+      "source": "reflection",
+      "desc": "失败项目复盘方法论。对失败的自动化/工程/交付项目进行根因分析与经验提炼。覆盖：路线错误识别（架构方向 vs 执行质量）、五因框架、过度工程检测、质量门控审计、用户门槛评估。触发关键词：失败复盘、为什么失败、复盘、postmortem、教训、项目失败分析。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-reusable-asset-inventory",
+      "name": "reusable-asset-inventory",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\reusable-asset-inventory",
+      "source": "reflection",
+      "desc": "从失败/遗留项目中提炼可复用资产的方法论。三级分类（可直接复用/需修改复用/仅参考思路）+ 优先级排序 + 参考项目对标。触发关键词：可复用资产、资产盘点、复用清单、资产清单、asset inventory、代码复用评估。",
+      "sub_files": 1
+    },
+    {
+      "id": "skill-cdisk-space-optimization",
+      "name": "cdisk-space-optimization",
+      "path": "D:\\Opencode_Download\\Reflection\\skills\\system\\cdisk-space-optimization",
+      "source": "reflection",
+      "desc": "Windows C盘空间优化方法论。当任务涉及C盘空间不足分析、社交软件数据目录定位、开发缓存搬迁、junction软链接、系统清理高危项处理时使用。触发关键词：C盘空间、磁盘清理、空间优化、junction、软链接、缓存搬迁、微信数据、QQ数据、还原点、系统清理。",
+      "sub_files": 1
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent-plan",
+      "name": "plan",
+      "mode": "main"
+    },
+    {
+      "id": "agent-build",
+      "name": "build",
+      "mode": "main"
+    },
+    {
+      "id": "agent-pdf-worker",
+      "name": "pdf-worker",
+      "mode": "subagent"
+    },
+    {
+      "id": "agent-drawio-worker",
+      "name": "drawio-worker",
+      "mode": "subagent"
+    },
+    {
+      "id": "agent-general",
+      "name": "general",
+      "mode": "main"
+    },
+    {
+      "id": "agent-explore",
+      "name": "explore",
+      "mode": "main"
+    },
+    {
+      "id": "agent-reflection-worker",
+      "name": "reflection-worker",
+      "mode": "subagent"
+    }
+  ],
+  "plugins": [
+    {
+      "id": "plugin-vision-interceptor-js",
+      "name": "vision-interceptor.js",
+      "path": "C:\\Users\\15057\\.config\\opencode\\plugins\\vision-interceptor.js"
+    }
+  ],
+  "tools": [
+    {
+      "id": "tool-read-ts",
+      "name": "read.ts",
+      "path": "C:\\Users\\15057\\.config\\opencode\\tools\\read.ts"
+    }
+  ],
+  "commands": [
+    {
+      "id": "command-reflection-md",
+      "name": "reflection.md",
+      "path": "C:\\Users\\15057\\.config\\opencode\\command\\reflection.md"
+    }
+  ],
+  "mcp": [
+    {
+      "id": "mcp-vscode-mcp-server",
+      "name": "vscode-mcp-server",
+      "enabled": false
+    },
+    {
+      "id": "mcp-amap",
+      "name": "amap",
+      "enabled": false
+    },
+    {
+      "id": "mcp-pdf-reader",
+      "name": "pdf-reader",
+      "enabled": true
+    },
+    {
+      "id": "mcp-drawio",
+      "name": "drawio",
+      "enabled": true
+    },
+    {
+      "id": "mcp-drawio-local",
+      "name": "drawio-local",
+      "enabled": false
+    },
+    {
+      "id": "mcp-headroom",
+      "name": "headroom",
+      "enabled": false
+    }
+  ],
+  "instructions": [
+    {
+      "id": "instr-auto-mode-md",
+      "name": "auto-mode.md",
+      "path": "~/.config/opencode/instructions/auto-mode.md"
+    },
+    {
+      "id": "instr-MEMORY-md",
+      "name": "MEMORY.md",
+      "path": "~/.config/opencode/MEMORY.md"
+    }
+  ]
+}

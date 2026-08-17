@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "task": "opencode 改造需求变迁还原（三源交叉验证）",
+    "method": "MEMORY.md（§分段记忆）+ config 备份链（5 快照 diff）+ Mission-file 留档报告（5 段式）",
+    "date_range": "2026-08-01 ~ 2026-08-17",
+    "event_count": 18,
+    "config_backup_chain": [
+      "opencode.jsonc.backup-20260803-165037",
+      "opencode.jsonc.bak-20260807",
+      "opencode.jsonc.bak-20260813",
+      "opencode.jsonc.bak-20260813-plan-pro",
+      "opencode.jsonc（当前）"
+    ],
+    "key_reports": [
+      "0801-P0任务完成报告", "0802-opencode改造盘点", "0802-agent-prompt-unification-report",
+      "0802-vscode-mcp-server-tools-audit", "0803-opencode-改进落地", "0803-编码安全纵深防御",
+      "0803-Drawio工具链优化与缓存修正", "0805-Reflection系统", "0805-opencode-config过时修正",
+      "0806-plan-build-flash", "0807-opencode原理分析", "0807-VLM图片识别修复",
+      "0807-opencode原生命令", "0812-headroom修复", "0813-opencode-config-skill更新",
+      "0816-plugin-dag", "0817-opencode-dag"
+    ]
+  },
+  "events": [
+    {
+      "date": "2026-08-01",
+      "area": "provider/model/compaction/instructions",
+      "change": "P0 输入缓存优化落地：small_model Pro→Flash（标题/摘要轻量任务降费约12x）；新增 compaction 配置块（auto/prune/tail_turns:4/preserve_recent_tokens:16384/reserved:10000）；plan prompt 注入 grill-me 协议（+500 tokens 固化，缓存命中后免费）；build prompt 精简 1297→50 chars；pdf-worker/drawio-worker 绑定 Flash；新增 general/explore 子Agent（Flash）；provider 加 setCacheKey:true；新增 deepseek-v4-flash 模型定义+cost 字段；创建 agent-protocol.md（合并 plan/build 调度协议）；auto-mode.md 扩充 620→2000+ chars（缓存感知原则，实测命中率 53.3%）。",
+      "reason": "用户需求：输入缓存（prefix-cache）优化降本。先研究 API 缓存底层原理与 opencode/Reasonix 架构对比，制定 P0/P1/P2 三级方案。",
+      "source_evidence": "0801-P0任务完成报告/P0任务完成报告.md；0801-opencode输入缓存优化方案；0802-opencode改造盘点报告（配置层对比表）",
+      "related_assembly": "auto-mode.md、agent-protocol.md、grill-me、deepseek provider、compaction 配置块"
+    },
+    {
+      "date": "2026-08-02",
+      "area": "provider",
+      "change": "setCacheKey 灰度验证：0801 开启 setCacheKey:true 验证缓存键支持，验证完成后从 opencode.jsonc 移除（backup-20260803 中已不存在）。",
+      "reason": "灰度测试完成后的清理（P2-1 灰度测试：从 @ai-sdk/openai-compatible 迁移到 @ai-sdk/deepseek，验证缓存监控可行性）。",
+      "source_evidence": "0802-setCacheKey-验证报告/setCacheKey-验证报告.md；0802-opencode改造盘点报告（'setCacheKey 已移除（backup 中有，当前已删）'）",
+      "related_assembly": "deepseek provider、@ai-sdk/deepseek"
+    },
+    {
+      "date": "2026-08-02",
+      "area": "mcp",
+      "change": "vscode-mcp-server 工具审计：打包产物实测仅 6 个 MCP 工具（code_checker/focus_editor/list|start|restart|stop_debug_session，约 692 tokens），而非 README 宣称的 ~72 个，search_symbol 未打包。审计结论：低频工具建议禁用 → vscode-mcp-server 置 enabled:false（P1-2 已禁用）。",
+      "reason": "成本控制：该 MCP 极少使用且工具价值低（调试工具可替代），token 开销纯浪费。",
+      "source_evidence": "0802-vscode-mcp-server-tools-audit/vscode-mcp-server-tools-audit.md；backup-20260803 description【P1-2 已禁用】",
+      "related_assembly": "vscode-mcp-server（enabled:false）、vscode-mcp-launcher.ps1"
+    },
+    {
+      "date": "2026-08-02",
+      "area": "instructions/permission/variant",
+      "change": "Agent Prompt 统一 + GATE 强制门控：①plan/build prompt 统一为同一份 Grill-Me+Agent Protocol 完整版（原 build 仅 50 chars 引用）；②plan/build 均 variant=daily，model 继承全局 Pro；③agent-protocol.md 移出 instructions（消除子Agent 收到'调度者+执行者'身份冲突，每子Agent 省约450 tokens）；④auto-mode.md 的 Model Selection 重写为 MANDATORY GATE CHECK（4 维自评→Daily/Deep）；⑤Pro/Flash 的 daily.max_tokens 4096→8192。",
+      "reason": "源码级研究确认 plan/build 系统提示模板相同，差异来自权限/reminder/prompt；解决子Agent 身份冲突与模型选择不被强制执行的问题。",
+      "source_evidence": "0802-agent-prompt-unification-report/agent-prompt-unification-report.md；backup-20260803（plan/build prompt 已统一为完整版）",
+      "related_assembly": "Grill-Me prompt（agent.prompt 注入，位置0）、GATE 门控、agent-protocol.md"
+    },
+    {
+      "date": "2026-08-03",
+      "area": "permission",
+      "change": "编码安全纵深防御（三层）：L1 全局 deny（python -c*/rm -rf*）+ ask（*Set-Content*/*Out-File*/*Remove-Item* -Force*）+ L2 agent 覆盖 + L3 子Agent 注入；prompt 追加'编码安全规则'（优先 edit 工具、禁止 bash+python 内联管道、独立 .py 脚本）；发现 Plan 模式 code 级禁 edit→LLM 降级 python -c→PowerShell 转义截断 UTF-8 的根因链。",
+      "reason": "排障教训：2026-08-03 发现 opencode.jsonc UTF-8 编码损坏（中文变 U+FFFD 替换字符），根因是 PowerShell 重解释转义序列截断中文多字节序列。",
+      "source_evidence": "0803-编码安全纵深防御/编码安全纵深防御-任务完成报告.md；MEMORY.md §(2026-08-03) 编码安全；backup-20260803 permission 块",
+      "related_assembly": "permission.bash 规则、edit 工具（UTF-8 安全）、Plan 模式工具权限"
+    },
+    {
+      "date": "2026-08-03",
+      "area": "instructions/tool",
+      "change": "opencode 3 项改进落地：①auto-mode.md 子Agent Return Format 升级为 8 字段结构化 JSON（新增 files_created/files_modified/decisions/warnings，去掉 next_step）；②末尾追加 Session Memory 结构化压缩模板（L1 剪枝→L2 模板→L3 兜底摘要，5 段模板）；③创建 MEMORY.md（instructions 数组追加，置于 auto-mode.md 之后保缓存前缀）；④Mission 留档规则升级（5 段报告模板+三重门控+路径正则）。",
+      "reason": "对标 Claude Code（0803-opencode-vs-claude 对比报告识别 5 维差距），P0/P1 改进：结构化压缩替代悬崖式摘要、子Agent 通信标准化、跨会话记忆持久化。",
+      "source_evidence": "0803-opencode-改进落地/任务报告.md；backup-20260803（instructions 仅 auto-mode.md，无 MEMORY.md）",
+      "related_assembly": "MEMORY.md、Session Memory 压缩模板、auto-mode.md、Mission 留档规则"
+    },
+    {
+      "date": "2026-08-03",
+      "area": "tool/plugin/skills",
+      "change": "Drawio 工具链全链路优化+缓存修正：①drawio-mcp-minimal 新增 drawio_export 工具（Puppeteer+lightbox+deviceScaleFactor，3 次迭代修复 CLI --scale 4 渲染 bug）；②drawio-reference SKILL.md 新增第五章'导出与验证'；③drawio-worker 的 agent.prompt 字段回退（实测 agent.prompt 位于系统提示位置 0，导致缓存前缀从 2→3，子Agent 缓存无法共享，用户判定'代价不值得'）；④MCP 路由规则改为'必须加载 drawio-reference'（经 Skills to Load 传递，规避 prompt 注入）。",
+      "reason": "用户需求'全链路优化 draw.io 工具链'（图片导出经验价值高）；关键转折：prefix-cache 前缀碎片化代价 > prompt 注入收益，per-agent 行为约束改走 skill 传递（MEMORY.md 固化准则）。",
+      "source_evidence": "0803-Drawio工具链优化与缓存修正/留档报告.md；MEMORY.md §(2026-08-03) Per-agent 行为约束禁止经 agent.prompt 注入",
+      "related_assembly": "drawio_export、drawio-reference skill、drawio-worker、MCP 路由规则"
+    },
+    {
+      "date": "2026-08-03",
+      "area": "skills/provider",
+      "change": "opencode-config skill 全面重写：单文件 646 行→18 文件多级分层路由（ref/local/ops/troubleshooting），基于官方文档+源码分析+实际配置三元验证；同步修正 provider 示例（@ai-sdk/openai-compatible→@ai-sdk/deepseek）与 max_tokens（4096→8192）。",
+      "reason": "用户发现 skill 不完善/无分层路由/与实际配置脱节（openai-compatible 示例已过时）。",
+      "source_evidence": "0803-opencode-config-skill重写/01-信息收集与初步分析.md",
+      "related_assembly": "opencode-config skill、provider deepseek"
+    },
+    {
+      "date": "2026-08-05",
+      "area": "agent/tool/instructions",
+      "change": "Reflection 系统设计与部署：新增 reflection-worker 子Agent（Flash，仅文件读写权限，bash deny）；Build 末尾封装 4 层输入（GATE自评+COMPLEXITY+决策/子Agent返回+聚合/MEMORY快照/留档报告）写入 pending.json；每轮用户消息先查 waiting_count 委派 reflection-worker 异步处理；/reflection 交互式审阅命令；opencode.jsonc 增加 reflection-worker 定义+skills 路径加 Reflection\\skills+external_directory 加 Reflection。",
+      "reason": "用户参考 Hermes Agent 自进化架构（Background Review/Curator），补 Plan-and-Execute 缺失的 Reflection 层：持续自我改进>减少重复错误>提升 Plan 质量。",
+      "source_evidence": "0805-Reflection系统/设计文档.md 与 任务完成情况报告.md；bak-20260807（新增 reflection-worker/Reflection skills/Reflection 目录权限）",
+      "related_assembly": "reflection-worker、pending.json、D:\\Opencode_Download\\Reflection\\"
+    },
+    {
+      "date": "2026-08-05",
+      "area": "skills",
+      "change": "opencode-config skill 过时修正：SHA256 C6A1...→FC85...，行数 254→240，Skill 清单 14→30（补 OpenSpec 12+Superpowers 3），Instructions 区分为 A/B 两类（补 MEMORY.md），python -c 禁令替换 3 个文件，17 子文件哈希表刷新。",
+      "reason": "opencode.jsonc 已多次修改（SHA256 变化+Skill 扩至 30 个），skill 文档未同步导致严重过时（文档说自己做不到的事）。",
+      "source_evidence": "0805-opencode-config过时修正/报告.md；MEMORY.md §(2026-08-05) opencode-config skill 过时修正",
+      "related_assembly": "opencode-config skill"
+    },
+    {
+      "date": "2026-08-06",
+      "area": "model",
+      "change": "Plan/Build 主Agent 模型临时降级：agent.plan 与 agent.build 各新增 model=deepseek/deepseek-v4-flash（此时全 Agent 均 Flash）。",
+      "reason": "用户决策：调度逻辑不复杂，Flash 能力已足够；保留 variant/GATE/Variant 继承不动，回滚只需删 model 字段。风险已知：Flash 不支持图片附件、无 reasoning_effort 分级（Daily/Deep 仅 max_tokens 区分）。",
+      "source_evidence": "0806-plan-build-flash/改动报告.md；bak-20260807（plan/build model flash）",
+      "related_assembly": "agent.plan/build.model 字段"
+    },
+    {
+      "date": "2026-08-07",
+      "area": "plugin/tool",
+      "change": "opencode 原理源码级分析（v1.18.14，4 份子报告）：确认 runLoop 每次请求全量重发消息（252 条）、无增量机制；prefix-cache 破坏因素=compaction 重排/Reminders 注入/换模型/system 动态日期；system prompt 组装顺序（agent.prompt→env→instructions→mcp→skills）。",
+      "reason": "用户需求：理解 opencode 通信与上下文机制，为后续缓存/compaction/插件改造提供源码级依据。",
+      "source_evidence": "0807-opencode原理分析/总报告-opencode通信与上下文机制原理分析.md（含 4 子报告）",
+      "related_assembly": "prefix-cache 优化、compaction、system prompt 拼装"
+    },
+    {
+      "date": "2026-08-07",
+      "area": "tool/plugin",
+      "change": "VLM 图片识别双通道修复：①tools/read.ts 模型改为 glm-4.6v（付费）优先+429 降级 glm-4.6v-flash，Key 硬编码→process.env.ZHIPU_API_KEY；②plugins/vision-interceptor.js 新增 experimental.chat.messages.transform 钩子（每轮 LLM 请求前遍历历史消息图片做 VLM 替换，修复 chat.message 钩子修改不生效的闭包问题），缓存 Set→Map（URL→描述，SKIP 复用描述不丢图）；③setx ZHIPU_API_KEY。",
+      "reason": "排障：免费 flash 模型 429 限流；用户上传图片报 'does not support image input'（Flash 仅 text 输入）→ 插件通道必须把图片转文字。",
+      "source_evidence": "0807-VLM图片识别修复/任务留档报告.md；0807-opencode原理分析/报告-01-VLM双通道与插件钩子.md（缓存键跨钩子不一致/并发重复 VLM 证据）",
+      "related_assembly": "vision-interceptor.js（messages.transform 钩子）、tools/read.ts、ZHIPU_API_KEY、GLM-4.6v"
+    },
+    {
+      "date": "2026-08-07",
+      "area": "commands/instructions",
+      "change": "/reflection 升级为 opencode 原生命令：创建 ~/.config/opencode/command/reflection.md（frontmatter agent:build，自包含命令体，$ARGUMENTS 区分子动作）；同步更新 plan/build prompt 2 处（/reflection 章节改为'已注册为原生命令'）；修复路径门控正则缺陷（缺分隔符 \\\\）；产生备份 opencode.jsonc.bak-20260807。",
+      "reason": "用户指出'opencode 并没有 /reflection 指令，不符合预设'——原为提示词级'仿真命令'，TUI 输入 / 看不到，需注册为原生命令。",
+      "source_evidence": "0807-opencode原生命令/任务留档报告.md；bak-20260807（prompt 含 /reflection 章节）",
+      "related_assembly": "command/reflection.md、agent.build prompt"
+    },
+    {
+      "date": "2026-08-12",
+      "area": "mcp",
+      "change": "headroom MCP 故障修复+量化禁用：①根因=8/5 Stop-Process -Force 误杀 python 进程（非 proxy 缺失），修复为 headroom-mcp-launcher.ps1 v3（纯 stdio 转发、无后台进程、纯 ASCII）；②同日量化评估（3 工具 ~279 tokens/请求 vs 历史收益仅 ~$0.001）→ 用户决策 enabled:false，保留配置与 launcher（切 Claude Code/Codex 走 proxy 时改回 true）。",
+      "reason": "排障教训：'server unavailable' 未必是服务器坏（先做客户端等价测试）；MCP wrapper 铁律=不在握手路径启动后台进程/长等待；量化亏损（工具开销 > 收益）成本控制。",
+      "source_evidence": "0812-headroom修复/headroom修复报告.md；bak-20260813（headroom 改 launcher 脚本+enabled:false+描述标注 0812 禁用）",
+      "related_assembly": "headroom-mcp-launcher.ps1、headroom MCP（enabled:false，CLI 仍可用）"
+    },
+    {
+      "date": "2026-08-13",
+      "area": "skills/instructions",
+      "change": "opencode-config skill 全面同步+配置优化：①Schema 审计（1.18.11→1.18.16）发现 13 缺失字段（list/plan_enter/plan_exit 权限键、.env ask、enterprise 等），24 文件更新；②auto-mode.md 移除 6 处 headroom MCP 引用；③agent-protocol.md 去 next_step；④同日延续任务：opencode.jsonc 10 处 edit（7 处 MCP description 统一【已禁用/启用】格式+3 处注释），SHA256 6316944E→5BBE6925，备份 bak-20260813。",
+      "reason": "opencode.jsonc 经历 6 次实质变更（0802-0812），skill 严重过时需系统性审计；用户确认 task-delegation.md 不改（Flash 降级为临时措施）与 headroom CLI 保留。",
+      "source_evidence": "0813-opencode-config-skill更新/任务完成报告.md；bak-20260813；MEMORY.md §(2026-08-13) opencode.jsonc 修改安全链",
+      "related_assembly": "opencode-config skill、auto-mode.md、agent-protocol.md、headroom"
+    },
+    {
+      "date": "2026-08-13",
+      "area": "model",
+      "change": "plan 删 model 回落顶层：agent.plan.model（flash）删除→回落顶层 model=deepseek-v4-pro（只动顶层一处）；agent.build.model 保留 flash（build 用 Flash 执行者）；子Agent 全 Flash；注释标注'0806 临时降级，回滚 Pro 删此字段'。",
+      "reason": "维护简化：省双层 model 维护，plan 调度决策用 Pro 质量、build 执行用 Flash 成本；MEMORY.md 固化'plan=Pro / build=Flash / 子Agent 全 Flash'。",
+      "source_evidence": "MEMORY.md §(2026-08-13) 备份路径/主模型；当前 opencode.jsonc（plan 无 model 注释+build model flash 注释）；bak-20260813-plan-pro（0806 降级注释+pro 回滚说明）",
+      "related_assembly": "agent.plan/build.model、顶层 model"
+    },
+    {
+      "date": "2026-08-17",
+      "area": "plugin/其他（经验迁移）",
+      "change": "经验跨项目迁移：0816-plugin-dag 优化（173 插件）应用 0817 GitHub DAG 经验——'为什么需要它'区块（52 深度 why+121 简版）、根入口统计一致性门控、站内 .md 链接原则（区分'站内导航 .md'禁止 vs '外部来源 URL'合理）、权重分档全量联网、权威源=官方 monorepo、git push 权限拦截应对（用户手动 push）。当前 0817-opencode-dag 任务即三源交叉还原本次改造史（本文件）。",
+      "reason": "用户要求将 0817 经验迁移到 0816 项目；方法论沉淀（MEMORY.md §0817 三条）：人类入口一律 .html、修生成物同步修脚本、新增节点回归交互总览。",
+      "source_evidence": "0816-plugin-dag/执行报告-0817经验迁移优化.md；0817-opencode-dag/PLAN.md（决策 9：改造层调研=MEMORY+config 备份链+留档报告三源交叉）；MEMORY.md §(2026-08-17)",
+      "related_assembly": "0816-plugin-dag 全链、gen-html-l3.py、quality-gate-readable.py、weight-calc.py"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>client · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>client </h1>
+  <div class="sub">oc-client · package · G3-客户端 · Layer 2</div>
+
+  <h2>① 作用</h2>
+  <p>面向 Web/桌面的客户端库。src/contract.ts:1-17 复用 protocol 的 makeDefaultApi 定义 ClientApi 与 Location/SessionLocation 中间件，并声明 groupNames/endpointNames 映射（src/contract.ts:19-51）；src/index.ts:1-2 从 generated/ 导出类型化客户端；src/generated/ 与 src/generated-effect/ 由 script/build.ts 依据 contract 生成（普通 + Effect 两版），src/effect.ts:3-25 转出 schema 数据类型并保证不 import core/server（文件头注释 src/effect.ts:1-2）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 客户端 Api 契约（基于 protocol 默认 Api，packages/client/src/contract.ts:14-17）<br>· 生成的普通客户端（packages/client/src/generated/client.ts）<br>· 生成的 Effect 客户端（packages/client/src/generated-effect/client.ts）<br>· 类型 re-export 与错误类型（packages/client/src/effect.ts:4-25、generated/client-error.ts）<br>· group/endpoint 名称映射（packages/client/src/contract.ts:19-51）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>workspace-dep</td><td><small>@opencode-ai/client/package.json dependencies.@opencode-ai/schema</small></td></tr><tr><td><a href='oc-protocol.html'>protocol</a></td><td>workspace-dep</td><td><small>@opencode-ai/client/package.json dependencies.@opencode-ai/protocol</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-app.html'>app</a></td><td>workspace-dep</td><td><small>@opencode-ai/app/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-sdk-next.html'>sdk-next</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-session-ui.html'>session-ui</a></td><td>workspace-dep</td><td><small>@opencode-ai/session-ui/package.json dependencies.@opencode-ai/client</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>面向 app/web 前端生成类型安全的 HTTP 客户端，并通过协议层复用服务端同款端点契约；强调不得反向依赖 core/server（src/effect.ts:1-2），保持客户端纯净。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未直接引用 client（本机界面是终端 CLI + 浏览器，不使用 app/web 前端与 client 包），属官方底座；但 client 与 sdk 同源（协议生成），本机若未来走 HTTP 集成可无成本接入同一契约。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· 入口：src/index.ts:1-2 re-export generated/index 与 OpenCodeEvent 类型；src/effect.ts 提供 Effect 原生客户端。package.json exports：&#x27;.&#x27;（Promise 版，src/index.ts）与 &#x27;./effect&#x27;（Effect 版）。<br>· 生成制：由 @opencode-ai/server/api 经 httpapi-codegen 生成 src/generated/*（client.ts/types.ts/client-error.ts/index.ts）；README.md:8-12 要求改契约后 bun run generate + check:generated 防漂移。<br>· 用法示例（client/README.md:29-38）：import { OpenCode } from &#x27;@opencode-ai/client/effect&#x27;，OpenCode.make({baseUrl}) 后 client.sessions.create/prompt 直接用 canonical 类型（Session.ID/Location.Ref/Prompt）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>client 面向 app/web/session-ui 前端生成类型安全 HTTP 客户端：零 Effect 依赖的 Promise 根（无 core/server 依赖），/effect 子路径依赖 Effect+Schema+Protocol 且浏览器打包安全。协议层复用服务端同款端点契约，前端因此获得与 server 完全一致的端点类型；sdk-next/app/session-ui 三个官方包依赖它（official-dag reverse）。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（6 模块 · 2 边）</h3>
+<div id="int-oc-client" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_client = {"nodes": [{"data": {"id": "contract.ts", "name": "contract.ts", "path": "contract.ts"}, "classes": "leaf"}, {"data": {"id": "effect.ts", "name": "effect.ts", "path": "effect.ts"}, "classes": "leaf"}, {"data": {"id": "index.ts", "name": "index.ts", "path": "index.ts"}, "classes": "entry"}, {"data": {"id": "generated-effect/client-error.ts", "name": "client-error.ts", "path": "generated-effect/client-error.ts"}, "classes": "leaf"}, {"data": {"id": "generated-effect/client.ts", "name": "client.ts", "path": "generated-effect/client.ts"}, "classes": "leaf"}, {"data": {"id": "generated-effect/index.ts", "name": "index.ts", "path": "generated-effect/index.ts"}, "classes": "entry"}], "edges": [{"data": {"source": "generated-effect/client.ts", "target": "contract.ts"}}, {"data": {"source": "generated-effect/client.ts", "target": "generated-effect/client-error.ts"}}]};
+const cyoc_client = cytoscape({
+  container: document.getElementById('int-oc-client'),
+  elements: INToc_client,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_client.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

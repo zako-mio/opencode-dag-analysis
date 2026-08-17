@@ -1,0 +1,173 @@
+[
+  {
+    "id": "agent-plan",
+    "name": "plan",
+    "kind": "agent",
+    "implementation": "主 Agent（调度者角色，非执行者），variant=daily，无显式 model 字段 → 回落顶层 model deepseek-v4-pro（注释明确：只动顶层一处省维护）。prompt 由两部分组成：Grill-Me 协议（用 question 工具逐条追问收敛设计树，含 drift guardrails 防协议漂移）与 Agent 调度协议（分类判断→search-agents.ps1 搜索角色→拆解子任务→并行/接力委派→聚合精简 JSON）。permission 对 bash 全 deny，仅放行 git status/git diff/Get-ChildItem 只读命令（L2 层收紧执行面）。",
+    "provides": "需求澄清与设计树收敛（Grill-Me）、任务拆解与子Agent 委派、MCP 路由决策（PDF→pdf-worker / 图表→drawio-worker / 其他→general/explore）、Mission 留档 5 段报告触发、Build 末尾 Reflection 4 层写入、Variant 继承 [COMPLEXITY] 标记",
+    "depends_on": ["provider/deepseek（deepseek-v4-pro daily variant）", "search-agents.ps1", "D:\\Opencode_Download\\Reflection\\pending.json", "question 工具（@opencode-ai 内置）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:13-25"
+  },
+  {
+    "id": "agent-build",
+    "name": "build",
+    "kind": "agent",
+    "implementation": "执行者主 Agent，variant=daily，model=deepseek-v4-flash（注释：执行逻辑足够，省成本）。prompt 与 plan 完全一致（replaceAll 同步维护，存在未来不一致风险已记录于 MEMORY），实际按执行者身份运行为主。同时承载 /reflection 原生命令（frontmatter agent=build）。",
+    "provides": "执行 plan 收敛出的任务、编码安全规则执行（edit 优先/UTF-8 安全）、/reflection 交互式审阅命令宿主、Build 末尾 pending.json 4 层封装写入",
+    "depends_on": ["provider/deepseek（deepseek-v4-flash）", "question 工具", "D:\\Opencode_Download\\Reflection\\pending.json"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:26-30"
+  },
+  {
+    "id": "agent-pdf-worker",
+    "name": "pdf-worker",
+    "kind": "agent",
+    "implementation": "PDF 专家子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（PDF 提取无需 Pro 推理）。permission 仅放行 pdf-reader_* 工具（L3 最小权限注入），与全局 deny 构成三层纵深。主Agent 的 MCP 路由规则将 PDF/OCR/文档分析任务固定委派给它。",
+    "provides": "PDF 文本提取、OCR、文档分析（经 pdf-reader MCP 的 4 工具）",
+    "depends_on": ["@sylphx/pdf-reader-mcp（npm 包）", "pdf-reader MCP 服务器"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:31-39"
+  },
+  {
+    "id": "agent-drawio-worker",
+    "name": "drawio-worker",
+    "kind": "agent",
+    "implementation": "图表专家子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（图表生成无需 Pro 推理）。permission 仅放行 drawio_* 工具。主Agent 委派时必须精确写入 drawio-reference skill（刚性约束，禁止弱化表述），防止子Agent 使用不可靠 CLI 导出产生截断 PNG。",
+    "provides": "draw.io 图表创建与导出验证（流程图/架构图/UML/思维导图/组织图）",
+    "depends_on": ["D:\\Opencode\\drawio-mcp-minimal（drawio MCP v1.5.0）", "drawio-reference skill"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:40-48"
+  },
+  {
+    "id": "agent-general",
+    "name": "general",
+    "kind": "agent",
+    "implementation": "通用子Agent，model=deepseek-v4-flash，无 description/无专用 permission（继承全局 deny + external_directory 白名单）。无 MCP 工具，省 token。用于通用执行任务，包括 MEMORY 记录的多路并行领域分片联网检索（编码/通用/工具链 3 路并行，代理 127.0.0.1:7890）。",
+    "provides": "通用执行能力（无专用工具）、领域分片并行检索、异构数据归一化产出",
+    "depends_on": ["provider/deepseek（deepseek-v4-flash）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:49-51"
+  },
+  {
+    "id": "agent-explore",
+    "name": "explore",
+    "kind": "agent",
+    "implementation": "探索子Agent，model=deepseek-v4-flash，无 description/无专用 permission。用于代码库/知识库快速探索（glob/grep/read），并行产出数据；口径冲突时由主Agent 终裁（MEMORY 记录：包数 237/219 由主Agent 定夺，不重跑）。",
+    "provides": "快速只读探索、并行调研产出、统一 schema 归一化",
+    "depends_on": ["provider/deepseek（deepseek-v4-flash）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:52-54"
+  },
+  {
+    "id": "agent-reflection-worker",
+    "name": "reflection-worker",
+    "kind": "agent",
+    "implementation": "自我进化系统反思子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（反思分析无需 Pro 推理）。permission bash 全 deny（仅文件读写，L3 收紧）。处理 Plan+Build 周期后的异步反思：读取 pending.json 中 status=processing 的 cycle（含 4 层输入数据）→ 生成 memory_entries/skill_proposals。",
+    "provides": "异步反思分析、Memory/Skill 条目生成、pending.json 状态流转（waiting→processing）",
+    "depends_on": ["D:\\Opencode_Download\\Reflection\\pending.json", "MEMORY.md"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:55-65"
+  },
+  {
+    "id": "mcp-vscode-mcp-server",
+    "name": "vscode-mcp-server",
+    "kind": "mcp",
+    "implementation": "本地 MCP，经 powershell -ExecutionPolicy Bypass -File vscode-mcp-launcher.ps1 启动。已禁用（enabled=false）：仅 6 个工具（~692 tokens）极少使用，工具定义成本 > 收益。审计报告存于 Mission-file\\2026-08\\0802-vscode-mcp-server-tools-audit。",
+    "provides": "（禁用中）VS Code 相关 6 工具；保留配置便于按需启用",
+    "depends_on": ["vscode-mcp-launcher.ps1"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:188-199"
+  },
+  {
+    "id": "mcp-amap",
+    "name": "amap",
+    "kind": "mcp",
+    "implementation": "本地 MCP，经 powershell amap-mcp-wrapper.ps1 启动。已禁用（enabled=false）：12 个工具 ~2000 tokens 极低频（高德地图能力），与 vscode-mcp-server 同属 MCP 精兵策略裁撤对象。",
+    "provides": "（禁用中）高德地图 12 工具；保留配置便于按需启用",
+    "depends_on": ["amap-mcp-wrapper.ps1"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:200-211"
+  },
+  {
+    "id": "mcp-pdf-reader",
+    "name": "pdf-reader",
+    "kind": "mcp",
+    "implementation": "本地 MCP，命令 npx -y @sylphx/pdf-reader-mcp@latest。已启用（enabled=true）：PDF 文本提取（4 工具），仅 pdf-worker 子Agent 使用（permission 按工具名前缀隔离），全局层 pdf-reader_* 为 deny（L1），子Agent 层 allow（L3）。",
+    "provides": "PDF 文本提取（4 工具）能力",
+    "depends_on": ["@sylphx/pdf-reader-mcp（npm 包，npx 远程拉取）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:212-221"
+  },
+  {
+    "id": "mcp-drawio",
+    "name": "drawio",
+    "kind": "mcp",
+    "implementation": "本地 MCP，命令 node D:\\Opencode\\drawio-mcp-minimal\\package\\src\\index.js（本地精简版 v1.5.0）。已启用（enabled=true）：draw.io 图表创建，仅 drawio-worker 子Agent 使用（drawio_* 全局 deny，子Agent 层 allow）。",
+    "provides": "draw.io 图表创建能力（在线服务模式）",
+    "depends_on": ["D:\\Opencode\\drawio-mcp-minimal\\package\\src\\index.js"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:222-230"
+  },
+  {
+    "id": "mcp-drawio-local",
+    "name": "drawio-local",
+    "kind": "mcp",
+    "implementation": "本地 MCP，与主 drawio 同一实例（同 index.js），但注入环境变量 DRAWIO_BASE_URL=http://localhost:8080/ 走本地服务。已禁用（enabled=false）：离线兜底角色，断网时启用。",
+    "provides": "（兜底）离线模式 draw.io 图表创建（本地 8080 实例）",
+    "depends_on": ["D:\\Opencode\\drawio-mcp-minimal（本地 drawio 服务 http://localhost:8080/）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:231-242"
+  },
+  {
+    "id": "mcp-headroom",
+    "name": "headroom",
+    "kind": "mcp",
+    "implementation": "本地 MCP，经 powershell headroom-mcp-launcher.ps1 启动。已禁用（enabled=false，2026-08-12）：量化亏损（工具定义 ~279 tokens/请求 > 收益）。注释明确 CLI 仍可用（proxy/audit-reads/savings），切 Claude Code/Codex 走 proxy 时改回 true。",
+    "provides": "（禁用中）token 审计/代理能力；CLI 保留 proxy/audit-reads/savings 手动压缩",
+    "depends_on": ["headroom-mcp-launcher.ps1", "headroom CLI（独立可用）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:243-255"
+  },
+  {
+    "id": "plugin-vision-interceptor",
+    "name": "vision-interceptor",
+    "kind": "plugin",
+    "implementation": "opencode 插件，export server(ctx)，挂两个钩子：①chat.message——用户消息到达时把 file 类型 image part 替换为 VLM 文字描述；②experimental.chat.messages.transform——真正组装 LLM 请求前转换 messages（核心修复，确保图片先转文字再发给无视觉模型）。调用智谱 GLM API（GLM_URL=open.bigmodel.cn/api/paas/v4/chat/completions），模型优先级付费 glm-4.6v → 429 限流降级免费 glm-4.6v-flash。processedImages Map 缓存 URL→描述，避免 messages.transform 对历史消息重复调用 VLM（省成本），SKIP 时用缓存补全 text part。日志写入 %USERPROFILE%\\.local\\share\\opencode\\log\\vision-int.log。",
+    "provides": "图片→文字描述注入（使仅文本输入的 Flash 模型具备视觉理解）、URL 级缓存去重、VLM 调用日志",
+    "depends_on": ["@opencode-ai/plugin（server export 接口）", "智谱 GLM API（https://open.bigmodel.cn/api/paas/v4/chat/completions）", "ZHIPU_API_KEY 环境变量（含硬编码回退 Key）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\plugins\\vision-interceptor.js:15-19,21-65,67-129"
+  },
+  {
+    "id": "tool-read",
+    "name": "read",
+    "kind": "tool",
+    "implementation": "自定义 read 工具（TypeScript，zod 定义参数），覆盖 opencode 内置 read：①目录→列出条目；②9 种图片扩展名→经 GLM-4V VLM 转文字描述（base64 data URL 传图，max_tokens=4096，温度 0.3，中文提示词提取文字/UI/代码/布局/报错信息）；③文本→按 offset/limit 分段读取并加行号（默认 2000 行）。模型优先级付费 glm-4.6v → 429 降级免费 glm-4.6v-flash；GLM_KEY 优先环境变量 ZHIPU_API_KEY，未设置回退硬编码值。",
+    "provides": "图片 VLM 描述读取、文本分段带行号读取、目录列举（与 vision-interceptor 插件构成双保险的视觉链路）",
+    "depends_on": ["zod", "Bun runtime（Bun.file）", "智谱 GLM API（https://open.bigmodel.cn/api/paas/v4/chat/completions）", "ZHIPU_API_KEY 环境变量"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\tools\\read.ts:5-19,21-49,71-113"
+  },
+  {
+    "id": "command-reflection",
+    "name": "reflection",
+    "kind": "command",
+    "implementation": "/reflection 原生命令（frontmatter：description + agent=build），命令体自包含执行不依赖其他文档。流程：读 pending.json（校验 JSON 合法）→ 按 $ARGUMENTS 子动作过滤（无参/all 展示全部 done；memory/skill 按条目类型过滤；status 仅输出 meta 计数；browse 仅列 id/cycle_type/created_at）→ 用 question 工具逐条 yes/no/edit 确认 → yes 写入 MEMORY.md（§ 分段）或 Reflection\\skills\\{category}\\{name}\\SKILL.md（含 frontmatter）→ 清理队列并原子写回（先备份 pending.json.bak-YYYYMMDD，同步更新 meta 计数）。门控：逐条审阅不批量跳过；MEMORY.md 超 3500 字符提示手动整理；UTF-8 写后校验中文完整。",
+    "provides": "Memory/Skill pending 条目的交互式审阅与落地（yes 采纳 / no 拒绝 / edit 修改）、meta 计数同步、备份式原子写回",
+    "depends_on": ["D:\\Opencode_Download\\Reflection\\pending.json", "MEMORY.md", "D:\\Opencode_Download\\Reflection\\skills\\", "question 工具"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\command\\reflection.md:1-44"
+  },
+  {
+    "id": "instr-auto-mode",
+    "name": "auto-mode",
+    "kind": "instruction",
+    "implementation": "全局共享前缀协议（Cache-Stable，所有 Agent 加载，session 内字节稳定以维持 DeepSeek prefix-cache）。核心内容：①强制 GATE 门控（范围/深度/操作/风险 4 维 1-5 分自评→总分→Daily≤12/Deep≥13，主Agent 强制输出）；②Variant 运行时控制（Ctrl+T 切换、DeepSeek 思考模式有效参数表、被忽略参数说明）；③Universal SubAgent Rules（结构化 JSON 返回、身份约束、工具/错误处理/通信规范）；④通用编码纪律（验证证据、从磁盘读取、路径本地化、元数据不入输出）；⑤缓存感知原则（静态前缀/动态末尾）；⑥并行批处理规范；⑦输出规模控制；⑧故障自愈协议（3 次重试上限）；⑨Session Memory 阶梯式压缩模板（L1 剪枝→L2 结构化→L3 摘要）。",
+    "provides": "全 Agent 统一行为协议（门控/委派/编码/缓存/容错/压缩）、成本控制基准（Daily 8192/Deep 16384 tokens）",
+    "depends_on": ["DeepSeek prefix-cache 机制", "opencode instructions 加载（opencode.jsonc instructions 段）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\instructions\\auto-mode.md:7-59,63-91,94-133,135-170,173-231,233-254"
+  },
+  {
+    "id": "instr-memory",
+    "name": "MEMORY.md",
+    "kind": "instruction",
+    "implementation": "项目记忆索引（§-分段格式，上限 ~3500 字符），作为第二份 instructions 加载。记录的改造决策/经验：Reflection 系统与 /reflection 命令、模型分配（plan=Pro 回落顶层 / build=Flash / 子Agent 全 Flash）、MCP 精兵策略（6 台启用 2 台 pdf-reader/drawio，headroom 2026-08-12 量化亏损禁用）、三层权限纵深防御、compaction 参数、prefix-cache 优化（静态前缀 auto-mode.md / 动态末尾 MEMORY.md）、编码安全（edit 优先 / 禁 python -c 管道 / replaceAll 零残留检查）、多路并行领域分片检索、HTML 双交付质量门控、多维权衡矩阵选型、子Agent 口径冲突裁决、排障两原则、双轨交付一致性三原则、经验跨项目迁移方法论。",
+    "provides": "跨会话记忆持久化、历史决策回溯、经验教训复用、config 修改安全链（备份→改→验证→哈希→零残留）",
+    "depends_on": ["无（静态文本）", "opencode instructions 加载（opencode.jsonc instructions 段，位于 auto-mode.md 之后）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\MEMORY.md:1-58"
+  },
+  {
+    "id": "config-main",
+    "name": "opencode.jsonc (main config)",
+    "kind": "config",
+    "implementation": "核心配置本体。①模型路由：model=deepseek/deepseek-v4-pro（attachment+reasoning，支持图片输入），small_model=deepseek-v4-flash（纯文本）；provider.deepseek 用 @ai-sdk/deepseek，baseURL=https://api.deepseek.com/v1，超时 300s/120s/60s，双模型均定义 daily（max_tokens 8192 / reasoning_effort high）与 deep（16384 / max）variants 及成本表（cache_read 低至 0.003625）。②compaction：auto=true, prune=true, tail_turns=4, preserve_recent_tokens=16384, reserved=10000。③skills.paths 3 个目录（skill/browser-harness、skills、D:\\Opencode_Download\\Reflection\\skills）。④permission 三层纵深：L1 全局 deny（pdf-reader_*/drawio_*/vscode-mcp-server_* 全 deny + bash 危险命令 deny：python -c/rm -rf/git push + Set-Content/Out-File/Remove-Item -Force 为 ask + external_directory 白名单 7 条 allow）→ L2 agent 覆盖（plan 收紧 bash，build 继承）→ L3 子Agent 注入最小权限（pdf-worker 仅 pdf-reader_*、drawio-worker 仅 drawio_*、reflection-worker bash 全 deny）。",
+    "provides": "模型路由与双 variant 推理预算、成本表与缓存计价、上下文压缩策略、skill 装载路径、权限安全边界（deny 默认 + allow 白名单 + ask 中间态）、MCP 启停开关",
+    "depends_on": ["@ai-sdk/deepseek（npm provider）", "https://api.deepseek.com/v1", "DEEPSEEK_API_KEY 环境变量", "ZHIPU_API_KEY（外部 VLM 链路）"],
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc:2-11,67-153,154-186,187-256"
+  }
+]

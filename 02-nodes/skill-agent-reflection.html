@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agent-reflection · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>agent-reflection <span class="tag">装配层</span></h1>
+  <div class="sub">skill-agent-reflection · skill · A6m-自进化 · Layer 6</div>
+
+  <h2>① 作用</h2>
+  <p>Agent 自进化系统：Plan+Build 周期后异步反思，提炼经验写入 Memory（MEMORY.md）或创建新 Skill（Reflection/skills）。经 pending.json 状态机 + reflection-worker 子Agent 处理 + /reflection 交互确认。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 4 层输入封装写入 pending.json<br>· pending.json 状态机（waiting/processing/done/confirmed）<br>· reflection-worker 委派（仅文件读写最小集）<br>· Memory/Skill 双轨道写入<br>· /reflection 交互式逐条确认</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='command-reflection.html'>reflection</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\agent-reflection\SKILL.md: /reflection 命令触发审阅流程（Memory 轨道写入 M</small></td></tr><tr><td><a href='agent-reflection-worker.html'>reflection-worker</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\agent-reflection\SKILL.md: 主Agent 委派 reflection-worker 子Agent</small></td></tr><tr><td><a href='skill-opencode-config.html'>opencode-config</a></td><td>skill-relation</td><td><small>agent-reflection SKILL.md 目录结构: 确认后写入 Reflection/skills/{category}/{name}/SKILL.md 与 C:\Users\15057\</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>skill-agent-reflection 关联 ext-deepseek-api</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-05 由 Reflection 系统设计部署时创建（Reflection 系统本身非反思产物，而是基础设施——Hermes 式自进化系统的核心 Skill）。0805-Reflection系统设计文档记载：用户发现当前仅有 Plan-and-Execute 模式，缺少系统化 Reflection 层（MEMORY.md 事后反馈、留档反思段、openspec-verify 都是零散被动的），参考 Hermes Agent 自进化架构（Background Review/Curator/Skills+Memory 双轨），35 项决策收敛后实现。动机三优先级：持续自我改进 &gt; 减少重复错误 &gt; 提升 Plan 质量。架构：Plan+Build 周期结束封装 4 层输入写 pending.json，下轮启动委派 reflection-worker（Flash 仅文件读写）分析产出 memory/skill 条目，/reflection 交互确认后写入 MEMORY.md 或 Reflection/skills/。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>是全部 Reflection skills 的母系统：每个 Plan+Build 周期结束自动触发反思沉淀，维持&quot;系统越用越聪明&quot;的进化回路；当前 0817 批量确认的 DAG/cdisk/github 等 7 个 skills 均由本系统的 reflection-worker 提炼（pending.json 有完整 skill_entries 证据）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>MEMORY.md 自引用规则：用户下一条消息时主Agent 检查 meta.waiting_count&gt;0 自动加载；用户随时 /reflection 交互式逐条确认 pending 条目；触发词 reflection、同步记忆、反思。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· Plan+Build 周期结束 → 主Agent 封装 4 层输入写 pending.json（waiting）<br>· 下一轮用户消息 → 委派 reflection-worker（Flash，仅文件读写）分析产出 memory/skill 条目（status=done），主Agent 不阻塞继续正常流程<br>· 用户 /reflection → 逐条确认 → Memory 写 MEMORY.md（§-分段）/ Skill 写 Reflection/skills/{category}/{name}/SKILL.md → 条目 confirmed</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>调度 reflection-worker 子Agent；产出物（Reflection skills/memory）供全部主Agent 加载；与 MEMORY.md、留档系统、agent-protocol.md 深度耦合</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

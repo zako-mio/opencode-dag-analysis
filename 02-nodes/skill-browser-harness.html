@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>browser-harness · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>browser-harness <span class="tag">装配层</span></h1>
+  <div class="sub">skill-browser-harness · skill · A6h-浏览器 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>统一浏览器交互入口（自动化/爬取/测试/站点应用工作）。通过 CDP 直接控制浏览器：browser-harness daemon 经 BU_CDP_URL (localhost:9222) 连接 Chrome 远程调试实例，Python 代码经管道发给 browser-harness.exe 执行，helpers 预导入。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· browser-harness.exe CLI（PowerShell @&quot;...&quot;@ heredoc 管道编程）<br>· 预导入 helpers（new_tab/page_info 等，js() 需 return/print）<br>· chrome-debug.ps1 一键启动远程调试 Chrome（独立 profile）<br>· --doctor 连接诊断 + runtime 目录清理<br>· agent-workspace/agent_helpers.py 任务级编辑辅助</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>skill-browser-harness 关联 ext-chrome</small></td></tr><tr><td><a href='skill-recruit-assist.html'>recruit-assist</a></td><td>skill-relation</td><td><small>recruit-assist SKILL.md: 浏览器自动化使用 browser-harness（CDP），通过管道传入 Python 代码（$pyScript | browser-harness.</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 browser-use/browser-harness 仓库，本地改造为 Windows 适配 + 脚本路径绑定 + chrome-debug.ps1（一键启动 9222 端口远程调试 Chrome）。引入动机：为 Agent 提供统一浏览器交互入口（自动化/爬取/测试/站点应用），解决招聘投递（网申表单填写）、网页数据采集等需要真实浏览器操作的需求。0804-recruit优化实证：京东校招投递靠 browser-harness CDP 完成（投递跟踪表 row 774 写入成功），并沉淀 6 条环境限制实测教训（无 sleep/JS 需 IIFE/SPA 需轮询等）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>recruit-assist 投递核心依赖（browser-harness CDP 自动化投递，exec-recruit preset 追加），0811 深圳大数据研究院调研用浏览器自动化登录知乎/脉脉采集员工评价，0813-Agent评测知识体系三重验证门控含浏览器渲染验证，create-web preset 前端设计实测渲染。0817-opencode-dag 复用 MEMORY 经验（js() 陷阱：复杂箭头函数 heredoc 转义易错，改用简单表达式+分块抓取，最终用 chrome headless --dump-dom 更可靠）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>SKILL.md description：Always use browser-use for any web interaction: automation, scraping, testing, or site/app work——任何网页交互/自动化/爬取/测试/站点应用工作。skill/browser-harness 目录为 skills.paths 单独注册路径（0802 起双路径之一）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 前置：chrome-debug.ps1 启动 Chrome 远程调试（检查 9222 端口，无则独立 profile 启动）；2) PowerShell @&quot;...&quot;@ heredoc 写 Python 代码后管道发给 browser-harness.exe（helpers 预导入，首次导航 new_tab(url)）；3) js() 需 return/print，复杂操作分块抓取；4) 连接失败用 --doctor 诊断，daemon 挂了重跑 chrome-debug 脚本，runtime 目录残留则删除重建。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（投递核心依赖）、frontend-design（create-web preset 渲染实测）、create-web preset、Chrome（ext-chrome 外部）、browser-harness daemon（BU_CDP_URL localhost:9222）、VLM 图片校验协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

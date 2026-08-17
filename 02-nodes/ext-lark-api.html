@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ext-lark-api · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>ext-lark-api </h1>
+  <div class="sub">ext-lark-api · external · X-外部服务 · Layer 2</div>
+
+  <h2>① 作用</h2>
+  <p>lark-cli 调用的飞书开放平台</p>
+
+  <h2>② 提供能力</h2>
+  <p>日历/文档/多维表格等</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-lark-suite.html'>lark-suite</a></td><td>external</td><td><small>skill-lark-suite 关联 ext-lark-api</small></td></tr><tr><td><a href='skill-recruit-assist.html'>recruit-assist</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-lark-api</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">为什么需要</span><p>协同办公主通道：recruit-assist 的飞书网申进度表同步（sync_feishu.py 增量上传/全量下载）、简历求职流程的表格/文档操作、日常日历/消息/云盘任务都需要。解决 Agent 能操作飞书全部业务域的需求；无它则简历投递跟踪表与办公文档无法程序化读写。被依赖方：skills/lark-suite（路由包装层）、recruit-assist、exec-recruit preset。</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>合理：lark-cli v1.0.76（Go，MIT，上游 yjwong/lark-cli）本地安装，SKILL.md 强制 Step 0 先读 references/shared.md（认证检查/--as user|bot 身份/JSON 输出合约）；23 域中 20 个占位已在 0802 修复为 lark-cli skills read 动态加载；Windows 下必须 cmd /c 调用。仅 3 个手写 reference（drive/shared/sheets），其余按需拉官方内置 skill。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么接入</span><p>lark-cli auth login --recommend（输出授权 URL，浏览器完成 OAuth，自动取 token；可 --no-wait + --device-code 轮询）；lark-cli config init --new 首次配 app credentials；调用形态 cmd /c &quot;lark-cli &lt;domain&gt; +&lt;shortcut&gt; [flags]&quot;，如 lark-cli drive +upload &lt;本地路径&gt; &lt;folder_token&gt;、lark-cli drive +download &lt;file_token&gt; &lt;本地路径&gt;；输出 JSON 信封 {ok, identity, data, meta}，成功判 ok==true 而非 code==0。</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p>lark-suite skill 按意图路由表加载 references/&lt;domain&gt;.md → 按域指令执行 lark-cli shortcut → 解析 JSON；Fallback 链：lark-cli skills read lark-&lt;domain&gt; → lark-cli schema → lark-cli api GET/POST → WebFetch 官方文档；recruit-assist 的 sync_feishu.py 直接调 lark-cli 做表格同步。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

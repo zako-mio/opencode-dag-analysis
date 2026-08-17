@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="d-skill-opencode-config" name="skill-opencode-config">
+    <mxGraphModel dx="800" dy="600" page="1" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1100" pageHeight="450" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="c" value="skill-opencode-config&#xa;配置知识库" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="400" y="180" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="u1" value="opencode.jsonc&#xa;配置源" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="oc-opencode&#xa;assembly-to-pkg" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="760" y="180" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="u1" target="c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="c" target="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

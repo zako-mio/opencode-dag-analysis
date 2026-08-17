@@ -1,0 +1,296 @@
+﻿[
+    {
+        "id":  "oc-app",
+        "name":  "@opencode-ai/app",
+        "implementation":  "OpenCode 桌面/Web 前端的 SolidJS 主应用。src/app.tsx 组装全部 Provider（Server/SDK/ServerSync/Settings/Tabs/Command 等约 20 个 context，app.tsx:41-66）并注册 Session/Home/NewSession/Legacy 等路由；src/entry.tsx:5-11 通过 render 挂载 AppInterface 与 PlatformProvider；src/index.ts:1-30 导出 AppBaseProviders、AppInterface 及全部 context hooks（useServer/useSettings/useTabs 等）。桌面专属能力（desktop-menu.ts、updater.ts、wsl/ 目录）以子路径导出供 desktop 包复用。",
+        "provides":  [
+                         "AppInterface 与 AppBaseProviders 根组件（SolidJS 应用壳）",
+                         "Server/SDK/ServerSync/Tabs/Settings/Command 等全套全局 context",
+                         "Session 会话页、Home 主页、NewSession 页、布局（新旧两套）页面",
+                         "WSL 服务器探测/管理类型与桌面菜单、更新器（updater.ts）",
+                         "i18n 中英双语词典与 locale 规范化（i18n/、context/language.tsx）",
+                         "draft-store 草稿持久化与 file-picker 常量（utils/draft-store.ts:30）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/ui",
+                           "@opencode-ai/session-ui",
+                           "@opencode-ai/core",
+                           "@opencode-ai/schema",
+                           "@opencode-ai/sdk",
+                           "@opencode-ai/client"
+                       ],
+        "key_modules":  [
+                            "app.tsx: 根组件，装配 20+ Provider 与全部路由",
+                            "entry.tsx: 浏览器挂载入口（render + PlatformProvider）",
+                            "context/server.ts: ServerConnection 连接管理与 server-sdk/server-sync",
+                            "pages/session/index.ts: 会话页与 SessionRouteErrorBoundary",
+                            "pages/home/index.tsx: 新主页（NewHome）",
+                            "wsl/types.ts + wsl/context.tsx: WSL 发行版探测与服务器上下文",
+                            "updater.ts: 应用更新状态机（UpdaterState）",
+                            "index.ts: 公共导出面（contexts/hooks/常量/类型）"
+                        ],
+        "why":  "作为 UI 应用壳层，将 session-ui/ui 的无状态组件与 server/core 的业务逻辑粘合为完整应用，同时为 desktop 提供可复用的桌面子模块（菜单/更新/WSL）出口。"
+    },
+    {
+        "id":  "oc-ui",
+        "name":  "@opencode-ai/ui",
+        "implementation":  "SolidJS UI 组件库。src/components/ 含 50+ 基础组件（button/avatar/dialog/context-menu/diff-changes/icon 等，每个 .tsx 配套 .css 与 .stories.tsx），基于 @kobalte/core 无障碍原语；exports 将 ./components/*.tsx 直接映射为组件子路径（package.json:37）。同时提供 hooks（use-filtered-list）、context（dialog/file/i18n/marked/worker-pool）、theme 主题系统、i18n 词典、v2 新一代组件目录及 storybook 脚手架（src/storybook/scaffold.tsx）。",
+        "provides":  [
+                         "50+ 基础 UI 组件（按钮/对话框/下拉/悬浮卡/图标等）",
+                         "Markdown 渲染管线（marked.tsx + worker-pool + shiki 流式高亮）",
+                         "Theme 主题解析与上下文（theme/index.ts、theme/context.tsx）",
+                         "i18n 多语言词典与 plural 规则（i18n/en.ts、context/i18n.tsx）",
+                         "File/Dialog/WorkerPool 等全局 context",
+                         "图标集：provider/file/app 三类 sprite（provider-icons/types.ts 等）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/ui 自身无 @opencode-ai/* 运行时依赖（纯组件库）"
+                       ],
+        "key_modules":  [
+                            "components/index.ts(x): 组件汇总导出（经 exports 映射到各 .tsx）",
+                            "components/diff-changes.tsx: 差异变更展示组件",
+                            "context/marked.tsx: markdown 解析 Provider（marked + shiki 流式）",
+                            "context/worker-pool.tsx: Web Worker 池",
+                            "hooks/use-filtered-list.tsx: 模糊搜索列表 hook",
+                            "theme/resolve.ts: 主题变体解析（被 desktop 复用）",
+                            "storybook/scaffold.tsx: storybook 预览脚手架"
+                        ],
+        "why":  "将跨 app/session-ui/enterprise 复用的无头基础组件与渲染原语独立成库，保证视觉一致性与按需导入（sideEffects 仅 css）。"
+    },
+    {
+        "id":  "oc-session-ui",
+        "name":  "@opencode-ai/session-ui",
+        "implementation":  "会话级 UI 组件集，介于基础组件库与完整应用之间。src/components/ 提供 SessionTurn、SessionReview、MessagePart、message-file、session-diff、line-comment 等会话渲染组件，并含 markdown 流式渲染整套管线（markdown-stream.ts + markdown-worker.ts + markdown-cache.tsx，用 Worker 实现增量渲染）；src/pierre/ 提供 file-find/file-selection/diff-selection/media 等代码交互原语；src/context/data.tsx 提供会话数据 Provider（被 enterprise share 页复用）。",
+        "provides":  [
+                         "SessionTurn/SessionReview 会话轮次与评审组件",
+                         "MessagePart/message-file/session-diff 消息部件与差异展示",
+                         "Markdown 流式渲染管线（worker + stream + cache，markdown-stream.ts:12）",
+                         "文件查找/选择/差异选择交互原语（pierre/ 目录）",
+                         "会话数据 context（context/data.tsx）",
+                         "PromptInput v2 输入框（v2/components/prompt-input/）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/ui",
+                           "@opencode-ai/core",
+                           "@opencode-ai/sdk",
+                           "@opencode-ai/client"
+                       ],
+        "key_modules":  [
+                            "components/session-turn.tsx: 单个会话轮次渲染",
+                            "components/session-review.tsx: 会话评审视图",
+                            "components/markdown-stream.ts: 流式 markdown 增量处理",
+                            "components/markdown-worker.ts: markdown 渲染 Web Worker",
+                            "components/message-part.tsx: 消息部件分发渲染",
+                            "components/session-diff.ts: 会话差异计算",
+                            "pierre/index.ts: 代码交互原语出口",
+                            "context/data.tsx: 会话数据 Provider"
+                        ],
+        "why":  "把会话级渲染（消息/轮次/评审/markdown 流）从 app 中剥离，使 app 与 enterprise 共享同一套会话表达，避免重复实现。"
+    },
+    {
+        "id":  "oc-desktop",
+        "name":  "@opencode-ai/desktop",
+        "implementation":  "Electron 桌面壳。src/main/index.ts:15-51 聚合应用生命周期：spawnLocalServer 拉起本地 sidecar 服务、registerIpcHandlers 注册 IPC、createMenu 构建原生菜单、setupAutoUpdater 自动更新、WSL sidecar 管理（wsl/servers.ts）、migrate 数据迁移与 store 清理；src/preload 暴露安全的桥接 API；src/renderer 复用 @opencode-ai/app 渲染 Web UI（renderer/cli.ts:7 通过 window.api.installCli 安装 CLI）。",
+        "provides":  [
+                         "Electron 主进程：窗口/菜单/托盘/深链（main/windows.ts、main/menu.ts）",
+                         "本地 sidecar server 生命周期管理（main/server.ts spawnLocalServer）",
+                         "IPC 桥与 preload 安全 API（preload/index.ts）",
+                         "自动更新（main/updater.ts + electron-updater）",
+                         "WSL 发行版内服务器编排（wsl/）",
+                         "背景 CLI 与原生翻译注入（background-cli.ts、native-translations.ts）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/app",
+                           "@opencode-ai/ui"
+                       ],
+        "key_modules":  [
+                            "main/index.ts: 主进程入口（生命周期/窗口/服务编排）",
+                            "main/server.ts: sidecar 本地服务器拉起与监听",
+                            "main/ipc.ts: IPC handler 注册",
+                            "main/updater.ts: 自动更新控制器",
+                            "preload/index.ts: 渲染进程安全桥",
+                            "renderer/index.tsx: 渲染进程入口",
+                            "wsl/servers.ts: WSL 服务器控制器"
+                        ],
+        "why":  "为 Web UI 提供原生桌面能力（本地服务托管/更新/菜单/WSL），是独立于 @opencode-ai/app 的 Electron 分发层。"
+    },
+    {
+        "id":  "oc-cli",
+        "name":  "@opencode-ai/cli",
+        "implementation":  "OpenCode 2.0 CLI 入口（bin: lildax）。src/index.ts:10-32 用 Effect 构建命令运行时：Runtime.handlers 将 Commands 映射到懒加载 handler（api/debug/migrate/service/serve）；commands/commands.ts:6-8 用 effect CLI 声明命令树；framework/runtime.ts:58-59 执行 Command.run；services/daemon.ts 提供后台守护进程服务。命令处理依赖 @opencode-ai/core 的 AppNodeBuilder 与 @opencode-ai/server 路由（serve.ts:2-10）。",
+        "provides":  [
+                         "opencode 命令树（api/debug/migrate/service/serve，commands.ts:9-50）",
+                         "Effect 驱动的命令运行时与懒加载 handler（framework/runtime.ts:58）",
+                         "后台 daemon 服务管理（services/daemon.ts）",
+                         "TUI 入口（tui.ts 导入 @opencode-ai/tui 运行）",
+                         "版本/渠道识别（bin/lildax.cjs 打包）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/core",
+                           "@opencode-ai/sdk",
+                           "@opencode-ai/server",
+                           "@opencode-ai/tui",
+                           "@opencode-ai/script"
+                       ],
+        "key_modules":  [
+                            "index.ts: CLI 运行时装配入口",
+                            "commands/commands.ts: 命令树规格定义",
+                            "commands/handlers/serve.ts: 启动 v2 API 服务器",
+                            "commands/handlers/service/*: 后台服务管理命令",
+                            "framework/runtime.ts: Effect 命令运行框架",
+                            "framework/spec.ts: 命令规格 DSL",
+                            "services/daemon.ts: 守护进程层"
+                        ],
+        "why":  "作为 v2 时代的命令行入口，复用 effect CLI 生态以类型安全方式声明命令，并将实际逻辑委托给 core/server/tui 包。"
+    },
+    {
+        "id":  "oc-web",
+        "name":  "@opencode-ai/web",
+        "implementation":  "基于 Astro + Starlight 的文档与分享站点。src/pages/s/[id].astro:2-8 渲染会话分享页（Share.tsx 消费 opencode/session 类型，通过 API URL 拉取分享数据）；src/pages/[...slug].md.ts:19-34 提供 docs 内容 API（按 slug 返回 markdown 文档）；src/content/docs/ 含多语言（en/zh/ar/bs/de/...）文档与代码示例（大量引用 @opencode-ai/plugin 与 @opencode-ai/sdk 的用法）。devDependencies 引用 opencode 包（opencode: workspace:*）。",
+        "provides":  [
+                         "会话分享查看页（s/[id].astro + components/Share.tsx）",
+                         "docs 文档 API 端点（pages/[...slug].md.ts:19）",
+                         "Starlight 多语言文档站（content.config.ts + i18n/）",
+                         "分享 WebSocket 连接状态 UI（Share.tsx:15 status 机）"
+                     ],
+        "depends_on":  [
+                           "opencode（dev，类型导入 session 模型）"
+                       ],
+        "key_modules":  [
+                            "pages/s/[id].astro: 分享页 SSR 模板",
+                            "components/Share.tsx: 分享会话渲染组件",
+                            "components/share/part.tsx: 分享消息部件渲染",
+                            "pages/[...slug].md.ts: 文档 markdown API",
+                            "content.config.ts: Astro content 集合配置"
+                        ],
+        "why":  "独立部署的文档+分享前端，与桌面 app 完全解耦，仅通过 API URL 消费后端数据，作为云端分享生态的展示层。"
+    },
+    {
+        "id":  "oc-enterprise",
+        "name":  "@opencode-ai/enterprise",
+        "implementation":  "基于 SolidStart 的企业版/云端分享服务。src/app.tsx:1-14 用 @opencode-ai/ui 的 Provider（Marked/Dialog/I18n）搭建 SSR 应用根并做 locale 检测；src/routes/api/[...path].ts:1-30 用 Hono + hono-openapi 定义 OpenAPI 文档与 /share 创建端点（zod schema，经 core/share.ts 与 sst Resource 持久化）；routes/share/[shareID].tsx 用 @opencode-ai/session-ui 的 SessionTurn/SessionReview/MessageNav 渲染只读分享会话；core/storage.ts 提供基于 R2 的存储。",
+        "provides":  [
+                         "Hono OpenAPI /api 端点（/share 创建、文档，routes/api/[...path].ts:20-27）",
+                         "只读分享会话页面（routes/share/[shareID].tsx，复用 session-ui 组件）",
+                         "R2 对象存储封装（core/storage.ts）",
+                         "SSR 应用根与多语言检测（app.tsx:58 detectLocale）",
+                         "cloudflare 部署目标支持（build:cloudflare script）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/ui",
+                           "@opencode-ai/session-ui",
+                           "@opencode-ai/core",
+                           "@opencode-ai/sdk"
+                       ],
+        "key_modules":  [
+                            "app.tsx: SolidStart 应用根与 i18n bridge",
+                            "routes/api/[...path].ts: OpenAPI 分享 API",
+                            "routes/share/[shareID].tsx: 分享会话只读页",
+                            "core/share.ts: 分享逻辑（sdk/v2 模型）",
+                            "core/storage.ts: 存储层",
+                            "entry-server.tsx: SSR 服务端入口"
+                        ],
+        "why":  "作为云端托管的企业分享服务，复用 ui/session-ui 渲染能力与 core/sdk 数据模型，通过 SolidStart SSR 提供公开只读分享体验。"
+    },
+    {
+        "id":  "oc-function",
+        "name":  "@opencode-ai/function",
+        "implementation":  "Cloudflare Workers 上的会话分享同步服务。src/api.ts:15-114 定义 SyncServer Durable Object：WebSocket 订阅连接（fetch 握手 101 + ctx.acceptWebSocket，api.ts:20-37）、publish 将 session/info|message|part 变更写入 R2 Bucket 并广播给订阅者（api.ts:45-66）、share/assertSecret/clear 管理分享密钥与数据清理；Hono 路由提供 /share_create、/share_delete、/share_sync 等端点（api.ts:116-150）。",
+        "provides":  [
+                         "Durable Object 实时同步（WebSocket 广播 session 变更）",
+                         "R2 持久化分享数据（publish 写入 Bucket，api.ts:55）",
+                         "分享密钥管理（share/assertSecret，api.ts:68-92）",
+                         "Hono HTTP API（share_create/share_delete/share_sync）",
+                         "GitHub App 认证（@octokit/auth-app 依赖）"
+                     ],
+        "depends_on":  [
+                           "无 @opencode-ai/* 内部依赖（纯 Cloudflare Worker）"
+                       ],
+        "key_modules":  [
+                            "api.ts: 全部逻辑（SyncServer DO + Hono 路由）"
+                        ],
+        "why":  "作为云端分享的后端同步服务，利用 Cloudflare Durable Object 的 WebSocket 能力实现跨客户端实时会话同步，与 function 名（FaaS 云端函数）对应。"
+    },
+    {
+        "id":  "oc-storybook",
+        "name":  "@opencode-ai/storybook",
+        "implementation":  "UI 组件开发文档站。.storybook/main.ts:13-29 用 storybook-solidjs-vite 定义框架并聚合 ui/session-ui/app 三包的 stories（stories glob 指向 ../../ui、../../session-ui、../../app/src）；同时用 mocks 目录对 app 的 context（local/file/prompt/layout/sdk/sync 等 15+ 个）做 SolidJS router 替换与 context mock（main.ts:36-50），使 app 组件能在 Storybook 中独立渲染；preview.tsx 提供全局预览配置。",
+        "provides":  [
+                         "聚合 ui/session-ui/app 三包组件的 Storybook 开发环境",
+                         "app context 全套 mock（main.ts:37-50 别名替换）",
+                         "Playground CSS 与主题工具插件（playground-css-plugin.ts、theme-tool.ts）"
+                     ],
+        "depends_on":  [
+                           "@opencode-ai/ui",
+                           "@opencode-ai/session-ui"
+                       ],
+        "key_modules":  [
+                            ".storybook/main.ts: Storybook 配置与 context mock 别名",
+                            ".storybook/preview.tsx: 全局预览装饰器",
+                            ".storybook/mocks/: app context 模拟实现",
+                            ".storybook/playground-css-plugin.ts: 自定义 vite 插件",
+                            ".storybook/theme-tool.ts: 主题调试工具"
+                        ],
+        "why":  "为组件库提供隔离的开发/审查环境，通过 mock 掉 app 的副作用 context 使跨包组件可以独立预览与回归测试。"
+    },
+    {
+        "id":  "oc-script",
+        "name":  "@opencode-ai/script",
+        "implementation":  "构建/发布脚本共享工具包。src/index.ts:5-76 读取仓库根 package.json 校验 bun 版本（semver.satisfies 检查，index.ts:16-18）、按环境变量/分支/registry 计算发布 channel（latest/preview）与 version（含 +1 patch 逻辑，index.ts:34-48）、从 .github/TEAM_MEMBERS 加载团队成员名单（index.ts:50-58），最终导出 Script 对象（channel/version/preview/release/team）供发布流水线使用。",
+        "provides":  [
+                         "发布版本计算（channel/version/preview，基于 env/分支/npm registry）",
+                         "Bun 版本校验（强制 ^packageManager 版本，index.ts:16）",
+                         "团队成员名单加载（.github/TEAM_MEMBERS 解析，index.ts:50）"
+                     ],
+        "depends_on":  [
+                           "无 @opencode-ai/* 依赖（仅 semver）"
+                       ],
+        "key_modules":  [
+                            "index.ts: 全部逻辑（版本/channel/team 计算）"
+                        ],
+        "why":  "将发布流程共用的版本决策逻辑从 CI 脚本中抽离为可 import 的库，保证多个发布任务（channel 判断、bump 语义）行为一致。"
+    },
+    {
+        "id":  "oc-effect-sqlite-node",
+        "name":  "@opencode-ai/effect-sqlite-node",
+        "implementation":  "基于 Node 内置 node:sqlite 的 Effect SqlClient 实现。src/index.ts:49-161 make() 用 DatabaseSync 建立同步连接（WAL 模式、外键约束，index.ts:59-70）、实现 execute/executeRaw/executeValues/executeUnprepared 全套 SqlClient 接口并挂载 Semaphore(1) 串行化（index.ts:132-134）；classifySqliteError 做错误归类（index.ts:15,80-82）；layer() 将 client 同时注册为 SqliteClient 与泛型 Client.SqlClient（index.ts:163-168），并注入 Reactivity.layer。",
+        "provides":  [
+                         "Effect SqlClient 的 SQLite 实现（node:sqlite DatabaseSync）",
+                         "WAL/外键/只读/扩展加载等连接配置（SqliteClientConfig，index.ts:32-43）",
+                         "Layer 装配（SqliteClient + Client.SqlClient 双注册，index.ts:163）",
+                         "SQL 错误分类与 Effect 化（classifySqliteError）",
+                         "BigInt 安全读取与 stream 占位（setReadBigInts，index.ts:75）"
+                     ],
+        "depends_on":  [
+                           "无 @opencode-ai/* 依赖（仅 effect）"
+                       ],
+        "key_modules":  [
+                            "index.ts: make/layer/连接实现全量逻辑"
+                        ],
+        "why":  "为 opencode 核心提供零原生编译依赖的 Effect 化 SQLite 驱动（复用 node 内置 sqlite），与 @effect/sql-sqlite-node 定位一致但归属仓库自有实现。"
+    },
+    {
+        "id":  "oc-effect-drizzle-sqlite",
+        "name":  "@opencode-ai/effect-drizzle-sqlite",
+        "implementation":  "Drizzle ORM 的 Effect 适配层。src/effect-sqlite/driver.ts:15-60 定义 EffectSQLiteDatabase 与 make()，通过 drizzle 的 SQLiteAsyncDialect + EffectSQLiteSession 把 Drizzle 查询桥接到任意 Effect SqlClient（注释明示可配 @effect/sql-sqlite-node/bun，driver.ts:30-46）；session.ts:35-49 实现 prepareQuery 与 Effect 化事务会话；sqlite-core/effect/ 提供 select/insert/update/delete/raw/count 全套 Effect 化查询构建器；migrator.ts 提供迁移执行。",
+        "provides":  [
+                         "EffectSQLiteDatabase 工厂（make()，driver.ts:49）",
+                         "Drizzle↔Effect 会话桥接（EffectSQLiteSession，session.ts:35）",
+                         "sqlite-core 全套 Effect 查询构建器（sqlite-core/effect/ 10 个文件）",
+                         "迁移执行器（effect-sqlite/migrator.ts）",
+                         "EffectCache/EffectLogger 默认 Layer（driver.ts:28）"
+                     ],
+        "depends_on":  [
+                           "无 @opencode-ai/* 依赖（仅 drizzle-orm + effect）"
+                       ],
+        "key_modules":  [
+                            "effect-sqlite/driver.ts: 数据库工厂与配置",
+                            "effect-sqlite/session.ts: Effect 会话/查询准备",
+                            "effect-sqlite/migrator.ts: 迁移",
+                            "sqlite-core/effect/db.ts: 数据库基类",
+                            "sqlite-core/effect/query.ts: 查询构建器基类",
+                            "index.ts: 公共导出面"
+                        ],
+        "why":  "让 Drizzle 类型安全的 schema 查询能在 Effect 生态（SqlClient/Stream/Layer）中运行，供核心存储层使用且依赖可注入、可测试。"
+    }
+]

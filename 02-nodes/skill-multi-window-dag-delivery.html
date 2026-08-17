@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>multi-window-dag-delivery · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>multi-window-dag-delivery <span class="tag">装配层</span></h1>
+  <div class="sub">skill-multi-window-dag-delivery · skill · A6m-自进化 · Layer 6</div>
+
+  <h2>① 作用</h2>
+  <p>多层窗口接力 DAG 依赖链分析与交付：大型插件库拆窗口接力，每窗口完整执行（采集→建模→注入→生成→门控）并落盘 PLAN-layerN.md 接力文件，交付物同目录累计，门控逐层升级，PACKAGE-MAP 覆盖度终核。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 窗口划分与 PLAN-layerN.md 接力文件<br>· 三硬依据溯源（E1 编译/E2 运行时/E3 组合+文件:行号）<br>· build-dag.py 层次遍历（BFS 拓扑分层+无环校验）<br>· 多形态交付（HTML 插件页+MD 镜像+drawio+交互 DAG 总览）<br>· 数据源逐层合并（core→webapp→全量）<br>· PACKAGE-MAP 覆盖度终核（缺包=0 多包=0）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>assembly-to-pkg</td><td><small>skill-multi-window-dag-delivery 关联 oc-core</small></td></tr><tr><td><a href='skill-cytoscape-dag-visualization.html'>cytoscape-dag-visualization</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\coding\multi-window-dag-delivery\SKILL.md 相关Skill: 下游（渲染层）cyt</small></td></tr><tr><td><a href='skill-dag-tutorial-authoring.html'>dag-tutorial-authoring</a></td><td>skill-relation</td><td><small>multi-window-dag-delivery SKILL.md 相关Skill: 内容层 dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程</small></td></tr><tr><td><a href='skill-large-scale-source-parse.html'>large-scale-source-parse</a></td><td>skill-relation</td><td><small>multi-window-dag-delivery SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 单窗口内 9 层抽象+三源交叉的源码解析方法论（</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260816-plugin-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-multi-window-dag，category=coding，创建时间 2026-08-17，verdict&quot;多层窗口接力 DAG 方法论…提炼 1 个 Skill(multi-window-dag-delivery) + 3 条 Memory&quot;）。源任务 0816-plugin-dag：DeepSeek Harness 插件级 DAG 依赖链分析，76 核心插件+36 seam+194 边+8 拓扑层+24 组，与 L2/L3 窗口共同构成 219/219 包闭环。方法论核心：大型 DAG 分析拆窗口接力（核心集→web-app→其余），每窗口独立执行+落盘 PLAN-layerN.md 接力文件，下一窗口继承数据源+接力文件，PACKAGE-MAP 覆盖度终核，三硬依据（E1 编译/E2 运行时/E3 组合）+ 源码行引用。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>大型源码/插件库（数百包）DAG 依赖链分析的标准方法论：单窗口无法完成时拆窗口接力，每窗口可独立执行、交付物同目录累计、门控逐层升级；是多窗口 DAG 交付（HTML/MD/drawio/交互图多形态）的分析层标准。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付；大型源码库 DAG 分析需要拆窗口接力时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 窗口划分（核心集 base bundle → web-app → 其余），每窗口执行边界明确（完整执行+制定下一层计划）<br>· 每窗口内部：N 路并行 explore 采集（三硬依据+文件:行号）→ build-dag.py 层次遍历（BFS）拓扑分层+无环校验 → DATA 注入交互总览 → gen-html/gen-md/drawio 批量 → quality-gate 门控<br>· 窗口末尾落盘 PLAN-layerN.md 接力文件（数据接口+坑经验）→ 下一窗口继承 → PACKAGE-MAP 覆盖度终核（缺包=0 多包=0）+ 交付物逐项核对</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>委派 N 路 explore 子Agent 并行采集；下游接 cytoscape-dag-visualization（渲染其 DAG JSON）；与 dag-tutorial-authoring（内容层）、large-scale-source-parse（通用基础）互补；drawio-worker 绘制静态图</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

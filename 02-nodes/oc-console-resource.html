@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>console-resource · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>console-resource </h1>
+  <div class="sub">oc-console-resource · package · G16-Console · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>SST 资源访问抽象层，无 src/ 目录（文件在包根）。通过 Proxy 按运行环境暴露 Resource：resource.cloudflare.ts 在 Worker 内从 env.SST_RESOURCE_* 读取链接资源，resource.node.ts 在 Node 下回退到 sst 包并对 KV/Bucket 提供客户端实现。src/… 实际为 resource.cloudflare.ts:4 与 resource.node.ts:9 两个入口，按 exports production/import 条件切换。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 统一 Resource 代理：读取 SST 链接的 secrets/KV/数据库配置（resource.cloudflare.ts:4）<br>· Node 环境回退：KV get/put/delete/list、Bucket no-op、Cloudflare API 客户端（resource.node.ts:9）<br>· 条件导出：Cloudflare 与 Node 运行时的资源读取差异屏蔽（package.json exports）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-console-app.html'>console-app</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-app/package.json dependencies.@opencode-ai/console-resource</small></td></tr><tr><td><a href='oc-console-core.html'>console-core</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-core/package.json dependencies.@opencode-ai/console-resource</small></td></tr><tr><td><a href='oc-console-function.html'>console-function</a></td><td>workspace-dep</td><td><small>@opencode-ai/console-function/package.json dependencies.@opencode-ai/console-resource</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 Proxy 把环境差异隐藏在统一 Resource 门面后：node 侧走 sst 资源绑定 + Cloudflare API 直连，cloudflare 侧走 env 注入，消费方零改动；类型由 sst-env.d.ts 提供。这是运行时可移植性的典型设计——同一套业务代码在本地调试与线上部署共享同一读取接口。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改该包。装配层借鉴了同样的 Proxy 门面思想：amap-lbs-skill 的 config.json 读写封装、vision-interceptor 的 GLM_KEY 环境变量回退（process.env.ZHIPU_API_KEY || 硬编码），都是密钥统一入口 + 环境回退的本地变体。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>两文件双环境实现，均导出 Resource Proxy：resource.node.ts 用 sst 的 Resource + cloudflare 官方 SDK（apiToken=CLOUDFLARE_API_TOKEN）提供 KV get/put/delete/list、Bucket put（no-op）；resource.cloudflare.ts 从 cloudflare:workers env（SST_RESOURCE_*）解析同一批资源。消费方统一 import { Resource }，按属性名读取（Resource.STRIPE_SECRET_KEY.value、Resource.UpstashRedisRestUrl.value、Resource.ZEN_LIMITS.value、Resource.AWS_SES_ACCESS_KEY_ID.value 等）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>console 全包的配置/密钥注入面：Stripe secret、AWS SES key、Cloudflare token/account、Upstash Redis、GitHub/Google OAuth client、Zen 限额 JSON、Black/Lite 价格表——node（本地/sst shell）与 cloudflare（线上 Worker）两套运行时共用同一属性接口。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

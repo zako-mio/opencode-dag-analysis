@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sdk-next · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>sdk-next </h1>
+  <div class="sub">oc-sdk-next · package · G3-客户端 · Layer 4</div>
+
+  <h2>① 作用</h2>
+  <p>Effect 原生的进程内 OpenCode host SDK（过渡包，替代生成式 @opencode-ai/sdk）。src/opencode.ts 的 create() 用 AppNodeBuilder 构建 ApplicationTools/PermissionSaved 上下文，把 server 的 createEmbeddedRoutes 编译成 Web handler 并注入内存 fetch，客户端由此在进程内执行全部路由而无需监听端口/网络 I/O。src/index.ts 聚合 OpenCode 与 Tool 模块并再导出 client 的 Effect 类型。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 进程内 OpenCode host：OpenCode.create()（src/opencode.ts:10）<br>· 内存路由执行：Server router → Web handler → fetch（src/opencode.ts:20-38）<br>· 本地工具注册 tools.register（走 ApplicationTools 服务，src/opencode.ts:41）<br>· DI Layer：OpenCode.layer/Service（src/opencode.ts:47,49）<br>· Tool 门面：Failure/RegistrationError/make 再导出（src/tool.ts:1）<br>· Effect client 类型再导出（ClientError/Session/Model 等，src/index.ts:4）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-client.html'>client</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-core.html'>core</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/core</small></td></tr><tr><td><a href='oc-server.html'>server</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/server</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>把 HTTP 服务抽象成可内存执行的 fetch handler，是 Effect 生态服务即组合的体现：客户端与服务器共享同一路由定义，测试无需起端口；ApplicationTools/PermissionSaved 以 Layer 注入，宿主可注册自定义工具并随 Scope 关闭释放资源。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改。装配层没用 sdk-next，但本机自定义工具/插件机制（plugins/vision-interceptor.js 的 chat.message + experimental.chat.messages.transform 钩子）与 host 内嵌、挂载钩子的宿主模式同源。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>import { OpenCode } 后 OpenCode.create() 在进程内把 @opencode-ai/server 的 HttpRouter（createEmbeddedRoutes）经 HttpRouter.toWebHandler 转成 fetch 处理器，再用 @opencode-ai/client/effect 的 OpenCode.make({baseUrl:http://opencode.local}) + FetchHttpClient.layer 把请求打到内存 handler——零监听端口零网络 IO，完整保留路由/中间件/handler/codec/error。同时导出 Tool 命名空间（tools.register 走 Core 的 ApplicationTools 服务）与 ClientError/AbsolutePath/Model/Provider 等 Effect 类型；提供 OpenCode.layer 供依赖注入。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>进程内嵌式 opencode 宿主：单元测试（sessions.get/prompt/interrupt/events 重放）、桌面端/插件宿主把 opencode 作为库而非服务调用；README 明示 transitional package，将替代生成的 @opencode-ai/sdk。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（3 模块 · 0 边）</h3>
+<div id="int-oc-sdk-next" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_sdk_next = {"nodes": [{"data": {"id": "index.ts", "name": "index.ts", "path": "index.ts"}, "classes": "entry"}, {"data": {"id": "opencode.ts", "name": "opencode.ts", "path": "opencode.ts"}, "classes": "leaf"}, {"data": {"id": "tool.ts", "name": "tool.ts", "path": "tool.ts"}, "classes": "leaf"}], "edges": []};
+const cyoc_sdk_next = cytoscape({
+  container: document.getElementById('int-oc-sdk-next'),
+  elements: INToc_sdk_next,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_sdk_next.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

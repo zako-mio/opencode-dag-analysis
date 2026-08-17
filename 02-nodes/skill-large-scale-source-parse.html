@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>large-scale-source-parse · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>large-scale-source-parse <span class="tag">装配层</span></h1>
+  <div class="sub">skill-large-scale-source-parse · skill · A6m-自进化 · Layer 3</div>
+
+  <h2>① 作用</h2>
+  <p>大规模源码库静态解析方法论：主Agent 只做调度/聚合/裁决，explore 子Agent 并行解析，三源交叉验证，分层抽象+跨层联动矩阵+端到端路径，双集群交付（MD AI 友好+HTML 人友好）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 快照准备（浅 clone+官方文档镜像双依据）<br>· 层级骨架先行（9 层抽象主线）<br>· 三源交叉验证（印证/矛盾/独家/待裁决/参考 5 类）<br>· 并行解析（三硬依据 E1/E2/E3+行引用）<br>· 口径归一化终裁（主Agent 裁决）<br>· 跨层联动矩阵+端到端路径<br>· drawio 分批发+VLM 抽验<br>· 质量门控+checkpoint 续传</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>skill-relation</td><td><small>large-scale-source-parse SKILL.md 委派结构表: drawio-worker 分批 | 结构图生成（每批≤30节点，scale=2导出）</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-multi-window-dag-delivery.html'>multi-window-dag-delivery</a></td><td>skill-relation</td><td><small>multi-window-dag-delivery SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 单窗口内 9 层抽象+三源交叉的源码解析方法论（</small></td></tr><tr><td><a href='skill-dag-tutorial-authoring.html'>dag-tutorial-authoring</a></td><td>skill-relation</td><td><small>dag-tutorial-authoring SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 源码解析方法论（互补）</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260814-deepseek-harness-parse 反思提炼（pending.json.bak-20260817 证据：sk-20260814-source-parse，category=coding，创建时间 2026-08-17，verdict&quot;9层架构/7阶段委派，提炼 1 个可复用 Skill + 2 条 Memory&quot;）。源任务 0814-deepseek-harness源码解析：DeepSeek Harness 源码浅 clone（1316+ ts 文件+vendor），9 层抽象/235 modules/816 functions/31 drawio/双集群交付（AI 友好 MD 集群+人友好 HTML 集群）。方法论核心：主Agent 只做调度/聚合/裁决，解析工作量委派子Agent 并行；三源交叉验证（官方文档/Discussions/社区）+ 三硬依据（E1 编译/E2 运行时/E3 组合）+ 子Agent 口径不一致由主Agent 终裁。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>大型开源项目源码架构解析的标准流程（数百至数万文件）：浅 clone 快照 + 层级骨架先行 + 三源交叉 + 并行解析 + 归一化裁决 + 双交付；是 DAG 分析（multi-window/cytoscape）的上游互补方法论（三个 DAG skill 均声明引用其为通用基础）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：源码解析、架构解析、source analysis、9层解析、DAG依赖链、跨层联动、源码clone、架构文档；解析大型开源项目源码架构时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 快照准备（浅 clone+官方文档镜像双依据）→ 层级骨架先行（9 层抽象+目录交叉索引）→ 三源交叉验证（印证/矛盾/独家/待裁决/参考五类管理）<br>· 按层分派 explore 子Agent 并行解析，每条结论要求三硬依据+源码行引用，返回结构化 JSON<br>· 归一化与裁决（口径不一致由主Agent 终裁，异构结构统一 schema ≤2 次重试）→ 跨层联动矩阵 → 图表/文档生成 → 质量门控 → checkpoint 续传</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>委派 explore 子Agent 按层并行；产出供 multi-window-dag-delivery（DAG 分析）与 cytoscape-dag-visualization（渲染）消费；与 drawio-worker（图表）协作</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cytoscape-dag-visualization · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>cytoscape-dag-visualization <span class="tag">装配层</span></h1>
+  <div class="sub">skill-cytoscape-dag-visualization · skill · A6m-自进化 · Layer 5</div>
+
+  <h2>① 作用</h2>
+  <p>cytoscape.js 交互 DAG 可视化构建：单页组级+下钻总览与批量 HTML 页源码级动态 DAG 插入。含 DATA 按行注入、环修复方法论、disabled 节点标注、幂等防累积、VLM 双轨视觉验证。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 数据合并与环修复（E3 过滤/slot 修正/dependents 不反推）<br>· DATA 注入（按行替换 const DATA，CRLF+UTF-8 无 BOM）<br>· 两级视图（组级+下钻，缩放联动三级）<br>· 样式语义化标注（disabled 红色+图例同步）<br>· 试点先行批量插入（幂等防累积）<br>· VLM 视觉验证（headless 截图抓盲区）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>assembly-to-pkg</td><td><small>skill-cytoscape-dag-visualization 关联 oc-core</small></td></tr><tr><td><a href='skill-dag-tutorial-authoring.html'>dag-tutorial-authoring</a></td><td>skill-relation</td><td><small>cytoscape-dag-visualization SKILL.md 相关Skill: 下游（内容层）dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程，加载该</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-multi-window-dag-delivery.html'>multi-window-dag-delivery</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\coding\multi-window-dag-delivery\SKILL.md 相关Skill: 下游（渲染层）cyt</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 0816-plugin-dag 的 L2 与动态 DAG 两个 cycle 反思合并提炼（pending.json.bak-20260817-final 证据：cycle-20260817-plugin-dag-l2 产出 sk-20260817-interactive-dag-viz（interactive-dag-visualization，含环修复方法论/DATA 注入/disabled 标注），cycle-20260817-plugin-dag-dyn-github 产出 sk-20260817-cytoscape-dyn-dag（cytoscape-dynamic-dag，源码级动态图批量插入/染色/幂等）；最终 2026-08-17 23:00 合并为 cytoscape-dag-visualization）。源任务：0816-plugin-dag L2（134 节点/434 边/17 层/29 组，组级+下钻交互总览）+ 动态 DAG 批量插入（215 插件/1130 模块/1073 边/171 页）。方法论核心：数据注入零风险（按行替换 const DATA 而非 __DATA__ 占位符）、样式标注语义化（node[kind=disabled]）、环修复方法论、批量插入幂等、渲染必须视觉验证（VLM+headless 双轨）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>cytoscape.js 交互 DAG 可视化构建的标准方法论：单页交互总览（组级+下钻）+ 批量 HTML 页源码级动态 DAG；当前 0817-opencode-dag 三图交互交付（104 节点/154 边/38 组）即其应用；DAG 交付链的渲染层标准。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：cytoscape、交互式DAG、DAG总览、下钻、DATA注入、disabled标注、环修复、动态DAG、模块依赖图、批量插入；构建组级+下钻交互 DAG 总览或批量动态 DAG 时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 场景A 单页总览：数据合并与环修复 → DATA 注入（按行替换）→ 两级视图（组级+下钻）→ 样式标注（disabled 红色）→ 视觉验证（headless+VLM）<br>· 场景B 批量插入：试点先行（4 核心 3 轮迭代）→ 全量解析（Windows 路径统一）→ 幂等批量插入（gen-html 干净页+apply 单次插入）→ 质量门控 → 上传/交付<br>· 关键坑：cytoscape 缺 dagre 布局扩展→节点 0 渲染（vendor 补 cytoscape-dagre 4.0.0）；data(cls) 直接存颜色值；rankDir 按节点数（≥12 LR 横排）</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>上游接 multi-window-dag-delivery（消费其 DAG JSON 节点/边/组/seam/disabled）；下游接 dag-tutorial-authoring（教程交互图）；共享 _shared/dag-core-methods.md（环修复/DATA 注入/双轨视觉验证）；drawio-worker 绘制静态图</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

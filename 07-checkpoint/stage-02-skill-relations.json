@@ -1,0 +1,272 @@
+﻿[
+  {
+    "from": "skill-drawio-reference",
+    "to": "agent-drawio-worker",
+    "relation": "mandates",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\instructions\\agent-protocol.md L38/L63: 若委派对象为 drawio-worker，Skills to Load 必须精确写入 drawio-reference: 图表规范与导出验证（刚性约束）; SKILL.md frontmatter: 对 drawio-worker 子Agent 为强制加载项（含防截断规则），不可跳过"
+  },
+  {
+    "from": "skill-grill-me",
+    "to": "agent-plan",
+    "relation": "consumed-by",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc L16/L29: agent.plan/agent.build 的 prompt 以 '# Grill-Me Protocol (Plan Mode Default)' 开头，内嵌 grill-me 协议全文; MEMORY.md: plan/build 的 Grill-Me 协议用 agent.prompt 必要"
+  },
+  {
+    "from": "skill-grill-me",
+    "to": "agent-build",
+    "relation": "consumed-by",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\opencode.jsonc L29: agent.build.prompt 同样以 Grill-Me Protocol 开头（与 plan 完全相同，replaceAll 同步）"
+  },
+  {
+    "from": "skill-pdf-ocr",
+    "to": "agent-pdf-worker",
+    "relation": "consumed-by",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\instructions\\agent-protocol.md L63: PDF读取/OCR/文档分析 → 委派 pdf-worker 子Agent（必要时加载 pdf-ocr skill）; auto-mode.md: PDF 任务始终用 pdf-worker 而非重新加载 pdf-ocr skill"
+  },
+  {
+    "from": "skill-agent-reflection",
+    "to": "command-reflection",
+    "relation": "references",
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\agent-reflection\\SKILL.md: /reflection 命令触发审阅流程（Memory 轨道写入 MEMORY.md，Skill 轨道写入 Reflection/skills/）; C:\\Users\\15057\\.config\\opencode\\command\\reflection.md: 审阅 Reflection 系统中待确认的 Memory/Skill 条目，agent=build"
+  },
+  {
+    "from": "skill-agent-reflection",
+    "to": "agent-reflection-worker",
+    "relation": "mandates",
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\agent-reflection\\SKILL.md: 主Agent 委派 reflection-worker 子Agent（输入 4 层注入数据，工具仅文件读写，模型 DeepSeek V4 Flash）; opencode.jsonc L55-65: reflection-worker 子Agent 定义"
+  },
+  {
+    "from": "skill-agent-reflection",
+    "to": "skill-opencode-config",
+    "relation": "references",
+    "evidence": "agent-reflection SKILL.md 目录结构: 确认后写入 Reflection/skills/{category}/{name}/SKILL.md 与 C:\\Users\\15057\\.config\\opencode\\MEMORY.md（opencode-config 管辖的配置区）"
+  },
+  {
+    "from": "skill-openspec-archive-change",
+    "to": "skill-openspec-sync-specs",
+    "relation": "workflow",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\openspec-archive-change\\SKILL.md: 运行 openspec-sync-specs workflow inline（agent-driven intelligent merge）; sync-specs SKILL.md description: 仅被 archive-change 或显式召唤时使用"
+  },
+  {
+    "from": "skill-openspec-bulk-archive-change",
+    "to": "skill-openspec-sync-specs",
+    "relation": "workflow",
+    "evidence": "openspec-bulk-archive-change SKILL.md: bulk archive 排除找不到实现的 delta（syncing it anyway would write a main spec the caller deliberately withheld），sync 走 openspec-sync-specs 的 narrowed selection 逻辑"
+  },
+  {
+    "from": "skill-openspec-apply-change",
+    "to": "skill-openspec-continue-change",
+    "relation": "references",
+    "evidence": "openspec-apply-change SKILL.md: state=blocked（缺 artifacts）时 suggest using openspec-continue-change"
+  },
+  {
+    "from": "skill-openspec-update-change",
+    "to": "skill-openspec-continue-change",
+    "relation": "references",
+    "evidence": "openspec-update-change SKILL.md: 缺失工件 defer 到 /openspec-continue-change；'Do not advance the build frontier ... that is /openspec-continue-change\\'s job'"
+  },
+  {
+    "from": "skill-openspec-update-change",
+    "to": "skill-openspec-apply-change",
+    "relation": "references",
+    "evidence": "openspec-update-change SKILL.md: 'Change already implemented ... suggest /openspec-apply-change to carry the delta into code'"
+  },
+  {
+    "from": "skill-openspec-update-change",
+    "to": "skill-openspec-archive-change",
+    "relation": "references",
+    "evidence": "openspec-update-change SKILL.md: 'Everything done and implemented -> suggest /openspec-archive-change'"
+  },
+  {
+    "from": "skill-openspec-update-change",
+    "to": "skill-openspec-new-change",
+    "relation": "references",
+    "evidence": "openspec-update-change SKILL.md: 'If the request changes the change\\'s intent ... recommend starting fresh with /openspec-new-change (Update vs. Start Fresh heuristic)'"
+  },
+  {
+    "from": "skill-openspec-propose",
+    "to": "skill-openspec-apply-change",
+    "relation": "workflow",
+    "evidence": "openspec-propose SKILL.md: 'When ready to implement, run /openspec-apply-change'; 'Run /openspec-apply-change or ask me to implement to start working on the tasks'"
+  },
+  {
+    "from": "skill-openspec-ff-change",
+    "to": "skill-openspec-apply-change",
+    "relation": "workflow",
+    "evidence": "openspec-ff-change SKILL.md: 'What\\'s ready ... Prompt: Run /openspec-apply-change or ask me to implement'"
+  },
+  {
+    "from": "skill-openspec-onboard",
+    "to": "skill-openspec-apply-change",
+    "relation": "workflow",
+    "evidence": "openspec-onboard SKILL.md Phase 1: 完整流程包含 create change → 构建 artifacts → implement the tasks → archive（apply 为实现环节）"
+  },
+  {
+    "from": "skill-openspec-new-change",
+    "to": "skill-openspec-continue-change",
+    "relation": "references",
+    "evidence": "openspec-new-change SKILL.md Guardrails: 'If a change with that name already exists, suggest continuing that change instead'（即 openspec-continue-change）"
+  },
+  {
+    "from": "skill-superpowers-openspec-superpowers-workflow",
+    "to": "skill-openspec-propose",
+    "relation": "references",
+    "evidence": "superpowers-openspec-superpowers-workflow SKILL.md Guardrails: 'do not route first to $openspec-feature-workflow, openspec-propose, /opsx:propose'; 'Do not invoke OpenSpec artifact generation, openspec-propose ... before Superpowers exploration is complete'"
+  },
+  {
+    "from": "skill-superpowers-openspec-superpowers-workflow",
+    "to": "skill-openspec-archive-change",
+    "relation": "references",
+    "evidence": "superpowers-openspec-superpowers-workflow SKILL.md: 'Accept continue-archive ... while $openspec-archive-change remains valid'; 'archive the change with the OpenSpec archive flow'"
+  },
+  {
+    "from": "skill-superpowers-openspec-superpowers-workflow",
+    "to": "skill-superpowers-feature-workflow",
+    "relation": "same-family",
+    "evidence": "SKILL.md Guardrails 互斥引用 $openspec-feature-workflow（superpowers 系列工作流互斥路由）; 三者同属 superpowers-* 命名族"
+  },
+  {
+    "from": "skill-superpowers-feature-workflow",
+    "to": "skill-superpowers-learning-workflow",
+    "relation": "same-family",
+    "evidence": "两 skill 均使用 .superpowers-memory/ 记忆体系（PROJECT_CONTEXT.md / CURRENT_STATE.md / journal），feature-workflow 写 CURRENT_STATE，learning-workflow 回写记忆，同族互补"
+  },
+  {
+    "from": "skill-amap-budget-control",
+    "to": "skill-amap-lbs-skill",
+    "relation": "workflow",
+    "evidence": "amap-budget-control SKILL.md: 三 Skill 协作策略表——简单搜索/生成网页链接用 amap-lbs-skill（免费）；优先用 amap-lbs-skill 生成免费链接"
+  },
+  {
+    "from": "skill-amap-budget-control",
+    "to": "skill-amap-jsapi-skill",
+    "relation": "workflow",
+    "evidence": "amap-budget-control SKILL.md: 三 Skill 协作策略表——编写/调试地图前端 JS 代码用 amap-jsapi-skill（免费）"
+  },
+  {
+    "from": "skill-amap-lbs-skill",
+    "to": "skill-amap-budget-control",
+    "relation": "workflow",
+    "evidence": "amap-lbs-skill SKILL.md: 与 amap-budget-control 的协作关系——需要结构化数据（批量POI/路径步骤JSON）时转交 amap-budget-control 使用 MCP API 工具"
+  },
+  {
+    "from": "skill-amap-jsapi-skill",
+    "to": "skill-amap-lbs-skill",
+    "relation": "references",
+    "evidence": "amap-jsapi-skill SKILL.md 协作说明: 如需生成地图搜索链接 → 用 amap-lbs-skill（免费链接）"
+  },
+  {
+    "from": "skill-amap-jsapi-skill",
+    "to": "skill-amap-budget-control",
+    "relation": "references",
+    "evidence": "amap-jsapi-skill SKILL.md 协作说明: 如需结构化地图数据 → 用 amap-budget-control（MCP API，计次）"
+  },
+  {
+    "from": "skill-multi-window-dag-delivery",
+    "to": "skill-cytoscape-dag-visualization",
+    "relation": "workflow",
+    "evidence": "D:\\Opencode_Download\\Reflection\\skills\\coding\\multi-window-dag-delivery\\SKILL.md 相关Skill: 下游（渲染层）cytoscape-dag-visualization — 将本 Skill 产出的 DAG JSON（节点/边/组/seam/disabled）渲染为交互总览或批量页面动态图"
+  },
+  {
+    "from": "skill-multi-window-dag-delivery",
+    "to": "skill-dag-tutorial-authoring",
+    "relation": "workflow",
+    "evidence": "multi-window-dag-delivery SKILL.md 相关Skill: 内容层 dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程"
+  },
+  {
+    "from": "skill-multi-window-dag-delivery",
+    "to": "skill-large-scale-source-parse",
+    "relation": "workflow",
+    "evidence": "multi-window-dag-delivery SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 单窗口内 9 层抽象+三源交叉的源码解析方法论（互补）"
+  },
+  {
+    "from": "skill-cytoscape-dag-visualization",
+    "to": "skill-multi-window-dag-delivery",
+    "relation": "workflow",
+    "evidence": "cytoscape-dag-visualization SKILL.md 相关Skill: 上游（分析层）multi-window-dag-delivery — 从源码构建 DAG 数据模型（节点/边/组/seam），本 Skill 消费其产出 JSON"
+  },
+  {
+    "from": "skill-cytoscape-dag-visualization",
+    "to": "skill-dag-tutorial-authoring",
+    "relation": "workflow",
+    "evidence": "cytoscape-dag-visualization SKILL.md 相关Skill: 下游（内容层）dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程，加载该 Skill"
+  },
+  {
+    "from": "skill-dag-tutorial-authoring",
+    "to": "skill-cytoscape-dag-visualization",
+    "relation": "workflow",
+    "evidence": "dag-tutorial-authoring SKILL.md 相关Skill: 上游（渲染层）cytoscape-dag-visualization — 教程中的交互 DAG 总览/节点依赖图构建"
+  },
+  {
+    "from": "skill-dag-tutorial-authoring",
+    "to": "skill-multi-window-dag-delivery",
+    "relation": "workflow",
+    "evidence": "dag-tutorial-authoring SKILL.md 相关Skill: 分析层 multi-window-dag-delivery — 如需先对大型源码做 DAG 分析再写成教程"
+  },
+  {
+    "from": "skill-dag-tutorial-authoring",
+    "to": "skill-large-scale-source-parse",
+    "relation": "workflow",
+    "evidence": "dag-tutorial-authoring SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 源码解析方法论（互补）"
+  },
+  {
+    "from": "skill-cytoscape-dag-visualization",
+    "to": "shared-dag-core-methods",
+    "relation": "references",
+    "evidence": "cytoscape-dag-visualization SKILL.md: 环修复方法论/DATA注入/双轨视觉验证 均引用 _shared/dag-core-methods.md 共享章节"
+  },
+  {
+    "from": "skill-multi-window-dag-delivery",
+    "to": "shared-dag-core-methods",
+    "relation": "references",
+    "evidence": "multi-window-dag-delivery SKILL.md: 环修复方法论详见共享章节 _shared/dag-core-methods.md"
+  },
+  {
+    "from": "skill-dag-tutorial-authoring",
+    "to": "shared-dag-core-methods",
+    "relation": "references",
+    "evidence": "dag-tutorial-authoring SKILL.md: 双轨视觉验证方法论见共享章节 _shared/dag-core-methods.md；_shared/dag-core-methods.md 头部声明三个 DAG skill 共享引用"
+  },
+  {
+    "from": "skill-large-scale-source-parse",
+    "to": "agent-drawio-worker",
+    "relation": "workflow",
+    "evidence": "large-scale-source-parse SKILL.md 委派结构表: drawio-worker 分批 | 结构图生成（每批≤30节点，scale=2导出）"
+  },
+  {
+    "from": "skill-recruit-assist",
+    "to": "skill-browser-harness",
+    "relation": "workflow",
+    "evidence": "recruit-assist SKILL.md: 浏览器自动化使用 browser-harness（CDP），通过管道传入 Python 代码（$pyScript | browser-harness.exe）; 前置启动 chrome-debug.ps1"
+  },
+  {
+    "from": "skill-postmortem-failure-review",
+    "to": "skill-reusable-asset-inventory",
+    "relation": "workflow",
+    "evidence": "postmortem-failure-review SKILL.md: Step 3 资产盘点（A/B/C 三级分类）产出可复用资产清单——与 reusable-asset-inventory 方法论一致（同方法论族）; 复盘产出可复用资产清单.md"
+  },
+  {
+    "from": "skill-reusable-asset-inventory",
+    "to": "skill-postmortem-failure-review",
+    "relation": "same-family",
+    "evidence": "reusable-asset-inventory SKILL.md: 适用场景为项目失败或重写前抢救可复用资产，与 postmortem-failure-review 的 A/B/C 三级资产盘点产出物同源互补"
+  },
+  {
+    "from": "skill-model-switcher",
+    "to": "instruction-auto-mode",
+    "relation": "references",
+    "evidence": "model-switcher SKILL.md: 本技能配合全局指令文件 ~/.config/opencode/instructions/auto-mode.md 工作（评分维度及切换阈值详见 auto-mode.md），auto-mode.md 自动加载实现任务前难度评估"
+  },
+  {
+    "from": "skill-opencode-config",
+    "to": "skill-openspec-propose",
+    "relation": "same-family",
+    "evidence": "opencode-config SKILL.md local/skills-instructions.md 将 openspec-* 12 个 skill 归为同一 OpenSpec 体系（同族清单），配置层扫描路径覆盖 skills/ 目录"
+  },
+  {
+    "from": "skill-browser-harness",
+    "to": "skill-recruit-assist",
+    "relation": "consumed-by",
+    "evidence": "browser-harness SKILL.md: Direct browser control via CDP，recruit-assist 通过管道调用 browser-harness.exe；browser-use（browser-harness 的 skill name）被 recruit-assist 作为浏览器自动化依赖消费"
+  }
+]

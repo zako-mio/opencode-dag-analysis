@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dag-tutorial-authoring · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>dag-tutorial-authoring <span class="tag">装配层</span></h1>
+  <div class="sub">skill-dag-tutorial-authoring · skill · A6m-自进化 · Layer 4</div>
+
+  <h2>① 作用</h2>
+  <p>DAG 教程编写方法论（零基础读者导向）：调研驱动编写（4 路并行交叉验证）、可读性规律编码为门控、统一 schema 并行写节点、双轨验证（VLM+headless）、新手走查闭环。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 4 路并行调研（官方 A/B+英文 C+中文 D）<br>· 五要素可读性门控（心智模型/无孤立/术语统一/场景链/走查）<br>· 8 区块节点模板（why/intro/scenario/web/cli/terms/summary/official_links）<br>· 边方向=学习顺序约定+层序门控校验<br>· 功能 why 分层（功能层+历史层）<br>· 双轨视觉验证+新手走查</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>assembly-to-pkg</td><td><small>skill-dag-tutorial-authoring 关联 oc-core</small></td></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>assembly-to-pkg</td><td><small>skill-dag-tutorial-authoring 关联 oc-schema</small></td></tr><tr><td><a href='skill-large-scale-source-parse.html'>large-scale-source-parse</a></td><td>skill-relation</td><td><small>dag-tutorial-authoring SKILL.md 相关Skill: 通用基础 large-scale-source-parse — 源码解析方法论（互补）</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-multi-window-dag-delivery.html'>multi-window-dag-delivery</a></td><td>skill-relation</td><td><small>multi-window-dag-delivery SKILL.md 相关Skill: 内容层 dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程</small></td></tr><tr><td><a href='skill-cytoscape-dag-visualization.html'>cytoscape-dag-visualization</a></td><td>skill-relation</td><td><small>cytoscape-dag-visualization SKILL.md 相关Skill: 下游（内容层）dag-tutorial-authoring — 如需将 DAG 交付为面向读者的教程，加载该</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260817-github-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-dag-tutorial，category=coding，创建时间 2026-08-17，verdict&quot;调研驱动编写、可读性规律编码为门控、DAG 边方向=学习顺序写进 schema、VLM 双轨验证抓脚本盲区…提炼 1 个 Skill(dag-tutorial-authoring) + 2 条 Memory&quot;）。源任务 0817-github-dag：GitHub 新手全功能 DAG 教程（35 节点/41 边/7 组/9 层，零基础读者），4 路并行调研（官方 A/B + 英文 C + 中文 D）交叉验证驱动编写，把&quot;好教程&quot;可读性规律（心智模型字段/无孤立节点/术语统一/场景链/新手走查）编码为可校验门控，节点页 8 区块模板（why/intro/scenario/web/cli/terms/summary/official_links）。实战事故：DAG 边方向写反导致拓扑分层颠倒（Layer0 出现 20 个高级节点），教训是边方向=学习顺序必须写进 schema。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>面向零基础读者的概念/技能 DAG 教程编写标准方法论：调研先行→可读性规律编码为门控→统一 schema 并行写节点→双轨验证→新手走查→用户反馈闭环；当前知识 DAG 类交付（如 GitHub/Git 教程）复用；&quot;双轨交付一致性三原则&quot;（人类入口 .html/.md 仅 AI 镜像）亦由本 skill 固化为门控。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：DAG教程、教程编写、学习路径、knowledge DAG、可读性门控、调研驱动编写、新手教程；编写面向初学者的概念/技能 DAG 教程时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 调研先行（4 路并行：官方 A/B+英文 C+中文 D 交叉验证）→ 先写分析报告（5 段+方法论映射）再驱动节点内容<br>· 可读性规律编码为门控（五要素）→ 统一 schema（8 区块模板+字段长度约束）交 3 路 general 并行写节点 → DAG 边方向=学习顺序写进 schema 注释<br>· 双轨视觉验证（门控脚本结构检查+headless 截图+VLM 抓视觉盲区）→ 新手走查（零基础视角 N 页五要素全齐）→ 用户反馈修复后同步 README+quality-gate</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>4 路调研子Agent（代理 127.0.0.1:7890+谷歌）+ 3 路 general 并行写节点；上游接 multi-window-dag-delivery（先分析再成教程）与 cytoscape-dag-visualization（交互总览）；共享 _shared/dag-core-methods.md</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

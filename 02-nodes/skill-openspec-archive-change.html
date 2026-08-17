@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openspec-archive-change · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>openspec-archive-change <span class="tag">装配层</span></h1>
+  <div class="sub">skill-openspec-archive-change · skill · A6l-工作流 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>归档已完成的变更：将 delta spec 合并到主 spec 并移动到 archive。先加载 archive 指令上下文，检查工件与任务完成度，处理未完成警告与冲突。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 归档前上下文加载（instructions archive）<br>· 工件完成度检查（done/skipped）<br>· 任务完成度检查（-[ ] 计数）<br>· delta spec 合并到主 spec<br>· 变更归档移动</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-sync-specs.html'>openspec-sync-specs</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\skills\openspec-archive-change\SKILL.md: 运行 openspec-sync-specs work</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-update-change.html'>openspec-update-change</a></td><td>skill-relation</td><td><small>openspec-update-change SKILL.md: &#x27;Everything done and implemented -&gt; suggest /openspec-archive-chang</small></td></tr><tr><td><a href='skill-superpowers-openspec-superpowers-workflow.html'>superpowers-openspec-superpowers-workflow</a></td><td>skill-relation</td><td><small>superpowers-openspec-superpowers-workflow SKILL.md: &#x27;Accept continue-archive ... while $openspec-arc</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。实现完成并验证通过后归档：将 delta spec 合并到主 spec 并移动到 archive。引入动机：OpenSpec 的 Delta Spec 机制——变更中的 spec 是增量（ADDED/MODIFIED/REMOVED/RENAMED），归档时才合并到主 spec，保证并发变更与审视回滚能力（0803 解析报告）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>每个 OpenSpec 变更生命周期的收尾；归档时智能合并 delta 到主 spec（agent 驱动读 delta 编辑主 spec）；本地长期维护的规格知识库依赖此增量合并。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>变更实现完成并验证通过后（description 触发词&quot;归档&quot;&quot;合并 delta&quot;）；或显式 /openspec-archive-change。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择变更，加载归档指令上下文（instructions archive）<br>· 检查工件与任务完成度（未完成警告/冲突处理）<br>· delta spec 合并到主 spec（调用 sync-specs 逻辑）并移动变更到 archive</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 verify-change；内部调用 sync-specs；被 superpowers 编排器作为归档收尾步骤</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

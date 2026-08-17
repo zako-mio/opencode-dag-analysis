@@ -1,0 +1,587 @@
+[
+  {
+    "node_id": "agent-plan",
+    "node_name": "plan",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-build",
+    "node_name": "build",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-pdf-worker",
+    "node_name": "pdf-worker",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-drawio-worker",
+    "node_name": "drawio-worker",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-general",
+    "node_name": "general",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-explore",
+    "node_name": "explore",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "agent-reflection-worker",
+    "node_name": "reflection-worker",
+    "kind": "agent",
+    "group": "A1-Agents",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-vscode-mcp-server",
+    "node_name": "vscode-mcp-server",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-amap",
+    "node_name": "amap",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-pdf-reader",
+    "node_name": "pdf-reader",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-drawio",
+    "node_name": "drawio",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-drawio-local",
+    "node_name": "drawio-local",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "mcp-headroom",
+    "node_name": "headroom",
+    "kind": "mcp",
+    "group": "A2-MCP",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "plugin-vision-interceptor",
+    "node_name": "vision-interceptor",
+    "kind": "plugin",
+    "group": "A3-插件工具",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "tool-read",
+    "node_name": "read",
+    "kind": "tool",
+    "group": "A3-插件工具",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "command-reflection",
+    "node_name": "reflection",
+    "kind": "command",
+    "group": "A4-命令指令",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "instr-auto-mode",
+    "node_name": "auto-mode",
+    "kind": "instruction",
+    "group": "A4-命令指令",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "instr-memory",
+    "node_name": "MEMORY.md",
+    "kind": "instruction",
+    "group": "A4-命令指令",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "config-main",
+    "node_name": "opencode.jsonc (main config)",
+    "kind": "config",
+    "group": "A5-配置本体",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-drawio-reference",
+    "node_name": "drawio-reference",
+    "kind": "skill",
+    "group": "A6a-图表",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-frontend-design",
+    "node_name": "frontend-design",
+    "kind": "skill",
+    "group": "A6b-前端设计",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-lark-suite",
+    "node_name": "lark-suite",
+    "kind": "skill",
+    "group": "A6c-办公集成",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-minimax-docx",
+    "node_name": "minimax-docx",
+    "kind": "skill",
+    "group": "A6c-办公集成",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-minimax-xlsx",
+    "node_name": "minimax-xlsx",
+    "kind": "skill",
+    "group": "A6c-办公集成",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-pdf-ocr",
+    "node_name": "pdf-ocr",
+    "kind": "skill",
+    "group": "A6d-文档处理",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-soe-resume",
+    "node_name": "soe-resume",
+    "kind": "skill",
+    "group": "A6e-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-superpowers-feature-workflow",
+    "node_name": "superpowers-feature-workflow",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-superpowers-learning-workflow",
+    "node_name": "superpowers-learning-workflow",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-superpowers-openspec-superpowers-workflow",
+    "node_name": "superpowers-openspec-superpowers-workflow",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-release-openspec",
+    "node_name": "release-openspec",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-agency-agents",
+    "node_name": "agency-agents",
+    "kind": "skill",
+    "group": "A6f-角色调度",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-amap-budget-control",
+    "node_name": "amap-budget-control",
+    "kind": "skill",
+    "group": "A6k-地图",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-amap-jsapi-skill",
+    "node_name": "amap-jsapi-skill",
+    "kind": "skill",
+    "group": "A6k-地图",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-amap-lbs-skill",
+    "node_name": "amap-lbs-skill",
+    "kind": "skill",
+    "group": "A6k-地图",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-browser-harness",
+    "node_name": "browser-harness",
+    "kind": "skill",
+    "group": "A6h-浏览器",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-grill-me",
+    "node_name": "grill-me",
+    "kind": "skill",
+    "group": "A6f-角色调度",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-headroom",
+    "node_name": "headroom",
+    "kind": "skill",
+    "group": "A6i-上下文压缩",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-opencode-config",
+    "node_name": "opencode-config",
+    "kind": "skill",
+    "group": "A6j-配置知识",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-apply-change",
+    "node_name": "openspec-apply-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-archive-change",
+    "node_name": "openspec-archive-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-bulk-archive-change",
+    "node_name": "openspec-bulk-archive-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-continue-change",
+    "node_name": "openspec-continue-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-explore",
+    "node_name": "openspec-explore",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-ff-change",
+    "node_name": "openspec-ff-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-new-change",
+    "node_name": "openspec-new-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-onboard",
+    "node_name": "openspec-onboard",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-propose",
+    "node_name": "openspec-propose",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-sync-specs",
+    "node_name": "openspec-sync-specs",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-update-change",
+    "node_name": "openspec-update-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-openspec-verify-change",
+    "node_name": "openspec-verify-change",
+    "kind": "skill",
+    "group": "A6l-工作流",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-recruit-assist",
+    "node_name": "recruit-assist",
+    "kind": "skill",
+    "group": "A6e-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-resume-builder",
+    "node_name": "resume-builder",
+    "kind": "skill",
+    "group": "A6e-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-agent-reflection",
+    "node_name": "agent-reflection",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-cdisk-space-optimization",
+    "node_name": "cdisk-space-optimization",
+    "kind": "skill",
+    "group": "A6n-系统优化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-cytoscape-dag-visualization",
+    "node_name": "cytoscape-dag-visualization",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-dag-tutorial-authoring",
+    "node_name": "dag-tutorial-authoring",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-github-bulk-upload",
+    "node_name": "github-bulk-upload",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-large-scale-source-parse",
+    "node_name": "large-scale-source-parse",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-multi-window-dag-delivery",
+    "node_name": "multi-window-dag-delivery",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-postmortem-failure-review",
+    "node_name": "postmortem-failure-review",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-reusable-asset-inventory",
+    "node_name": "reusable-asset-inventory",
+    "kind": "skill",
+    "group": "A6m-自进化",
+    "change": "新增装配",
+    "reason": "改造需求（历史事件见 history 字段）",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-schema",
+    "node_name": "schema",
+    "kind": "package",
+    "group": "G1-数据模型",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-script",
+    "node_name": "script",
+    "kind": "package",
+    "group": "G14-工具",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-opencode",
+    "node_name": "opencode",
+    "kind": "package",
+    "group": "G19-主入口",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-core",
+    "node_name": "core",
+    "kind": "package",
+    "group": "G6-核心服务",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  }
+]

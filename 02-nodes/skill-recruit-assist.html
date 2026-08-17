@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>recruit-assist · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>recruit-assist <span class="tag">装配层</span></h1>
+  <div class="sub">skill-recruit-assist · skill · A6e-简历求职 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>简历投递辅助：投简历（浏览器打开招聘页+记录跟踪表）、识别简历（扫描表单字段匹配信息库）、维护信息库、记录投递状态、跟踪企业，飞书增量同步跟踪表。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 浏览器自动化投递（browser-harness CDP）<br>· 表单字段识别与信息库匹配<br>· Excel 跟踪表读写（tracker_writer.py）<br>· 飞书增量上传/全量下载同步（sync_feishu.py）<br>· 企业类型识别（detect_enterprise_type.py）<br>· URL 到渠道映射（url_to_channel.py）<br>· 同步状态机（.sync_state.json）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-browser-harness.html'>browser-harness</a></td><td>skill-relation</td><td><small>recruit-assist SKILL.md: 浏览器自动化使用 browser-harness（CDP），通过管道传入 Python 代码（$pyScript | browser-harness.</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-chrome</small></td></tr><tr><td><a href='ext-lark-api.html'>ext-lark-api</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-lark-api</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>完全自创（无上游），2026-07-04 创建（早于 8 月改造周期），2026-08-05 重大优化。初始动机：简历投递全流程自动化——投简历（浏览器打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、飞书表格双向同步。0804-recruit优化报告记载：京东校招投递（campus.jd.com）执行严重卡壳（浏览器脚本试错 4+ 次、行定位误判、row 追加失败），用户反馈&quot;执行过程很卡壳，反思总结经验然后计划优化原 skill&quot;，据此新增 tracker_writer.py 一体化脚本（JSON 输入→备份→定位→写入→打包→全量验证→失败回滚）并修正 SKILL.md 三处错误。0805 又发生简历跟踪上传事故（京东数据误写 row 774 导致 737 空行污染飞书），再修正则+游标定位。0802-opencode改造盘点报告认定其为&quot;完全自创&quot;。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>求职季投递主场景：投简历、跟踪企业、飞书同步持续使用；browser-harness（CDP 浏览器自动化）与 tracker_writer.py 组成的投递管线是当前求职流程核心工具（0815-opencode-dsh桥接将其收入 exec-recruit 特设 preset 与 browser-harness 搭配）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：投简历、识别简历、更新信息库、记录投递、跟踪企业、招聘、简历投递、上传简历跟踪、下载简历跟踪、提取表单；或显式 /recruit-assist（0815 起为 user-invocable 手势）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 投简历：启动 Chrome 远程调试（chrome-debug.ps1）→ browser-harness CDP 打开招聘页 → tracker_writer.py add 写入投递跟踪表<br>· 识别简历/更新信息库/记录投递/跟踪企业：表单字段扫描（JS IIFE 提取）匹配信息库<br>· 飞书同步：sync_feishu.py 增量上传/全量下载（.sync_state.json 状态机），上传/下载简历跟踪</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 browser-harness skill（CDP 浏览器自动化）；与 resume-builder/soe-resume 构成简历求职 skill 群（0815 起共同收入 exec-recruit preset）；Excel 跟踪表/飞书表格为外部数据源</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

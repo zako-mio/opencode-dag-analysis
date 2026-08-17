@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>plan · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>plan <span class="tag">装配层</span></h1>
+  <div class="sub">agent-plan · agent · A1-Agents · Layer 6</div>
+
+  <h2>① 作用</h2>
+  <p>主 Agent（调度者角色，非执行者），variant=daily，无显式 model 字段 → 回落顶层 model deepseek-v4-pro（注释明确：只动顶层一处省维护）。prompt 由两部分组成：Grill-Me 协议（用 question 工具逐条追问收敛设计树，含 drift guardrails 防协议漂移）与 Agent 调度协议（分类判断→search-agents.ps1 搜索角色→拆解子任务→并行/接力委派→聚合精简 JSON）。permission 对 bash 全 deny，仅放行 git status/git diff/Get-ChildItem 只读命令（L2 层收紧执行面）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>需求澄清与设计树收敛（Grill-Me）、任务拆解与子Agent 委派、MCP 路由决策（PDF→pdf-worker / 图表→drawio-worker / 其他→general/explore）、Mission 留档 5 段报告触发、Build 末尾 Reflection 4 层写入、Variant 继承 [COMPLEXITY] 标记</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr><tr><td><a href='instr-memory.html'>memory</a></td><td>instruction-load</td><td><small>MEMORY.md 作为 agent 指令</small></td></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>agent-plan 关联 oc-opencode</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>agent-plan 关联 ext-deepseek-api</small></td></tr><tr><td><a href='skill-grill-me.html'>grill-me</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\opencode.jsonc L16/L29: agent.plan/agent.build 的 prompt 以 &#x27;# Grill-M</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 输入缓存优化引入：grill-me 协议固化到 plan prompt 开头（+500 tokens，缓存命中后免费）；0802 Mission留档系统：注入 Mission留档规则（5段报告+三重门控）；0803 改进落地：Return Format 升级为 8 字段 + MEMORY.md 同步询问；0803 Drawio 缓存修正：确认 agent.prompt 位于系统提示词位置 0，仅用于结构性协议替换；0805 Reflection 系统：新增 Build 末尾 pending.json 4 层封装写入 + Reflection 自检规则；0806 plan/build 双双降级 Flash（临时）；0807 /reflection 原生命令 prompt 同步；0813 plan 回滚 Pro（删除 plan.model 字段回落顶层 model，只动顶层一处省维护）。permission 对 bash 全 deny，仅放行 git status/git diff/Get-ChildItem 只读命令（L2 收紧执行面）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>调度者角色固定：plan=Pro（0813 回滚，规划/委派调度需 Pro 推理质量）、build=Flash（执行者降本）——分工清晰的模型策略；删 model 字段回落顶层实现单点维护；prompt 同时承载 Grill-Me + Agent 调度协议 + 编码安全 + 留档 + Variant 继承 + Reflection 规则，是全配置最大的定制项。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>build（执行收敛结果）、7 子Agent（委派）、agency-agents skill（search-agents.ps1 角色搜索）、reflection-worker（异步反思）、command-reflection（/reflection）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

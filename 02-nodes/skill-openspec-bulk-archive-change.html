@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openspec-bulk-archive-change · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>openspec-bulk-archive-change <span class="tag">装配层</span></h1>
+  <div class="sub">skill-openspec-bulk-archive-change · skill · A6l-工作流 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>单次批量归档多个已完成变更，智能处理 spec 冲突——通过检查代码库判断实际实现。逐变更收集工件状态、任务完成度与 delta spec 列表后统一归档。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 多选变更批量归档（含全选）<br>· 批量校验（工件/任务/delta spec）<br>· 冲突检查与代码库核对<br>· 窄化 delta 同步范围（排除未实现 delta）<br>· 混合 schema 独立评估</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>assembly-to-pkg</td><td><small>skill-openspec-bulk-archive-change 关联 oc-schema</small></td></tr><tr><td><a href='skill-openspec-sync-specs.html'>openspec-sync-specs</a></td><td>skill-relation</td><td><small>openspec-bulk-archive-change SKILL.md: bulk archive 排除找不到实现的 delta（syncing it anyway would write a m</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。批量归档多个已完成变更的单次操作：多选（含全选），智能处理 spec 冲突——通过检查代码库判断实际实现。引入动机：多变更并行推进后需要批量收尾，避免逐条归档的低效；冲突处理是批量场景特有需求。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>累积多个已完成变更需要批量收尾时；本地多线程/多窗口任务（如 DAG 多窗口交付）产生多个并行变更，批量归档是配套收尾能力。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>用户要求批量归档多个变更（description 触发词&quot;批量归档&quot;&quot;多个&quot;）；或显式 /openspec-bulk-archive-change。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· openspec list 获取全部 active changes（无则提示停止）<br>· 用户多选变更（含 All changes 选项，绝不自动全选）<br>· 逐变更收集工件状态/任务完成度/delta spec，统一校验（冲突检查与代码库核对），窄化 delta 同步范围（排除未实现 delta），混合 schema 独立评估后统一归档</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接多个 verify-change 完成的变更；内部复用 sync-specs 合并逻辑</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

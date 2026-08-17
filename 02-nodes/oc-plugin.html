@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>plugin · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>plugin </h1>
+  <div class="sub">oc-plugin · package · G7-插件SDK · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>插件 SDK。src/index.ts:20-80 定义 Plugin/PluginInput/Config/Hooks 等公共类型，基于 @opencode-ai/sdk 客户端访问服务；src/tool.ts:3-20 定义 ToolContext/ToolResult。提供 v2 双运行时：effect 版（src/v2/effect/：plugin/context/agent/command/skill/catalog/integration/filesystem/event 等 14 模块）与 promise 版（src/v2/promise/），并含 TUI 插件类型（src/tui.ts:1-40 基于 @opentui）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 插件公共类型与 Hooks 契约（packages/plugin/src/index.ts:20-80）<br>· 工具 API：ToolContext/ToolDefinition/ToolResult（packages/plugin/src/tool.ts:3-20）<br>· Effect 原生 v2 插件 API：agent/command/skill/catalog/integration 注册（packages/plugin/src/v2/effect/plugin.ts）<br>· Promise 风格 v2 插件 API（packages/plugin/src/v2/promise/index.ts）<br>· TUI 插件接口（基于 @opentui，packages/plugin/src/tui.ts:19-33）<br>· shell 工具封装（packages/plugin/src/shell.ts）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-sdk.html'>sdk</a></td><td>workspace-dep</td><td><small>@opencode-ai/plugin/package.json dependencies.@opencode-ai/sdk</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>workspace-dep</td><td><small>@opencode-ai/core/package.json dependencies.@opencode-ai/plugin</small></td></tr><tr><td><a href='oc-tui.html'>tui</a></td><td>workspace-dep</td><td><small>@opencode-ai/tui/package.json dependencies.@opencode-ai/plugin</small></td></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>semantic-dep</td><td><small>stage-01 opencode</small></td></tr><tr><td><a href='plugin-vision-interceptor.html'>vision-interceptor</a></td><td>assembly-to-pkg</td><td><small>plugin-vision-interceptor 关联 oc-plugin</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为第三方扩展的稳定 SDK 面（发布到 npm，files 只含 dist），把 opencode 对插件的实现细节隔离在 core 内部，对外只暴露类型化、版本化的注册 API。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机直接引用：plugin-vision-interceptor 依赖 @opencode-ai/plugin 的 server export 接口，通过 chat.message + experimental.chat.messages.transform 双钩子实现 VLM 双通道（付费 glm-4.6v 优先 + 429 降级免费 glm-4.6v-flash + processedImages 内存缓存防重复扣费）；这是本机唯一一个以官方插件 SDK 编写并挂载进装配层的组件，是官方包「接口化改造」的典型。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· 入口：src/index.ts 定义插件类型面（ProviderContext/WorkspaceAdapter/ToolDefinition/TUI 类型等）并 re-export tool.js；导出路径 ./tool、./tui、./v2/effect（v2/effect/plugin、v2/effect/integration）、./v2/promise。<br>· 插件写法：export server(ctx) 挂钩子（如 plugin-vision-interceptor 的 chat.message 与 experimental.chat.messages.transform）；ToolContext（src/tool.ts:1-24）提供 sessionID/messageID/agent/directory/worktree/abort/metadata/ask；tui.ts 提供 TUI 渲染插槽类型（@opentui/core 的 Renderable/SlotMode）。<br>· v2 面：src/v2/effect/plugin.ts + registration.ts 提供 Effect 原生插件注册与生命周期（agent/command/event/fs/location/reference/skill 等子模块），发布到 npm（files 只含 dist）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>plugin 是第三方扩展面：core 内部承载插件运行时，tui 经 ./tui 暴露 UI 插槽，opencode 主程序加载插件配置。本机正是它的直接使用者——plugin-vision-interceptor（modified-dag 中 depends_on_raw: &#x27;@opencode-ai/plugin（server export 接口）&#x27;）用双钩子把图片转 VLM 文字再送 LLM，是报告-01 分析的 VLM 双通道的核心实现。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（34 模块 · 47 边）</h3>
+<div id="int-oc-plugin" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_plugin = {"nodes": [{"data": {"id": "example-workspace.ts", "name": "example-workspace.ts", "path": "example-workspace.ts"}, "classes": "leaf"}, {"data": {"id": "example.ts", "name": "example.ts", "path": "example.ts"}, "classes": "leaf"}, {"data": {"id": "index.ts", "name": "index.ts", "path": "index.ts"}, "classes": "entry"}, {"data": {"id": "shell.ts", "name": "shell.ts", "path": "shell.ts"}, "classes": "leaf"}, {"data": {"id": "tool.ts", "name": "tool.ts", "path": "tool.ts"}, "classes": "leaf"}, {"data": {"id": "tui.ts", "name": "tui.ts", "path": "tui.ts"}, "classes": "leaf"}, {"data": {"id": "v2/options.ts", "name": "options.ts", "path": "v2/options.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/agent.ts", "name": "agent.ts", "path": "v2/effect/agent.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/aisdk.ts", "name": "aisdk.ts", "path": "v2/effect/aisdk.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/catalog.ts", "name": "catalog.ts", "path": "v2/effect/catalog.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/command.ts", "name": "command.ts", "path": "v2/effect/command.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/context.ts", "name": "context.ts", "path": "v2/effect/context.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/event.ts", "name": "event.ts", "path": "v2/effect/event.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/filesystem.ts", "name": "filesystem.ts", "path": "v2/effect/filesystem.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/index.ts", "name": "index.ts", "path": "v2/effect/index.ts"}, "classes": "entry"}, {"data": {"id": "v2/effect/integration.ts", "name": "integration.ts", "path": "v2/effect/integration.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/location.ts", "name": "location.ts", "path": "v2/effect/location.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/npm.ts", "name": "npm.ts", "path": "v2/effect/npm.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/path.ts", "name": "path.ts", "path": "v2/effect/path.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/plugin.ts", "name": "plugin.ts", "path": "v2/effect/plugin.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/reference.ts", "name": "reference.ts", "path": "v2/effect/reference.ts"}, "classes": "leaf"}, {"data": {"id": "v2/effect/registration.ts", "name": "registration.ts", "path": "v2/effect/registration.ts"}, "classes": "hot"}, {"data": {"id": "v2/effect/skill.ts", "name": "skill.ts", "path": "v2/effect/skill.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/agent.ts", "name": "agent.ts", "path": "v2/promise/agent.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/aisdk.ts", "name": "aisdk.ts", "path": "v2/promise/aisdk.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/catalog.ts", "name": "catalog.ts", "path": "v2/promise/catalog.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/command.ts", "name": "command.ts", "path": "v2/promise/command.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/context.ts", "name": "context.ts", "path": "v2/promise/context.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/index.ts", "name": "index.ts", "path": "v2/promise/index.ts"}, "classes": "entry"}, {"data": {"id": "v2/promise/integration.ts", "name": "integration.ts", "path": "v2/promise/integration.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/plugin.ts", "name": "plugin.ts", "path": "v2/promise/plugin.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/reference.ts", "name": "reference.ts", "path": "v2/promise/reference.ts"}, "classes": "leaf"}, {"data": {"id": "v2/promise/registration.ts", "name": "registration.ts", "path": "v2/promise/registration.ts"}, "classes": "hot"}, {"data": {"id": "v2/promise/skill.ts", "name": "skill.ts", "path": "v2/promise/skill.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "example.ts", "target": "index.ts"}}, {"data": {"source": "example.ts", "target": "tool.ts"}}, {"data": {"source": "index.ts", "target": "shell.ts"}}, {"data": {"source": "index.ts", "target": "tool.ts"}}, {"data": {"source": "tui.ts", "target": "index.ts"}}, {"data": {"source": "v2/effect/agent.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/aisdk.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/catalog.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/command.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/options.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/agent.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/aisdk.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/catalog.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/command.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/integration.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/plugin.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/reference.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/skill.ts"}}, {"data": {"source": "v2/effect/context.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/integration.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/plugin.ts", "target": "v2/effect/context.ts"}}, {"data": {"source": "v2/effect/reference.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/effect/skill.ts", "target": "v2/effect/registration.ts"}}, {"data": {"source": "v2/promise/agent.ts", "target": "v2/effect/agent.ts"}}, {"data": {"source": "v2/promise/agent.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/aisdk.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/catalog.ts", "target": "v2/effect/catalog.ts"}}, {"data": {"source": "v2/promise/catalog.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/command.ts", "target": "v2/effect/command.ts"}}, {"data": {"source": "v2/promise/command.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/options.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/agent.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/aisdk.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/catalog.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/command.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/integration.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/plugin.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/reference.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/skill.ts"}}, {"data": {"source": "v2/promise/context.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/integration.ts", "target": "v2/effect/integration.ts"}}, {"data": {"source": "v2/promise/integration.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/plugin.ts", "target": "v2/promise/context.ts"}}, {"data": {"source": "v2/promise/reference.ts", "target": "v2/effect/reference.ts"}}, {"data": {"source": "v2/promise/reference.ts", "target": "v2/promise/registration.ts"}}, {"data": {"source": "v2/promise/skill.ts", "target": "v2/effect/skill.ts"}}, {"data": {"source": "v2/promise/skill.ts", "target": "v2/promise/registration.ts"}}]};
+const cyoc_plugin = cytoscape({
+  container: document.getElementById('int-oc-plugin'),
+  elements: INToc_plugin,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_plugin.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

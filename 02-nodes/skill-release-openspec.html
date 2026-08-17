@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>release-openspec · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>release-openspec <span class="tag">装配层</span></h1>
+  <div class="sub">skill-release-openspec · skill · A6l-工作流 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>OpenSpec 自身发布管理技能，以可恢复状态机运行发布工作流：每次调用检查 GitHub 实时状态，只执行下一步安全动作，不假设前次调用已完成。仅 OpenSpec 维护者使用，Fission-AI/OpenSpec 与 origin/main 为发布源。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 发布审计流程（gh repo view / gh release list / gh pr list 检查）<br>· Changeset PR 与 Version Packages PR 双类型区分与处理<br>· 临时 worktree 发布提交（脏工作区时）<br>· merge-queue 中间态处理（等待 mergedAt 确认）<br>· agents/ 与 references/ 子目录支持文档</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入：随 OpenSpec 14 Skills 一同从 Fission-AI/OpenSpec 仓库复制（0803-OpenSpec_Superpower解析/source/openspec/skills/release-openspec/ 为源）。上游定位：OpenSpec 自身发布管理 skill，仅 OpenSpec 维护者使用。安装时即作为 16 个新增 SKILL.md 之一，description 为 YAML 多行格式（安装时需精确匹配 &gt;- 段落字符串）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>本机作为 OpenSpec 维护者的发布操作入口（Fission-AI/OpenSpec 仓库维护场景）；0815 桥接后降权（disable-model-invocation，item28 决策），仅维护者在 openspec-plan preset 内显式召唤。以可恢复状态机运行发布工作流（每次检查 GitHub 实时状态，只做下一步安全动作），不假设前次调用完成。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>仅 OpenSpec 维护者使用（SKILL.md description）；用户请求 release / prepare a release / continue / resume 时触发；请求 status/readiness/advice 时默认只读审计。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 发布审计：gh repo view 验证仓库、要求 gh/git/pnpm 认证、git fetch origin main；2) 找最新稳定 release（gh release list --exclude-drafts --exclude-pre-releases）；3) 区分两类 PR（Changeset PR 人工添加 .changeset/*.md；Version Packages PR 自动化 changeset-release/main）；4) 脏 checkout 时用临时 worktree 做发布提交；5) 永不批准自己的 PR（人工审查是刻意门）；6) merge-queue 进队不等于合并，等 GitHub 报 mergedAt 且 main 上有该 commit；7) 暂停时报告 URL/状态/所需人工动作。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 gh/git/pnpm CLI、GitHub（Fission-AI/OpenSpec）、Changesets action（Version Packages PR）、openspec 系列 skill（openspec-plan preset 内降权成员）协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

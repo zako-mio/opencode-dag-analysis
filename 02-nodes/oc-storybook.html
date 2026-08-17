@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>storybook · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>storybook </h1>
+  <div class="sub">oc-storybook · package · G11-文档站点 · Layer 4</div>
+
+  <h2>① 作用</h2>
+  <p>UI 组件开发文档站。.storybook/main.ts:13-29 用 storybook-solidjs-vite 定义框架并聚合 ui/session-ui/app 三包的 stories（stories glob 指向 ../../ui、../../session-ui、../../app/src）；同时用 mocks 目录对 app 的 context（local/file/prompt/layout/sdk/sync 等 15+ 个）做 SolidJS router 替换与 context mock（main.ts:36-50），使 app 组件能在 Storybook 中独立渲染；preview.tsx 提供全局预览配置。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 聚合 ui/session-ui/app 三包组件的 Storybook 开发环境<br>· app context 全套 mock（main.ts:37-50 别名替换）<br>· Playground CSS 与主题工具插件（playground-css-plugin.ts、theme-tool.ts）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-ui.html'>ui</a></td><td>semantic-dep</td><td><small>stage-01 @opencode-ai/storybook</small></td></tr><tr><td><a href='oc-session-ui.html'>session-ui</a></td><td>semantic-dep</td><td><small>stage-01 @opencode-ai/storybook</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>为组件库提供隔离的开发/审查环境，通过 mock 掉 app 的副作用 context 使跨包组件可以独立预览与回归测试，是 UI 开发流程的质量基础设施而非运行时依赖。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用（本机未启用 Storybook 工作流）。devDependencies 依赖 ui/session-ui（package.json:12-13），纯开发期工具不影响运行时。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· bun storybook（package.json:7 storybook dev -p 6006）本地组件浏览；bun build（:8 storybook build）产出静态组件文档<br>· 配置 .storybook/main.ts:13-29：storybook-solidjs-vite 框架 + addon（docs/a11y/vitest），stories glob 聚合 ../../ui、../../session-ui、../../app/src 三包 stories（main.ts:25-29）<br>· app context mock：main.ts:36-60 用 alias 将 @solidjs/router 与 15+ app context（local/file/prompt/layout/sdk/sync/command 等）替换为 mocks 目录实现，使 app 组件可独立渲染</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为组件开发与审查环境：ui/session-ui 的组件在隔离环境下预览回归，app 的页面级组件通过 mock 掉副作用 context（router/server/language）后在 Storybook 中独立渲染。典型协作：开发 ui 新组件→写 stories→storybook 预览→a11y/vitest addon 做可访问性与行为测试。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

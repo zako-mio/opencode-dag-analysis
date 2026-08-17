@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>protocol · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>protocol </h1>
+  <div class="sub">oc-protocol · package · G2-通信协议 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>通信协议层。src/api.ts:26-86 用 effect/unstable/httpapi 定义 OpenCode HttpApi 结构：注册 Health/Location/Agent/Session/Message/Model/Provider/Integration/Credential/Permission/FS/Command/Skill/Event/Pty/Question/Reference/ProjectCopy 共 18 个 Group（src/api.ts:38-55），并挂 Authorization/SchemaError 中间件（src/api.ts:63-64）。src/errors.ts:3-40 定义带 httpApiStatus 的 TaggedError（400/401/409/503 等）。src/groups/* 按资源定义端点与契约，middleware/authorization.ts:4-6 定义 Authorization 服务。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· OpenCode HttpApi 协议定义（packages/protocol/src/api.ts:37-55）<br>· 18 个资源端点组（packages/protocol/src/groups/*）<br>· 统一错误契约（httpApiStatus 标注，packages/protocol/src/errors.ts:3-40）<br>· Authorization/SchemaError 中间件契约（packages/protocol/src/middleware/）<br>· OpenAPI 注解（packages/protocol/src/api.ts:56-62）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>workspace-dep</td><td><small>@opencode-ai/protocol/package.json dependencies.@opencode-ai/schema</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-client.html'>client</a></td><td>workspace-dep</td><td><small>@opencode-ai/client/package.json dependencies.@opencode-ai/protocol</small></td></tr><tr><td><a href='oc-server.html'>server</a></td><td>workspace-dep</td><td><small>@opencode-ai/server/package.json dependencies.@opencode-ai/protocol</small></td></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>semantic-dep</td><td><small>stage-01 opencode</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>协议与实现分离：protocol 只声明端点/中间件/错误的契约（server 注入具体服务身份，见 src/api.ts:25 注释），使 server、client、cli 对同一协议的不同实现方共享同一类型面。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未直接引用 protocol（vision 插件与 agent 都不触碰协议层），属官方底座；本机改造全部发生在协议「之上」的配置/插件层，协议契约保持不变，从而 server/client/sdk 三端自动同步。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· 入口：src/api.ts:1-38 —— 用 Effect HttpApi 声明完整端点树：makeApiFromGroup 聚合 HealthGroup/LocationGroup/AgentGroup/SessionGroup/MessageGroup/ModelGroup/ProviderGroup/PermissionGroup/EventGroup/PtyGroup/QuestionGroup/ReferenceGroup/IntegrationGroup/CredentialGroup/ProjectCopyGroup 等 19 个 group；src/api.ts:25 注释明示「Protocol 拥有中间件位置，Server 注入具体 key」。<br>· 导出：package.json exports ./src/*.ts；src/errors.ts 定义协议级错误类型；依赖仅 @opencode-ai/schema + effect（纯契约层）。<br>· 消费方：server/src/api.ts:1-3 makeDefaultApi 绑定中间件；client 的生成器读 server/api 编译出客户端（client/README.md:14-15）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>protocol 是协议契约的单一所有权者：server 注入中间件/服务实现，client 从同一份协议编译客户端，cli 也消费同一类型面——三方对同一协议的不同实现共享同一契约，避免端点 drift。报告-02 所述消息/事件的 HTTP+SSE 传输模型即由 EventGroup/SessionGroup 等声明。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（22 模块 · 43 边）</h3>
+<div id="int-oc-protocol" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_protocol = {"nodes": [{"data": {"id": "api.ts", "name": "api.ts", "path": "api.ts"}, "classes": "leaf"}, {"data": {"id": "errors.ts", "name": "errors.ts", "path": "errors.ts"}, "classes": "hot"}, {"data": {"id": "groups/agent.ts", "name": "agent.ts", "path": "groups/agent.ts"}, "classes": "leaf"}, {"data": {"id": "groups/command.ts", "name": "command.ts", "path": "groups/command.ts"}, "classes": "leaf"}, {"data": {"id": "groups/credential.ts", "name": "credential.ts", "path": "groups/credential.ts"}, "classes": "leaf"}, {"data": {"id": "groups/event.ts", "name": "event.ts", "path": "groups/event.ts"}, "classes": "leaf"}, {"data": {"id": "groups/fs.ts", "name": "fs.ts", "path": "groups/fs.ts"}, "classes": "leaf"}, {"data": {"id": "groups/health.ts", "name": "health.ts", "path": "groups/health.ts"}, "classes": "leaf"}, {"data": {"id": "groups/integration.ts", "name": "integration.ts", "path": "groups/integration.ts"}, "classes": "leaf"}, {"data": {"id": "groups/location.ts", "name": "location.ts", "path": "groups/location.ts"}, "classes": "hot"}, {"data": {"id": "groups/message.ts", "name": "message.ts", "path": "groups/message.ts"}, "classes": "leaf"}, {"data": {"id": "groups/model.ts", "name": "model.ts", "path": "groups/model.ts"}, "classes": "leaf"}, {"data": {"id": "groups/permission.ts", "name": "permission.ts", "path": "groups/permission.ts"}, "classes": "leaf"}, {"data": {"id": "groups/project-copy.ts", "name": "project-copy.ts", "path": "groups/project-copy.ts"}, "classes": "leaf"}, {"data": {"id": "groups/provider.ts", "name": "provider.ts", "path": "groups/provider.ts"}, "classes": "leaf"}, {"data": {"id": "groups/pty.ts", "name": "pty.ts", "path": "groups/pty.ts"}, "classes": "leaf"}, {"data": {"id": "groups/question.ts", "name": "question.ts", "path": "groups/question.ts"}, "classes": "leaf"}, {"data": {"id": "groups/reference.ts", "name": "reference.ts", "path": "groups/reference.ts"}, "classes": "leaf"}, {"data": {"id": "groups/session.ts", "name": "session.ts", "path": "groups/session.ts"}, "classes": "leaf"}, {"data": {"id": "groups/skill.ts", "name": "skill.ts", "path": "groups/skill.ts"}, "classes": "leaf"}, {"data": {"id": "middleware/authorization.ts", "name": "authorization.ts", "path": "middleware/authorization.ts"}, "classes": "leaf"}, {"data": {"id": "middleware/schema-error.ts", "name": "schema-error.ts", "path": "middleware/schema-error.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "api.ts", "target": "middleware/schema-error.ts"}}, {"data": {"source": "api.ts", "target": "groups/message.ts"}}, {"data": {"source": "api.ts", "target": "groups/model.ts"}}, {"data": {"source": "api.ts", "target": "groups/provider.ts"}}, {"data": {"source": "api.ts", "target": "groups/session.ts"}}, {"data": {"source": "api.ts", "target": "groups/permission.ts"}}, {"data": {"source": "api.ts", "target": "groups/fs.ts"}}, {"data": {"source": "api.ts", "target": "groups/command.ts"}}, {"data": {"source": "api.ts", "target": "groups/skill.ts"}}, {"data": {"source": "api.ts", "target": "groups/event.ts"}}, {"data": {"source": "api.ts", "target": "groups/agent.ts"}}, {"data": {"source": "api.ts", "target": "groups/health.ts"}}, {"data": {"source": "api.ts", "target": "groups/pty.ts"}}, {"data": {"source": "api.ts", "target": "groups/question.ts"}}, {"data": {"source": "api.ts", "target": "groups/reference.ts"}}, {"data": {"source": "api.ts", "target": "middleware/authorization.ts"}}, {"data": {"source": "api.ts", "target": "groups/location.ts"}}, {"data": {"source": "api.ts", "target": "groups/integration.ts"}}, {"data": {"source": "api.ts", "target": "groups/credential.ts"}}, {"data": {"source": "api.ts", "target": "groups/project-copy.ts"}}, {"data": {"source": "groups/agent.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/command.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/credential.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/fs.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/integration.ts", "target": "errors.ts"}}, {"data": {"source": "groups/integration.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/message.ts", "target": "errors.ts"}}, {"data": {"source": "groups/model.ts", "target": "errors.ts"}}, {"data": {"source": "groups/model.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/permission.ts", "target": "errors.ts"}}, {"data": {"source": "groups/permission.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/project-copy.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/provider.ts", "target": "errors.ts"}}, {"data": {"source": "groups/provider.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/pty.ts", "target": "errors.ts"}}, {"data": {"source": "groups/pty.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/question.ts", "target": "errors.ts"}}, {"data": {"source": "groups/question.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/reference.ts", "target": "groups/location.ts"}}, {"data": {"source": "groups/session.ts", "target": "errors.ts"}}, {"data": {"source": "groups/skill.ts", "target": "groups/location.ts"}}, {"data": {"source": "middleware/authorization.ts", "target": "errors.ts"}}, {"data": {"source": "middleware/schema-error.ts", "target": "errors.ts"}}]};
+const cyoc_protocol = cytoscape({
+  container: document.getElementById('int-oc-protocol'),
+  elements: INToc_protocol,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_protocol.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

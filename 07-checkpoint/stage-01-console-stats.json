@@ -1,0 +1,237 @@
+[
+  {
+    "id": "oc-console-app",
+    "name": "@opencode-ai/console-app",
+    "implementation": "Console 主站前端（SolidStart/SSR + Nitro on Cloudflare），包含营销落地页、认证回调、workspace 管理（billing/keys/members/settings/usage）、Zen 与 Go 两个 LLM API 网关，以及到 docs/stats/bench 的代理路由。src/app.tsx 挂载路由与 i18n，src/routes/zen/v1/chat/completions.ts 走统一 handler 做鉴权/计费/限流后转发到上游 provider，src/lib/stats-proxy.ts 反向代理 stats.opencode.ai。",
+    "provides": [
+      "营销/下载/企业页与多语言 i18n（20 语言，src/i18n/）",
+      "OpenAuth 认证与 session 处理（src/routes/auth/、src/context/auth.ts）",
+      "workspace 控制台：billing 充值、API key、成员、用量图表（src/routes/workspace/[id]/）",
+      "Zen 网关：OpenAI/Anthropic/Google 兼容 API + key/IP 限流 + 用量计费（src/routes/zen/）",
+      "Go 网关（轻量版 zen，src/routes/zen/go/）",
+      "Stripe webhook、honeycomb webhook、enterprise lead 提交",
+      "docs/stats/bench 站点反向代理（src/routes/docs/、src/routes/data/）"
+    ],
+    "depends_on": ["@opencode-ai/console-core", "@opencode-ai/console-mail", "@opencode-ai/console-resource", "@opencode-ai/ui"],
+    "key_modules": [
+      "app.tsx:1 - SolidStart 应用根，挂 Router/FileRoutes/i18n/LanguageProvider",
+      "routes/zen/util/handler.ts:1 - Zen/Go 网关统一处理器：鉴权、计费扣减、限流、provider 转发",
+      "routes/zen/v1/chat/completions.ts:5 - OpenAI 兼容 completions 端点封装 handler",
+      "lib/stats-proxy.ts:7 - 反向代理 stats.opencode.ai 并注入 locale 头与缓存头",
+      "routes/stripe/webhook.ts:2 - Stripe 支付事件处理（充值/Lite/Black 订阅）",
+      "context/auth.ts:1 - 请求级认证与 Actor 注入（session→user/workspace）",
+      "routes/docs/[...path].ts:5 - docs.opencode.ai 代理并设置 locale cookie",
+      "routes/workspace/[id]/usage/graph-section.tsx - 用量可视化（chart.js）"
+    ],
+    "why": "Console 是 opencode 的 SaaS 前端：既承担官网/营销/文档分发，也承载用户工作区管理与 Zen/Go 付费 LLM 网关，是 console-core 领域逻辑的界面与入口层。"
+  },
+  {
+    "id": "oc-console-core",
+    "name": "@opencode-ai/console-core",
+    "implementation": "Console 后端领域层：基于 drizzle-orm + PlanetScale 的数据库访问、Actor 权限上下文、以及 Account/User/Workspace/Key/Billing/Subscription/Model/Provider 等 CRUD 与计费逻辑。src/drizzle/index.ts 封装事务与上下文，src/account.ts 处理账号创建/删除（含级联清理 key、coupon、auth），src/workspace.ts 创建 workspace 并默认生成管理员与 API key，src/billing.ts 对接 Stripe 做 credits 充值。",
+    "provides": [
+      "Database 封装：PlanetScale drizzle 客户端 + 事务/上下文（src/drizzle/index.ts:36）",
+      "Actor 权限上下文：请求用户/角色/workspace 断言（src/actor.ts）",
+      "账号生命周期：create/remove/fromID，删除级联清理（src/account.ts:13,27）",
+      "workspace 创建与成员管理（src/workspace.ts:17）",
+      "API Key 管理与角色隔离（src/key.ts:11）",
+      "Stripe 计费：credits 充值/订阅/用量计费（src/billing.ts:22,29）",
+      "模型/Provider 目录与 ZenData 模型成本定义（src/model.ts）",
+      "订阅限额：free/lite/black 阶梯（src/subscription.ts:7）",
+      "全量 drizzle schema SQL（src/schema/*.sql.ts，account/auth/billing/key/model/provider/referral/user/workspace/ip/benchmark）",
+      "邀请邮件渲染（动态 import console-mail，src/user.ts:142）"
+    ],
+    "depends_on": ["@opencode-ai/console-mail", "@opencode-ai/console-resource"],
+    "key_modules": [
+      "drizzle/index.ts:11 - Database 命名空间：客户端、事务、Context 集成",
+      "account.ts:13 - 账号创建/删除（含 key/coupon/auth 级联）",
+      "workspace.ts:13 - workspace 创建，默认 admin 用户 + 默认 API key",
+      "billing.ts:22 - Stripe credits 计费与余额查询",
+      "key.ts:11 - API key 列表/创建，按角色过滤",
+      "model.ts:10 - ZenData：模型成本、provider、限流配置 schema",
+      "user.ts:16 - 用户 CRUD 与邮件邀请",
+      "subscription.ts:7 - free/lite/black 订阅限额定义"
+    ],
+    "why": "将 Console 的业务领域逻辑从 app（前端/网关）与 function（worker）中独立出来，供 app、support、function 三方复用，避免数据库 schema 与计费逻辑重复实现。"
+  },
+  {
+    "id": "oc-console-function",
+    "name": "@opencode-ai/console-function",
+    "implementation": "Cloudflare Workers 端边函数集：auth.ts 是 OpenAuth issuer（GitHub/Google 登录 + Cloudflare KV 存储，签发 account/user subject），log-processor.ts 是 tail 处理器，把 Zen/Go 网关的请求日志转发到 Honeycomb 与数据湖，stat.ts 提供 TPS 限流统计查询端点。src/auth.ts:44 用 @openauthjs/openauth 构建 OAuth issuer，src/log-processor.ts:5 解析 _metric: 前缀日志聚合指标。",
+    "provides": [
+      "OAuth 登录 issuer：GitHub/Google provider + Cloudflare KV 会话存储（src/auth.ts:44）",
+      "Subjects 定义：account/user 两级认证主体（src/auth.ts:25）",
+      "网关日志采集：tail 事件 → Honeycomb batch + lake ingest（src/log-processor.ts:5）",
+      "TPS 限流统计查询：按模型 id 聚合 30 分钟窗口 qualify/unqualify（src/stat.ts:7）"
+    ],
+    "depends_on": ["@opencode-ai/console-core", "@opencode-ai/console-resource"],
+    "key_modules": [
+      "auth.ts:42 - OpenAuth issuer 默认导出，配置 GitHub/Google 与 KV storage",
+      "log-processor.ts:5 - tail() 处理 Zen/Go 请求日志并转发 Honeycomb/数据湖",
+      "stat.ts:7 - fetch() 处理 POST ids 查询 TPS 限流统计"
+    ],
+    "why": "独立于 app 的 Cloudflare Workers 入口：认证服务与日志/统计边函数需要各自独立的 worker 部署，无法打进 Console 主应用。"
+  },
+  {
+    "id": "oc-console-mail",
+    "name": "@opencode-ai/console-mail",
+    "implementation": "邮件模板包：无 src/，全部为 emails/ 下的 jsx-email 模板与共享组件/样式。emails/templates/InviteEmail.tsx 是唯一业务模板（workspace 邀请邮件），被 console-core 的 User 邀请逻辑动态 import 渲染（console/core/src/user.ts:142）。包 exports 映射到 ./emails/templates/*，纯前端渲染无服务逻辑。",
+    "provides": [
+      "InviteEmail 邀请邮件模板（React/jsx-email，emails/templates/InviteEmail.tsx:26）",
+      "共享邮件组件与内联样式（emails/components.tsx、emails/styles.ts）",
+      "静态邮件资源：字体 woff2/logo/箭头图（emails/templates/static/）",
+      "本地预览命令（email preview emails/templates）"
+    ],
+    "depends_on": [],
+    "key_modules": [
+      "emails/templates/InviteEmail.tsx:26 - 邀请邮件主模板（inviter/workspaceName/URL 参数化）",
+      "emails/components.tsx:1 - 复用邮件 UI 组件（Text/Fonts/Title/A/Span）",
+      "emails/styles.ts:1 - 邮件内联样式常量"
+    ],
+    "why": "将邮件模板与业务代码解耦，供 console-core 按需动态 import（避免 React 依赖进入 core 主包），同时独立可预览开发。"
+  },
+  {
+    "id": "oc-console-resource",
+    "name": "@opencode-ai/console-resource",
+    "implementation": "SST 资源访问抽象层，无 src/ 目录（文件在包根）。通过 Proxy 按运行环境暴露 Resource：resource.cloudflare.ts 在 Worker 内从 env.SST_RESOURCE_* 读取链接资源，resource.node.ts 在 Node 下回退到 sst 包并对 KV/Bucket 提供客户端实现。src/… 实际为 resource.cloudflare.ts:4 与 resource.node.ts:9 两个入口，按 exports production/import 条件切换。",
+    "provides": [
+      "统一 Resource 代理：读取 SST 链接的 secrets/KV/数据库配置（resource.cloudflare.ts:4）",
+      "Node 环境回退：KV get/put/delete/list、Bucket no-op、Cloudflare API 客户端（resource.node.ts:9）",
+      "条件导出：Cloudflare 与 Node 运行时的资源读取差异屏蔽（package.json exports）"
+    ],
+    "depends_on": [],
+    "key_modules": [
+      "resource.cloudflare.ts:4 - Worker 运行时 env 读取 Proxy（SST_RESOURCE_*）",
+      "resource.node.ts:9 - Node/本地运行时 sst Resource 回退 + KV/Bucket 模拟"
+    ],
+    "why": "让 app/core/function 在 Cloudflare Worker 与本地 Node 两种环境共享同一套资源访问代码，隐藏 SST 环境差异。"
+  },
+  {
+    "id": "oc-console-support",
+    "name": "@opencode-ai/console-support",
+    "implementation": "面向支持/客服的内部工具站（SolidStart SSR）。核心功能是用户数据 lookup：src/lib/lookup.ts 按 wrk_/key_/sk-/email 标识查询 workspace、billing、usage、订阅与禁用模型等全量数据，src/routes/lookup.tsx 展示查询结果，src/routes/index.tsx 提供查询表单。全部逻辑直接复用 console-core 的 schema 与 domain。",
+    "provides": [
+      "按 email/workspace id/API key 查询用户全量数据（src/lib/lookup.ts:41）",
+      "workspace 详情：users/billing/go/payments/usage/disabledModels 分节（src/lib/lookup.ts:30）",
+      "查询表单与结果展示页面（src/routes/index.tsx、src/routes/lookup.tsx）",
+      "复用 console-core 数据库 schema 与 Black/Lite/Subscription 领域逻辑"
+    ],
+    "depends_on": ["@opencode-ai/console-core"],
+    "key_modules": [
+      "lib/lookup.ts:41 - 核心 lookup 逻辑：标识解析 + 多表聚合查询",
+      "routes/index.tsx:3 - 查询入口表单页",
+      "routes/lookup.tsx:1 - 查询结果展示页"
+    ],
+    "why": "为内部客服提供只读审计工具，复用 console-core 数据层，避免暴露在生产 Console 前端中。"
+  },
+  {
+    "id": "oc-stats-app",
+    "name": "@opencode-ai/stats-app",
+    "implementation": "OpenCode Stats 公共数据站点（SolidStart，Cloudflare preset，app.config.ts:1）。首页通过 @opencode-ai/stats-core/domain/home 拉取并渲染使用量排行榜、模型/Provider 对比、geo 分布与市场数据（src/routes/index.tsx:10-41），另有 compare 对比页与 [lab]/[model] 实验页，配合 d3-geo/topojson 世界地图。src/routes/stats-cache.ts 统一设置 CDN 缓存头。",
+    "provides": [
+      "统计首页：排行榜/用量趋势/Geo 地图/缓存命中率（src/routes/index.tsx）",
+      "模型对比页（src/routes/compare/[firstFamily]/[secondFamily].tsx）",
+      "模型实验室单模型页（src/routes/[lab]/[model].tsx）",
+      "CDN 缓存控制与 Vary locale 处理（src/routes/stats-cache.ts:5）",
+      "API：health/newsletter（src/routes/api/）",
+      "多语言 i18n（20 语言）与 sitemap"
+    ],
+    "depends_on": ["@opencode-ai/stats-core", "@opencode-ai/ui"],
+    "key_modules": [
+      "routes/index.tsx:1 - 首页聚合视图：排行榜/geo/对比卡片",
+      "routes/compare/[firstFamily]/[secondFamily].tsx:1 - 双模型族对比页",
+      "routes/stats-cache.ts:5 - 缓存头与 Vary 注入",
+      "routes/model-catalog.ts:1 - 模型目录加载/匹配",
+      "routes/geo-map.ts:1 - d3 世界地图路径与标记",
+      "stats-runtime.ts:3 - Effect 运行时桥接（runPromise）",
+      "routes/stats-shell.tsx:1 - 页面骨架/主题/Header/Footer"
+    ],
+    "why": "独立的公共数据站（stats.opencode.ai），与 Console 分离部署；展示 opencode 生态模型使用统计，靠 stats-core 提供领域数据。"
+  },
+  {
+    "id": "oc-stats-core",
+    "name": "@opencode-ai/stats-core",
+    "implementation": "Stats 后端核心（Effect + drizzle + PlanetScale）。src/athena.ts 封装 AWS Athena 查询服务（StartQuery/轮询/取结果），src/database.ts 提供 Effect 风格 DatabaseConfig/DrizzleClient，src/domain/ 下按 model/provider/geo/home/inference 分域定义聚合类型与查询，src/stat-sync.ts 实现 Athena → 数据库的增量/全量同步管线。src/index.ts 聚合导出全部命名空间。",
+    "provides": [
+      "Athena 查询服务：执行/轮询/分页取数（src/athena.ts:45）",
+      "Effect 化数据库层：PlanetScale drizzle + schema + 迁移（src/database.ts:24,40）",
+      "统计领域模型：StatBaseAggregate 聚合结构与 grain day/week（src/domain/stat.ts:6）",
+      "Model/Provider/Geo 统计仓库与 upsert（src/domain/model.ts 等）",
+      "首页聚合查询（getStatsHomeData，src/domain/home.ts:9）",
+      "统计同步管线：Athena 查询 → 聚合 → 写入（src/stat-sync.ts:23）",
+      "App 配置（stage/publicUrl）与运行时（src/config.ts、src/runtime.ts）"
+    ],
+    "depends_on": [],
+    "key_modules": [
+      "index.ts:1 - 命名空间聚合导出（Athena/Database/Domain/Runtime）",
+      "athena.ts:45 - AWS Athena Effect 服务（重试/超时封装）",
+      "database.ts:24 - DatabaseConfig/DrizzleClient Effect Layer",
+      "domain/stat.ts:6 - 聚合统计结构与字段定义",
+      "domain/home.ts:9 - 首页统计聚合查询类型",
+      "stat-sync.ts:23 - Athena→DB 同步（incremental/full pass）",
+      "runtime.ts:12 - ManagedRuntime 组装（AppConfig+DB+repos）"
+    ],
+    "why": "按 stats 独立生态划分：core 承载 Effect 领域服务与数据访问，供 app 查询、server 同步、Lambda 入口三方复用，README 明确 Runtime/DB/domain 全部在 core。"
+  },
+  {
+    "id": "oc-stats-server",
+    "name": "@opencode-ai/stats-server",
+    "implementation": "Stats 后端 Node HTTP 服务（Effect HttpRouter + Bun，Dockerfile 部署）。src/server.ts 用 NodeHttpServer 启动 3000 端口服务并注入 Ingest 层，src/router.ts 暴露 GET /health、/ready 与 POST / 数据摄取端点（Bearer 鉴权 + 并发信号量限流），src/ingest.ts 将事件批处理写入 AWS Firehose，src/stat-sync.ts 是每小时 Athena 同步 daemon。",
+    "provides": [
+      "摄取端点 POST /：事件批收 + Firehose 写入（src/router.ts:25、src/ingest.ts:38）",
+      "健康检查 GET /health 与 /ready（含优雅停机判定，src/router.ts:23-24）",
+      "Bearer 鉴权（timingSafeEqual，src/router.ts:56）",
+      "每小时统计同步 daemon（src/stat-sync.ts:13）",
+      "Docker 化部署（Dockerfile:1，turbo prune + bun install）"
+    ],
+    "depends_on": ["@opencode-ai/stats-core"],
+    "key_modules": [
+      "server.ts:12 - NodeHttpServer + Effect 组合启动",
+      "router.ts:16 - 路由注册：health/ready/ingest",
+      "ingest.ts:32 - Ingest Service：事件路由 + Firehose 批量写入",
+      "stat-sync.ts:13 - 每小时 Athena 同步 daemon（全量/增量交替）",
+      "shutdown.ts:1 - 优雅停机信号处理"
+    ],
+    "why": "作为摄取网关承接 Console function 的 lake 事件流，并独立承载统计同步 daemon；与 app 站点、core 领域解耦。"
+  },
+  {
+    "id": "oc-sdk-next",
+    "name": "@opencode-ai/sdk-next",
+    "implementation": "Effect 原生的进程内 OpenCode host SDK（过渡包，替代生成式 @opencode-ai/sdk）。src/opencode.ts 的 create() 用 AppNodeBuilder 构建 ApplicationTools/PermissionSaved 上下文，把 server 的 createEmbeddedRoutes 编译成 Web handler 并注入内存 fetch，客户端由此在进程内执行全部路由而无需监听端口/网络 I/O。src/index.ts 聚合 OpenCode 与 Tool 模块并再导出 client 的 Effect 类型。",
+    "provides": [
+      "进程内 OpenCode host：OpenCode.create()（src/opencode.ts:10）",
+      "内存路由执行：Server router → Web handler → fetch（src/opencode.ts:20-38）",
+      "本地工具注册 tools.register（走 ApplicationTools 服务，src/opencode.ts:41）",
+      "DI Layer：OpenCode.layer/Service（src/opencode.ts:47,49）",
+      "Tool 门面：Failure/RegistrationError/make 再导出（src/tool.ts:1）",
+      "Effect client 类型再导出（ClientError/Session/Model 等，src/index.ts:4）"
+    ],
+    "depends_on": ["@opencode-ai/client", "@opencode-ai/core", "@opencode-ai/server"],
+    "key_modules": [
+      "opencode.ts:10 - create()：构建上下文、编译内嵌路由、返回 client+tools",
+      "index.ts:1 - 模块聚合与 client/effect 类型再导出",
+      "tool.ts:1 - Tool 模块再导出（core/tool）"
+    ],
+    "why": "README 明示：作为 sdk 的过渡替代，让嵌入式应用无需网络即可获得完整 host 能力，保留 sdk 的注册/工具语义并转为 Effect-native。"
+  },
+  {
+    "id": "oc-slack",
+    "name": "@opencode-ai/slack",
+    "implementation": "Slack 机器人集成（@slack/bolt Socket Mode）。src/index.ts 创建 opencode 服务端实例（createOpencode）与 Slack App，按 channel+thread 键复用 session：首次消息创建 opencode session 并分享链接，后续消息走 session.prompt；同时订阅 message.part.updated 事件把 tool 完成状态回贴到 thread（src/index.ts:24-51）。",
+    "provides": [
+      "Slack Socket Mode 机器人（src/index.ts:4）",
+      "每 thread 独立 opencode session 的创建/复用（src/index.ts:22,70-101）",
+      "会话分享链接回帖（src/index.ts:96）",
+      "tool 执行状态回帖（message.part.updated 订阅，src/index.ts:24-51）",
+      "/test 命令与错误兜底回复（src/index.ts:138）"
+    ],
+    "depends_on": ["@opencode-ai/sdk"],
+    "key_modules": [
+      "index.ts:1 - Slack App + opencode 服务端初始化",
+      "index.ts:24 - 事件订阅循环：tool 状态 → thread 回帖",
+      "index.ts:58 - 消息处理：session 创建/复用 + prompt 调用",
+      "index.ts:96 - 会话分享 URL 发布"
+    ],
+    "why": "让用户直接在 Slack 线程内驱动 opencode agent，把聊天线程映射为独立 session；作为独立部署的集成入口，复用 @opencode-ai/sdk 而非内嵌实现。"
+  }
+]

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openspec-sync-specs · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>openspec-sync-specs <span class="tag">装配层</span></h1>
+  <div class="sub">skill-openspec-sync-specs · skill · A6l-工作流 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>将 delta spec 同步到主 spec（不归档），agent 驱动读取 delta 并智能编辑主 spec，处理 ADDED/MODIFIED/REMOVED/RENAMED 段。仅被 archive-change 或显式召唤时使用。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· delta spec 定位（existingOutputPaths 唯一来源）<br>· 主 spec 路径解析（store 感知 planningHome.root）<br>· ADDED/MODIFIED/REMOVED/RENAMED 合并<br>· 窄化同步范围（显式名单）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-archive-change.html'>openspec-archive-change</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\skills\openspec-archive-change\SKILL.md: 运行 openspec-sync-specs work</small></td></tr><tr><td><a href='skill-openspec-bulk-archive-change.html'>openspec-bulk-archive-change</a></td><td>skill-relation</td><td><small>openspec-bulk-archive-change SKILL.md: bulk archive 排除找不到实现的 delta（syncing it anyway would write a m</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。agent 驱动的 delta→主 spec 同步操作（不归档）：读 delta specs 直接编辑主 specs，允许智能合并（如加场景不复制整个需求）。引入动机：Delta Spec 机制的中间态——归档前需要把增量合并进主 spec，但合并要&quot;智能&quot;而非机械覆盖，故做成独立 agent 驱动 skill。仅被 archive-change 或显式召唤时使用。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>归档流程内部依赖（archive-change 调用）；需要独立合并 delta 不归档时显式使用；是主 spec 知识库保持新鲜的机制。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>仅被 archive-change 内部调用或用户显式召唤（description 明确&quot;仅被 archive-change 或显式召唤时使用&quot;）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择有 delta spec 的变更（specs/ 目录）<br>· 解析 status 的 planningHome.root（store 感知主 spec 路径）<br>· 按 existingOutputPaths 唯一定位 delta，对 ADDED/MODIFIED/REMOVED/RENAMED 段智能合并进主 spec，窄化同步范围（显式名单）</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>被 archive-change/bulk-archive-change 内部调用；与 openspec-update-change 互补（update 管工件，sync 管 spec）</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

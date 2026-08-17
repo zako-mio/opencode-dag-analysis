@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>stats-server · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>stats-server </h1>
+  <div class="sub">oc-stats-server · package · G17-Stats · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>Stats 后端 Node HTTP 服务（Effect HttpRouter + Bun，Dockerfile 部署）。src/server.ts 用 NodeHttpServer 启动 3000 端口服务并注入 Ingest 层，src/router.ts 暴露 GET /health、/ready 与 POST / 数据摄取端点（Bearer 鉴权 + 并发信号量限流），src/ingest.ts 将事件批处理写入 AWS Firehose，src/stat-sync.ts 是每小时 Athena 同步 daemon。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 摄取端点 POST /：事件批收 + Firehose 写入（src/router.ts:25、src/ingest.ts:38）<br>· 健康检查 GET /health 与 /ready（含优雅停机判定，src/router.ts:23-24）<br>· Bearer 鉴权（timingSafeEqual，src/router.ts:56）<br>· 每小时统计同步 daemon（src/stat-sync.ts:13）<br>· Docker 化部署（Dockerfile:1，turbo prune + bun install）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-stats-core.html'>stats-core</a></td><td>workspace-dep</td><td><small>@opencode-ai/stats-server/package.json dependencies.@opencode-ai/stats-core</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>独立常驻 Node 服务承担 HTTP 接收 + Firehose 写湖，因为：1) Worker 直连 Firehose 的批处理/重试逻辑需要长驻进程承载；2) 与 console-function 的 honeycomb 直写并行，形成 honeycomb（实时观测）+ lake（数仓）双通道；3) 用 Effect Layer 组合 Ingest/Routes/Server，测试性高。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改。装配层无对应物；但本地 agent 采集→HTTP 上报→批量入湖链路与 headroom CLI 的 savings 统计（本地记录压缩收益）是同类 telemetry 思路。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>bun src/server.ts 启动（package.json start）：NodeHttpServer（PORT 默认 3000 / HOST 0.0.0.0）承载 Effect HttpRouter；router.ts 挂 GET /health、GET /ready（关停时 503）、POST /（带 Bearer 鉴权 isAuthorized + 8 并发 Semaphore 的 ingest 端点）；ingest.ts 用 @aws-sdk/client-firehose 把事件按 database.table 路由批量写 Kinesis Firehose（500 条/批、3 次重试、退出信号优雅关停）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>Zen 网关日志的接收-转发服务：console-function 的 log-processor（Worker）把 lake ingest 事件 POST 到 stats-server，stats-server 校验鉴权后写入 Firehose → 数据湖 → Athena 供 stats-core 查询。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（5 模块 · 5 边）</h3>
+<div id="int-oc-stats-server" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_stats_server = {"nodes": [{"data": {"id": "ingest.ts", "name": "ingest.ts", "path": "ingest.ts"}, "classes": "leaf"}, {"data": {"id": "router.ts", "name": "router.ts", "path": "router.ts"}, "classes": "leaf"}, {"data": {"id": "server.ts", "name": "server.ts", "path": "server.ts"}, "classes": "leaf"}, {"data": {"id": "shutdown.ts", "name": "shutdown.ts", "path": "shutdown.ts"}, "classes": "leaf"}, {"data": {"id": "stat-sync.ts", "name": "stat-sync.ts", "path": "stat-sync.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "router.ts", "target": "ingest.ts"}}, {"data": {"source": "router.ts", "target": "shutdown.ts"}}, {"data": {"source": "server.ts", "target": "ingest.ts"}}, {"data": {"source": "server.ts", "target": "router.ts"}}, {"data": {"source": "server.ts", "target": "shutdown.ts"}}]};
+const cyoc_stats_server = cytoscape({
+  container: document.getElementById('int-oc-stats-server'),
+  elements: INToc_stats_server,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_stats_server.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

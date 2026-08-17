@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>effect-sqlite-node · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>effect-sqlite-node </h1>
+  <div class="sub">oc-effect-sqlite-node · package · G15-存储适配 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>基于 Node 内置 node:sqlite 的 Effect SqlClient 实现。src/index.ts:49-161 make() 用 DatabaseSync 建立同步连接（WAL 模式、外键约束，index.ts:59-70）、实现 execute/executeRaw/executeValues/executeUnprepared 全套 SqlClient 接口并挂载 Semaphore(1) 串行化（index.ts:132-134）；classifySqliteError 做错误归类（index.ts:15,80-82）；layer() 将 client 同时注册为 SqliteClient 与泛型 Client.SqlClient（index.ts:163-168），并注入 Reactivity.layer。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· Effect SqlClient 的 SQLite 实现（node:sqlite DatabaseSync）<br>· WAL/外键/只读/扩展加载等连接配置（SqliteClientConfig，index.ts:32-43）<br>· Layer 装配（SqliteClient + Client.SqlClient 双注册，index.ts:163）<br>· SQL 错误分类与 Effect 化（classifySqliteError）<br>· BigInt 安全读取与 stream 占位（setReadBigInts，index.ts:75）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>workspace-dep</td><td><small>@opencode-ai/core/package.json dependencies.@opencode-ai/effect-sqlite-node</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>为 opencode 核心提供零原生编译依赖的 Effect 化 SQLite 驱动（复用 node 内置 sqlite），与 @effect/sql-sqlite-node 定位一致但归属仓库自有实现，避免引入外部原生模块、保证跨平台可移植。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用（本机 opencode 数据走 server 侧 SQLite，未直接 import 此包）。官方依赖链：core 存储层经 drizzle 消费（见 effect-drizzle-sqlite 说明），本包是其底层驱动候选。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· exports &quot;.&quot; → ./src/index.ts（package.json:11-13）；核心 API：make(config)（index.ts:49-52，Effect&lt;SqliteClient&gt;，含 filename/readonly/WAL/allowExtension 等配置 index.ts:32-43）与 layer(config)（index.ts:163-168，同时注册 SqliteClient + 泛型 Client.SqlClient 并注入 Reactivity.layer）<br>· TypeId 标记 &quot;@opencode-ai/effect-sqlite-node/NodeSqliteClient&quot;（index.ts:20-21）区分服务身份；loadExtension 支持扩展加载（index.ts:26）<br>· 基于 node:sqlite DatabaseSync（index.ts:59-70 WAL/外键），Semaphore(1) 串行化执行（index.ts:132-134），classifySqliteError 做 Effect 错误分类（index.ts:15）</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为核心存储层的 Effect SQLite 驱动底座：core 的数据库层经 layer() 注入 SqliteClient 服务后，上层只需 Effect.provide 即可获得类型安全 SQL 能力。与 effect-drizzle-sqlite 配合：后者把 Drizzle 查询桥接到任意 Effect SqlClient（含本包实现）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

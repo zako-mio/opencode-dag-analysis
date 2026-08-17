@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>read · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>read <span class="tag">装配层</span></h1>
+  <div class="sub">tool-read · tool · A3-插件工具 · Layer 5</div>
+
+  <h2>① 作用</h2>
+  <p>自定义 read 工具（TypeScript，zod 定义参数），覆盖 opencode 内置 read：①目录→列出条目；②9 种图片扩展名→经 GLM-4V VLM 转文字描述（base64 data URL 传图，max_tokens=4096，温度 0.3，中文提示词提取文字/UI/代码/布局/报错信息）；③文本→按 offset/limit 分段读取并加行号（默认 2000 行）。模型优先级付费 glm-4.6v → 429 降级免费 glm-4.6v-flash；GLM_KEY 优先环境变量 ZHIPU_API_KEY，未设置回退硬编码值。</p>
+
+  <h2>② 提供能力</h2>
+  <p>图片 VLM 描述读取、文本分段带行号读取、目录列举（与 vision-interceptor 插件构成双保险的视觉链路）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>tool-read 关联 oc-opencode</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>tool-read 关联 ext-glm-api</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>早期用 Bun + TypeScript 重写 opencode 内置 read 工具（tools/read.ts）；0802 盘点：核心增强——图片自动分析（9 种格式调 GLM-4V 描述）、降级处理、目录列表（readdirSync）、文本分段（offset/limit）；同时指出 GLM API Key 硬编码安全问题（Line 15）；0803 编码安全修复时确认此为 custom read 工具（非内置）；0807 VLM 图片识别修复：付费 glm-4.6v 优先 + 429 降级免费 glm-4.6v-flash + Key 改环境变量（process.env.ZHIPU_API_KEY 优先 + 硬编码兜底）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>保留图片自动分析能力（IMAGE_EXTS 9 种格式）→ GLM-4V 描述；GLM_MODELS = [&#x27;glm-4.6v&#x27;, &#x27;glm-4.6v-flash&#x27;] 付费优先降级链；Key 环境变量化；与 vision-interceptor 构成双保险视觉链路（0807 报告定位）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>plugin-vision-interceptor（双通道视觉链路，read 通道结果不写入插件 processedImages 缓存）、GLM API（智谱视觉模型）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -1,0 +1,784 @@
+{
+  "nodes": [
+    {
+      "id": "oc-app",
+      "name": "@opencode-ai/app",
+      "short": "app",
+      "version": "1.18.14",
+      "path": "packages/app",
+      "workspace_deps": [
+        "@opencode-ai/client",
+        "@opencode-ai/core",
+        "@opencode-ai/schema",
+        "@opencode-ai/sdk",
+        "@opencode-ai/session-ui",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 39,
+      "src_ts_count": 180,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-cli",
+      "name": "@opencode-ai/cli",
+      "short": "cli",
+      "version": "1.18.14",
+      "path": "packages/cli",
+      "workspace_deps": [
+        "@opencode-ai/core",
+        "@opencode-ai/sdk",
+        "@opencode-ai/server",
+        "@opencode-ai/tui"
+      ],
+      "external_deps_count": 6,
+      "src_ts_count": 16,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-client",
+      "name": "@opencode-ai/client",
+      "short": "client",
+      "version": "?",
+      "path": "packages/client",
+      "workspace_deps": [
+        "@opencode-ai/schema",
+        "@opencode-ai/protocol"
+      ],
+      "external_deps_count": 0,
+      "src_ts_count": 10,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-codemode",
+      "name": "@opencode-ai/codemode",
+      "short": "codemode",
+      "version": "1.18.14",
+      "path": "packages/codemode",
+      "workspace_deps": [],
+      "external_deps_count": 3,
+      "src_ts_count": 25,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-console-app",
+      "name": "@opencode-ai/console-app",
+      "short": "console-app",
+      "version": "1.18.14",
+      "path": "packages/console/app",
+      "workspace_deps": [
+        "@opencode-ai/console-core",
+        "@opencode-ai/console-mail",
+        "@opencode-ai/console-resource",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 19,
+      "src_ts_count": 86,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-console-core",
+      "name": "@opencode-ai/console-core",
+      "short": "console-core",
+      "version": "1.18.14",
+      "path": "packages/console/core",
+      "workspace_deps": [
+        "@opencode-ai/console-mail",
+        "@opencode-ai/console-resource"
+      ],
+      "external_deps_count": 9,
+      "src_ts_count": 35,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-console-function",
+      "name": "@opencode-ai/console-function",
+      "short": "console-function",
+      "version": "1.18.14",
+      "path": "packages/console/function",
+      "workspace_deps": [
+        "@opencode-ai/console-core",
+        "@opencode-ai/console-resource"
+      ],
+      "external_deps_count": 6,
+      "src_ts_count": 3,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-console-mail",
+      "name": "@opencode-ai/console-mail",
+      "short": "console-mail",
+      "version": "1.18.14",
+      "path": "packages/console/mail",
+      "workspace_deps": [],
+      "external_deps_count": 6,
+      "src_ts_count": 0,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-console-resource",
+      "name": "@opencode-ai/console-resource",
+      "short": "console-resource",
+      "version": "?",
+      "path": "packages/console/resource",
+      "workspace_deps": [],
+      "external_deps_count": 1,
+      "src_ts_count": 0,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-console-support",
+      "name": "@opencode-ai/console-support",
+      "short": "console-support",
+      "version": "1.18.14",
+      "path": "packages/console/support",
+      "workspace_deps": [
+        "@opencode-ai/console-core"
+      ],
+      "external_deps_count": 7,
+      "src_ts_count": 1,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-core",
+      "name": "@opencode-ai/core",
+      "short": "core",
+      "version": "1.18.14",
+      "path": "packages/core",
+      "workspace_deps": [
+        "@opencode-ai/effect-drizzle-sqlite",
+        "@opencode-ai/effect-sqlite-node",
+        "@opencode-ai/llm",
+        "@opencode-ai/schema",
+        "@opencode-ai/plugin"
+      ],
+      "external_deps_count": 59,
+      "src_ts_count": 315,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-desktop",
+      "name": "@opencode-ai/desktop",
+      "short": "desktop",
+      "version": "1.18.14",
+      "path": "packages/desktop",
+      "workspace_deps": [],
+      "external_deps_count": 8,
+      "src_ts_count": 72,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-effect-drizzle-sqlite",
+      "name": "@opencode-ai/effect-drizzle-sqlite",
+      "short": "effect-drizzle-sqlite",
+      "version": "1.18.14",
+      "path": "packages/effect-drizzle-sqlite",
+      "workspace_deps": [],
+      "external_deps_count": 2,
+      "src_ts_count": 19,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-effect-sqlite-node",
+      "name": "@opencode-ai/effect-sqlite-node",
+      "short": "effect-sqlite-node",
+      "version": "1.18.14",
+      "path": "packages/effect-sqlite-node",
+      "workspace_deps": [],
+      "external_deps_count": 1,
+      "src_ts_count": 1,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-enterprise",
+      "name": "@opencode-ai/enterprise",
+      "short": "enterprise",
+      "version": "1.18.14",
+      "path": "packages/enterprise",
+      "workspace_deps": [
+        "@opencode-ai/core",
+        "@opencode-ai/session-ui",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 13,
+      "src_ts_count": 3,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-function",
+      "name": "@opencode-ai/function",
+      "short": "function",
+      "version": "1.18.14",
+      "path": "packages/function",
+      "workspace_deps": [],
+      "external_deps_count": 4,
+      "src_ts_count": 1,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-http-recorder",
+      "name": "@opencode-ai/http-recorder",
+      "short": "http-recorder",
+      "version": "1.18.14",
+      "path": "packages/http-recorder",
+      "workspace_deps": [],
+      "external_deps_count": 2,
+      "src_ts_count": 13,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-httpapi-codegen",
+      "name": "@opencode-ai/httpapi-codegen",
+      "short": "httpapi-codegen",
+      "version": "?",
+      "path": "packages/httpapi-codegen",
+      "workspace_deps": [],
+      "external_deps_count": 2,
+      "src_ts_count": 1,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-llm",
+      "name": "@opencode-ai/llm",
+      "short": "llm",
+      "version": "1.18.14",
+      "path": "packages/llm",
+      "workspace_deps": [
+        "@opencode-ai/schema"
+      ],
+      "external_deps_count": 4,
+      "src_ts_count": 56,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-plugin",
+      "name": "@opencode-ai/plugin",
+      "short": "plugin",
+      "version": "1.18.14",
+      "path": "packages/plugin",
+      "workspace_deps": [
+        "@opencode-ai/sdk"
+      ],
+      "external_deps_count": 3,
+      "src_ts_count": 34,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-protocol",
+      "name": "@opencode-ai/protocol",
+      "short": "protocol",
+      "version": "?",
+      "path": "packages/protocol",
+      "workspace_deps": [
+        "@opencode-ai/schema"
+      ],
+      "external_deps_count": 1,
+      "src_ts_count": 22,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-schema",
+      "name": "@opencode-ai/schema",
+      "short": "schema",
+      "version": "?",
+      "path": "packages/schema",
+      "workspace_deps": [],
+      "external_deps_count": 1,
+      "src_ts_count": 64,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-script",
+      "name": "@opencode-ai/script",
+      "short": "script",
+      "version": "?",
+      "path": "packages/script",
+      "workspace_deps": [],
+      "external_deps_count": 1,
+      "src_ts_count": 1,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-sdk",
+      "name": "@opencode-ai/sdk",
+      "short": "sdk",
+      "version": "1.18.14",
+      "path": "packages/sdk/js",
+      "workspace_deps": [],
+      "external_deps_count": 1,
+      "src_ts_count": 39,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-sdk-next",
+      "name": "@opencode-ai/sdk-next",
+      "short": "sdk-next",
+      "version": "?",
+      "path": "packages/sdk-next",
+      "workspace_deps": [
+        "@opencode-ai/client",
+        "@opencode-ai/core",
+        "@opencode-ai/server"
+      ],
+      "external_deps_count": 1,
+      "src_ts_count": 3,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-server",
+      "name": "@opencode-ai/server",
+      "short": "server",
+      "version": "1.18.14",
+      "path": "packages/server",
+      "workspace_deps": [
+        "@opencode-ai/core",
+        "@opencode-ai/protocol"
+      ],
+      "external_deps_count": 2,
+      "src_ts_count": 28,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-session-ui",
+      "name": "@opencode-ai/session-ui",
+      "short": "session-ui",
+      "version": "1.18.14",
+      "path": "packages/session-ui",
+      "workspace_deps": [
+        "@opencode-ai/client",
+        "@opencode-ai/core",
+        "@opencode-ai/sdk",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 22,
+      "src_ts_count": 33,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-slack",
+      "name": "@opencode-ai/slack",
+      "short": "slack",
+      "version": "1.18.14",
+      "path": "packages/slack",
+      "workspace_deps": [
+        "@opencode-ai/sdk"
+      ],
+      "external_deps_count": 1,
+      "src_ts_count": 1,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-stats-app",
+      "name": "@opencode-ai/stats-app",
+      "short": "stats-app",
+      "version": "1.18.14",
+      "path": "packages/stats/app",
+      "workspace_deps": [
+        "@opencode-ai/stats-core",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 15,
+      "src_ts_count": 29,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-stats-core",
+      "name": "@opencode-ai/stats-core",
+      "short": "stats-core",
+      "version": "1.18.14",
+      "path": "packages/stats/core",
+      "workspace_deps": [],
+      "external_deps_count": 5,
+      "src_ts_count": 17,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-stats-server",
+      "name": "@opencode-ai/stats-server",
+      "short": "stats-server",
+      "version": "1.18.14",
+      "path": "packages/stats/server",
+      "workspace_deps": [
+        "@opencode-ai/stats-core"
+      ],
+      "external_deps_count": 4,
+      "src_ts_count": 5,
+      "is_console_stats": true
+    },
+    {
+      "id": "oc-storybook",
+      "name": "@opencode-ai/storybook",
+      "short": "storybook",
+      "version": "?",
+      "path": "packages/storybook",
+      "workspace_deps": [],
+      "external_deps_count": 0,
+      "src_ts_count": 0,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-tui",
+      "name": "@opencode-ai/tui",
+      "short": "tui",
+      "version": "1.18.14",
+      "path": "packages/tui",
+      "workspace_deps": [
+        "@opencode-ai/core",
+        "@opencode-ai/plugin",
+        "@opencode-ai/sdk",
+        "@opencode-ai/ui"
+      ],
+      "external_deps_count": 12,
+      "src_ts_count": 49,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-ui",
+      "name": "@opencode-ai/ui",
+      "short": "ui",
+      "version": "1.18.14",
+      "path": "packages/ui",
+      "workspace_deps": [],
+      "external_deps_count": 25,
+      "src_ts_count": 45,
+      "is_console_stats": false
+    },
+    {
+      "id": "oc-web",
+      "name": "@opencode-ai/web",
+      "short": "web",
+      "version": "1.18.14",
+      "path": "packages/web",
+      "workspace_deps": [],
+      "external_deps_count": 22,
+      "src_ts_count": 4,
+      "is_console_stats": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "oc-client",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/client",
+      "import_refs": 1,
+      "evidence_example": "packages/app/src/utils/server-health.ts:4"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-schema",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/schema"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/sdk"
+    },
+    {
+      "from": "oc-session-ui",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/session-ui"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/app/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-cli",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/cli/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-cli",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/cli/package.json dependencies.@opencode-ai/sdk"
+    },
+    {
+      "from": "oc-server",
+      "to": "oc-cli",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/cli/package.json dependencies.@opencode-ai/server"
+    },
+    {
+      "from": "oc-tui",
+      "to": "oc-cli",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/cli/package.json dependencies.@opencode-ai/tui",
+      "import_refs": 1,
+      "evidence_example": "packages/cli/src/tui.ts:1"
+    },
+    {
+      "from": "oc-schema",
+      "to": "oc-client",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/client/package.json dependencies.@opencode-ai/schema"
+    },
+    {
+      "from": "oc-protocol",
+      "to": "oc-client",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/client/package.json dependencies.@opencode-ai/protocol"
+    },
+    {
+      "from": "oc-console-core",
+      "to": "oc-console-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-app/package.json dependencies.@opencode-ai/console-core"
+    },
+    {
+      "from": "oc-console-mail",
+      "to": "oc-console-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-app/package.json dependencies.@opencode-ai/console-mail"
+    },
+    {
+      "from": "oc-console-resource",
+      "to": "oc-console-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-app/package.json dependencies.@opencode-ai/console-resource",
+      "import_refs": 19,
+      "evidence_example": "packages/console/app/src/component/email-signup.tsx:2"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-console-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-app/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-console-mail",
+      "to": "oc-console-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-core/package.json dependencies.@opencode-ai/console-mail"
+    },
+    {
+      "from": "oc-console-resource",
+      "to": "oc-console-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-core/package.json dependencies.@opencode-ai/console-resource",
+      "import_refs": 7,
+      "evidence_example": "packages/console/core/src/aws.ts:2"
+    },
+    {
+      "from": "oc-console-core",
+      "to": "oc-console-function",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-function/package.json dependencies.@opencode-ai/console-core"
+    },
+    {
+      "from": "oc-console-resource",
+      "to": "oc-console-function",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-function/package.json dependencies.@opencode-ai/console-resource",
+      "import_refs": 2,
+      "evidence_example": "packages/console/function/src/auth.ts:13"
+    },
+    {
+      "from": "oc-console-core",
+      "to": "oc-console-support",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/console-support/package.json dependencies.@opencode-ai/console-core"
+    },
+    {
+      "from": "oc-effect-drizzle-sqlite",
+      "to": "oc-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/core/package.json dependencies.@opencode-ai/effect-drizzle-sqlite",
+      "import_refs": 3,
+      "evidence_example": "packages/core/src/database/database.ts:3"
+    },
+    {
+      "from": "oc-effect-sqlite-node",
+      "to": "oc-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/core/package.json dependencies.@opencode-ai/effect-sqlite-node"
+    },
+    {
+      "from": "oc-llm",
+      "to": "oc-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/core/package.json dependencies.@opencode-ai/llm",
+      "import_refs": 21,
+      "evidence_example": "packages/core/src/tool-output-store.ts:11"
+    },
+    {
+      "from": "oc-schema",
+      "to": "oc-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/core/package.json dependencies.@opencode-ai/schema"
+    },
+    {
+      "from": "oc-plugin",
+      "to": "oc-core",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/core/package.json dependencies.@opencode-ai/plugin"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-enterprise",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/enterprise/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-session-ui",
+      "to": "oc-enterprise",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/enterprise/package.json dependencies.@opencode-ai/session-ui"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-enterprise",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/enterprise/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-schema",
+      "to": "oc-llm",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/llm/package.json dependencies.@opencode-ai/schema"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-plugin",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/plugin/package.json dependencies.@opencode-ai/sdk",
+      "import_refs": 1,
+      "evidence_example": "packages/plugin/src/index.ts:12"
+    },
+    {
+      "from": "oc-schema",
+      "to": "oc-protocol",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/protocol/package.json dependencies.@opencode-ai/schema"
+    },
+    {
+      "from": "oc-client",
+      "to": "oc-sdk-next",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/client"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-sdk-next",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-server",
+      "to": "oc-sdk-next",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/server"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-server",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/server/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-protocol",
+      "to": "oc-server",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/server/package.json dependencies.@opencode-ai/protocol"
+    },
+    {
+      "from": "oc-client",
+      "to": "oc-session-ui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/session-ui/package.json dependencies.@opencode-ai/client"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-session-ui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/session-ui/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-session-ui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/session-ui/package.json dependencies.@opencode-ai/sdk"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-session-ui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/session-ui/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-slack",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/slack/package.json dependencies.@opencode-ai/sdk",
+      "import_refs": 1,
+      "evidence_example": "packages/slack/src/index.ts:2"
+    },
+    {
+      "from": "oc-stats-core",
+      "to": "oc-stats-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/stats-app/package.json dependencies.@opencode-ai/stats-core"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-stats-app",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/stats-app/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-stats-core",
+      "to": "oc-stats-server",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/stats-server/package.json dependencies.@opencode-ai/stats-core"
+    },
+    {
+      "from": "oc-core",
+      "to": "oc-tui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/tui/package.json dependencies.@opencode-ai/core"
+    },
+    {
+      "from": "oc-plugin",
+      "to": "oc-tui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/tui/package.json dependencies.@opencode-ai/plugin"
+    },
+    {
+      "from": "oc-sdk",
+      "to": "oc-tui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/tui/package.json dependencies.@opencode-ai/sdk"
+    },
+    {
+      "from": "oc-ui",
+      "to": "oc-tui",
+      "mechanism": "workspace-dep",
+      "evidence": "@opencode-ai/tui/package.json dependencies.@opencode-ai/ui"
+    },
+    {
+      "from": "oc-app",
+      "to": "oc-desktop",
+      "mechanism": "import",
+      "evidence": "packages/desktop/src/renderer/index.tsx:17",
+      "import_refs": 2
+    }
+  ],
+  "stats": {
+    "node_count": 35,
+    "edge_count": 50,
+    "workspace_edges": 49,
+    "import_edges": 1
+  }
+}

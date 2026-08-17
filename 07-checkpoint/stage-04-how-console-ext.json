@@ -1,0 +1,192 @@
+[
+  {
+    "id": "oc-console-app",
+    "name": "@opencode-ai/console-app",
+    "path": "packages/console/app/",
+    "how_use": "SolidStart (SolidJS) 前端 SPA：bun dev 启动 vite dev 服务器（--host 0.0.0.0）；bun run build 先跑 script/generate-sitemap.ts 生成 sitemap，再 vite build 产出 .output，随后调 ../../opencode/script/schema.ts 把 opencode 的 config.json/tui.json schema 注入 .output/public/。生产形态是 SST/Cloudflare 部署的 SSR 站点（entry-server.tsx 用 createHandler 做 locale/dir 服务端渲染，routes/ 下同时存在 API 路由如 openapi.json.ts、honeycomb/webhook.ts、feishu.ts 重定向）。",
+    "how_scenario": "opencode 官方商业控制台前端（https://opencode.ai）：落地页、登录/授权（auth/）、workspace 管理、账单/订阅/Key/用量仪表盘、Black/Lite 订阅计划页、zen API 网关路由（routes/zen/v1 与 zen/go/v1）、honeycomb 告警 webhook 入口。",
+    "why_design": "控制台全部业务状态（workspace/billing/usage/limits）以 SSR + SolidStart 文件路由承载，前端不直接读写 DB，而是 import @opencode-ai/console-core 的 fn 函数（drizzle 查询 + Actor 上下文）在 server 端执行——单一业务逻辑源，前端只是视图层。zen 网关（OpenAI/Anthropic/Google 兼容端点 + IP/Key 限流 + sticky provider + usage batching）也以 routes 形式内嵌在 app 中，与 UI 同仓库部署。",
+    "why_modified": "本机未修改该包（v1.18.14 原样）；但它是装配层认知的官方对标物：本机 deepseek-v4-pro/flash 模型配置、opencode.jsonc provider 结构（modalities/variants/cost 字段）即是对 console 的 ZenData ModelSchema/ProviderSchema 的本地简化仿写。",
+    "evidence": "packages/console/app/package.json（scripts.dev/build 调 schema.ts 注入 config/tui.json）；src/entry-server.tsx（SSR handler）；src/routes/zen/v1|go/v1（completions/messages/responses/models 网关路由）；src/routes/honeycomb/webhook.ts（Discord 告警转发）；src/config.ts（baseUrl=https://opencode.ai）；src/routes/feishu.ts（飞书社区链接重定向）"
+  },
+  {
+    "id": "oc-console-core",
+    "name": "@opencode-ai/console-core",
+    "path": "packages/console/core/",
+    "how_use": "被 console-app / console-function / console-support 以 workspace:* 依赖引用（exports 映射 ./src/*.ts 直读 TS 源码）。业务入口均为 fn(zodSchema, impl) 封装的函数：Actor.provide 提供 account/user/system 上下文（AsyncLocalStorage），Database.use/transaction 执行 drizzle 查询（PlanetScale/MySQL + postgres 双驱动），Key/Workspace/User/Provider/Subscription/Billing/BlackData/LiteData/Referral 等 namespace 各司其职。DB 操作经 bun sst shell drizzle-kit（script/db）迁移。",
+    "how_scenario": "console 全栈业务逻辑层：workspace 创建（含默认 API Key 与 billing 记录）、Key 生成（sk- + 64 随机字符）、model/provider 目录（ZenData 的 Format: anthropic|google|openai|oa-compat 与 cost/cacheRead/byok/sticky/trial 字段）、订阅限额（free/lite/black 三档 rolling/weekly/monthly 窗口）、Stripe 计费（billing.ts 的 Stripe client + 4.4% 处理费公式）、AWS SES 邮件（aws.ts）。",
+    "why_design": "用 namespace + fn(zod, impl) 模式把参数校验(zod) + Actor 权限上下文 + DB 事务统一封装，业务函数即 API 边界——console-function/app 直接 import 复用，避免三处重复实现；Actor（account/public/user/system 四型）贯穿所有查询做租户隔离（workspaceID 过滤），是控制台多租户安全的核心机制。",
+    "why_modified": "本机未改该包；装配层对它的借用体现在方法论：本地自定义工具 read.ts 的 zod args schema、子Agent 的 JSON 返回合约、以及 mission-archiving 的 5 段报告，都沿用了 zod 定义契约 + 结构化输出这一 console-core 模式。",
+    "evidence": "packages/console/core/src/actor.ts（四型 Actor + Context）；key.ts（sk- 生成/列表）；workspace.ts（create 事务+默认 Key）；model.ts（ZenData Model/Provider schema）；provider.ts（BYOK 凭据管理）；billing.ts（Stripe+处理费）；aws.ts（SES SendEmail 端点）；subscription.ts（limits 解析）；package.json（drizzle-kit/sst shell scripts）"
+  },
+  {
+    "id": "oc-console-function",
+    "name": "@opencode-ai/console-function",
+    "path": "packages/console/function/",
+    "how_use": "Cloudflare Worker/Lambda 入口包：src/auth.ts 导出 fetch handler（@openauthjs/openauth issuer，GitHub/Google OAuth provider + CloudflareStorage KV 会话）；src/stat.ts 导出 POST / 查询 ModelTpsRateLimitTable 近 30 个 1 分钟 interval 的 qualify/unqualify 计数；src/log-processor.ts 导出 tail()（Cloudflare Workers Trace 日志处理：解析 _metric: 前缀日志 → 转发 Honeycomb https://api.honeycomb.io/1/batch/zen + 数据湖 ingest）。依赖 ai / @ai-sdk/anthropic|openai|openai-compatible（LLM 代理链）。",
+    "how_scenario": "控制台的 Serverless 边缘函数：openauth 认证签发（account/user subjects）、TPS 限流计数聚合查询（配合 app 侧 modelTpsLimiter）、Zen 网关的 observability 数据管线（honeycomb 批量写入 + lake ingest，含 llm.error 事件）。",
+    "why_design": "把认证签发、限流计数查询、日志遥测拆成独立 Worker，与 app 的 SSR 路由解耦——auth 需要 KV 会话存储与 OAuth provider 配置，log-processor 需要 Trace API，放在 function 层可独立部署/独立扩缩容；console-core 的业务函数（Account/Workspace/Actor/Database）被直接 import 复用，保持单一业务源。",
+    "why_modified": "本机未改；装配层没有直接复用 function 包，但其独立 Worker 做限流/遥测的架构与本地 headroom proxy（8787 端口压缩代理）、browser-harness daemon 的独立进程承载横切能力是同一设计思路。",
+    "evidence": "packages/console/function/src/auth.ts（openauth issuer + GitHub/Google provider + KV）；stat.ts（POST ids → 30 interval TPS 计数）；log-processor.ts（tail() → Honeycomb batch + lake）；package.json（ai SDK 依赖）"
+  },
+  {
+    "id": "oc-console-mail",
+    "name": "@opencode-ai/console-mail",
+    "path": "packages/console/mail/",
+    "how_use": "纯模板包：exports 映射 ./emails/templates/*（InviteEmail.tsx 等），用 @jsx-email（render/cli/all）把 React/TSX 组件渲染为 HTML 邮件；bun dev = email preview emails/templates 本地预览。被 console-core/console-app 以 workspace:* 依赖，配合 AWS SES（aws.ts 的 SendEmail）发送。",
+    "how_scenario": "控制台的邀请/通知邮件模板（InviteEmail），与 billing/subscription 流程联动（付费邀请、黑金计划等场景）。",
+    "why_design": "邮件模板独立成包并用 JSX 组件化渲染（@jsx-email），原因：1) 与业务逻辑隔离，纯展示层可单独预览迭代；2) JSX 类型安全 + 复用组件（styles.ts）；3) console-core 的 AWS SES 只负责发送，模板与发送解耦，模板可被 app/core 两处引用。",
+    "why_modified": "本机未改。装配层的邮件能力另起炉灶（recruit-assist 用 lark-cli/飞书或 minimax-docx），未采用 SES 邮件链路。",
+    "evidence": "packages/console/mail/package.json（@jsx-email/render|cli|all + exports ./emails/templates/*）；emails/templates/InviteEmail.tsx；emails/styles.ts"
+  },
+  {
+    "id": "oc-console-resource",
+    "name": "@opencode-ai/console-resource",
+    "path": "packages/console/resource/",
+    "how_use": "两文件双环境实现，均导出 Resource Proxy：resource.node.ts 用 sst 的 Resource + cloudflare 官方 SDK（apiToken=CLOUDFLARE_API_TOKEN）提供 KV get/put/delete/list、Bucket put（no-op）；resource.cloudflare.ts 从 cloudflare:workers env（SST_RESOURCE_*）解析同一批资源。消费方统一 import { Resource }，按属性名读取（Resource.STRIPE_SECRET_KEY.value、Resource.UpstashRedisRestUrl.value、Resource.ZEN_LIMITS.value、Resource.AWS_SES_ACCESS_KEY_ID.value 等）。",
+    "how_scenario": "console 全包的配置/密钥注入面：Stripe secret、AWS SES key、Cloudflare token/account、Upstash Redis、GitHub/Google OAuth client、Zen 限额 JSON、Black/Lite 价格表——node（本地/sst shell）与 cloudflare（线上 Worker）两套运行时共用同一属性接口。",
+    "why_design": "用 Proxy 把环境差异隐藏在统一 Resource 门面后：node 侧走 sst 资源绑定 + Cloudflare API 直连，cloudflare 侧走 env 注入，消费方零改动；类型由 sst-env.d.ts 提供。这是运行时可移植性的典型设计——同一套业务代码在本地调试与线上部署共享同一读取接口。",
+    "why_modified": "本机未改该包。装配层借鉴了同样的 Proxy 门面思想：amap-lbs-skill 的 config.json 读写封装、vision-interceptor 的 GLM_KEY 环境变量回退（process.env.ZHIPU_API_KEY || 硬编码），都是密钥统一入口 + 环境回退的本地变体。",
+    "evidence": "packages/console/resource/resource.node.ts（SST Resource Proxy + Cloudflare KV/Bucket）；resource.cloudflare.ts（env SST_RESOURCE_* 解析）；package.json（exports 按 production/import 切换两实现）"
+  },
+  {
+    "id": "oc-console-support",
+    "name": "@opencode-ai/console-support",
+    "path": "packages/console/support/",
+    "how_use": "SolidStart 客服/后台站点：bun dev = sst shell --stage production -- vite dev（直连生产环境跑本地 dev）；routes/ 仅 index.tsx 与 lookup.tsx 两个页面，src/lib/lookup.ts 用 use server 直接调 console-core 的 drizzle 查询（Auth/User/Workspace/Billing/Payment/Usage/Key/Model 表联查）按 identifier 反查用户/workspace 全量快照。",
+    "how_scenario": "支持人员用的用户/工作区查找后台：输入邮箱或标识符 → 返回该账号下所有 workspaces（auth、用户、billing、go 计划、支付、用量、禁用模型）。",
+    "why_design": "支持后台与用户前台（console-app）同构（同 SolidStart + console-core），但只暴露 lookup 只读查询——刻意最小化支持工具面；use server + console-core 复用保证查询与前台一致（同一 drizzle schema、同一 Actor 隔离），支持人员无法直接改库。",
+    "why_modified": "本机未改。装配层无对应物（客服功能未自建），仅作官方架构参考：最小只读支持后台 + 复用业务 core。",
+    "evidence": "packages/console/support/src/lib/lookup.ts（use server 联查）；src/routes/lookup.tsx / index.tsx；package.json（dev 直连 production stage）"
+  },
+  {
+    "id": "oc-stats-app",
+    "name": "@opencode-ai/stats-app",
+    "path": "packages/stats/app/",
+    "how_use": "SolidStart 统计站前端：bun run dev:stats（仓库根）或 bun run --cwd packages/stats/app typecheck；routes/ 有首页 index.tsx（d3-geo/topojson world map + i18n 20 语言）、model-catalog（模型目录页）、compare/[model]（模型对比）、[lab]/[model] 实验页、stats/api/health|newsletter API、sitemap.xml.ts。数据源：@opencode-ai/stats-core 的 domain 查询（runStatsEffect 执行 Effect）。",
+    "how_scenario": "公开统计站点（与 console 分离的独立站点）：按模型/供应商/国家展示 token 成本、耗时、TPS、缓存命中率等排行榜与地理分布；模型目录、两两对比、实验室页。",
+    "why_design": "与 console 同构（SolidStart + ui 包）但独立部署，因为受众不同（公开数据 vs 私有控制台）且数据来自完全不同的管线（Athena 数仓 vs 业务 DB）；i18n 20 语言 + d3 地图可视化为纯前端展示层，无写路径。",
+    "why_modified": "本机未改。装配层的 dashboard/报表能力未自建（用 excel/markdown 报告替代），stats-app 是官方数据可视化站的参照物。",
+    "evidence": "packages/stats/app/src/routes/index.tsx（d3-scale + i18n-iso-countries + world-atlas）；stats-runtime.ts（runStatsEffect）；package.json（d3-geo/topojson/world-atlas/i18n-iso-countries 依赖）"
+  },
+  {
+    "id": "oc-stats-core",
+    "name": "@opencode-ai/stats-core",
+    "path": "packages/stats/core/",
+    "how_use": "Effect 生态服务包：Athena service（@aws-sdk/client-athena，StartQueryExecution→GetQueryExecution→GetQueryResults 轮询 300 次，WorkGroup/Catalog/Database 来自 Resource.InferenceEvent）；Database service（@planetscale/database + drizzle-orm/planetscale-serverless，DATABASE_URL 或 Resource.StatsDatabase.url）；domain/ 下 inference/model/provider/geo/stat（buildStatsQuery 用 GROUPING SETS 一次扫描聚合 sessions/requests/tokens/cost/duration/TPS 等指标）；stat-sync.ts 增量/全量同步（锚定 ISO 周、5 分钟摄取滞后、56 天展示窗口）。scripts: db:migrate / db:push / honeycomb:backfill / ensure-unique-users。",
+    "how_scenario": "统计数据的采集-聚合-落库核心：Lambda（stats/function→core）与 stats-server 共用；honeycomb-backfill 把历史遥测灌入 Athena；migrate/ensure-unique-users 维护 PlanetScale 统计表。",
+    "why_design": "用 Effect 服务（Context.Service + Layer）组织全部依赖（Athena/Database/Config），运行时以 Layer 注入——与 console-core 的 fn 风格不同，stats 选择了纯函数式依赖注入，便于 Lambda/Server 两种宿主复用同一套查询/同步逻辑；Athena 只扫一次源表的 GROUPING SETS 设计明确为降成本优化。",
+    "why_modified": "本机未改。装配层在多源数据归一化统计（如 0817 DAG 的包统计、github-dag 的 commit 统计）上复用了其思路：统一 schema 归一化 + 增量锚点窗口，但用 Python 而非 Effect。",
+    "evidence": "packages/stats/core/src/athena.ts（查询轮询+错误类型）；database.ts（PlanetScale+drizzle）；stat-sync.ts（增量/全量同步窗口常量）；domain/inference.ts（GROUPING SETS 单扫描聚合）；package.json（db:generate/push/studio、honeycomb:backfill scripts）"
+  },
+  {
+    "id": "oc-stats-server",
+    "name": "@opencode-ai/stats-server",
+    "path": "packages/stats/server/",
+    "how_use": "bun src/server.ts 启动（package.json start）：NodeHttpServer（PORT 默认 3000 / HOST 0.0.0.0）承载 Effect HttpRouter；router.ts 挂 GET /health、GET /ready（关停时 503）、POST /（带 Bearer 鉴权 isAuthorized + 8 并发 Semaphore 的 ingest 端点）；ingest.ts 用 @aws-sdk/client-firehose 把事件按 database.table 路由批量写 Kinesis Firehose（500 条/批、3 次重试、退出信号优雅关停）。",
+    "how_scenario": "Zen 网关日志的接收-转发服务：console-function 的 log-processor（Worker）把 lake ingest 事件 POST 到 stats-server，stats-server 校验鉴权后写入 Firehose → 数据湖 → Athena 供 stats-core 查询。",
+    "why_design": "独立常驻 Node 服务承担 HTTP 接收 + Firehose 写湖，因为：1) Worker 直连 Firehose 的批处理/重试逻辑需要长驻进程承载；2) 与 console-function 的 honeycomb 直写并行，形成 honeycomb（实时观测）+ lake（数仓）双通道；3) 用 Effect Layer 组合 Ingest/Routes/Server，测试性高。",
+    "why_modified": "本机未改。装配层无对应物；但本地 agent 采集→HTTP 上报→批量入湖链路与 headroom CLI 的 savings 统计（本地记录压缩收益）是同类 telemetry 思路。",
+    "evidence": "packages/stats/server/src/server.ts（PORT/HOST Config + NodeRuntime.runMain）；router.ts（/health /ready POST / 鉴权+Semaphore）；ingest.ts（Firehose PutRecordBatch 500/批/3 重试）；shutdown.ts；package.json（bun src/server.ts）"
+  },
+  {
+    "id": "oc-sdk-next",
+    "name": "@opencode-ai/sdk-next",
+    "path": "packages/sdk-next/",
+    "how_use": "import { OpenCode } 后 OpenCode.create() 在进程内把 @opencode-ai/server 的 HttpRouter（createEmbeddedRoutes）经 HttpRouter.toWebHandler 转成 fetch 处理器，再用 @opencode-ai/client/effect 的 OpenCode.make({baseUrl:http://opencode.local}) + FetchHttpClient.layer 把请求打到内存 handler——零监听端口零网络 IO，完整保留路由/中间件/handler/codec/error。同时导出 Tool 命名空间（tools.register 走 Core 的 ApplicationTools 服务）与 ClientError/AbsolutePath/Model/Provider 等 Effect 类型；提供 OpenCode.layer 供依赖注入。",
+    "how_scenario": "进程内嵌式 opencode 宿主：单元测试（sessions.get/prompt/interrupt/events 重放）、桌面端/插件宿主把 opencode 作为库而非服务调用；README 明示 transitional package，将替代生成的 @opencode-ai/sdk。",
+    "why_design": "把 HTTP 服务抽象成可内存执行的 fetch handler，是 Effect 生态服务即组合的体现：客户端与服务器共享同一路由定义，测试无需起端口；ApplicationTools/PermissionSaved 以 Layer 注入，宿主可注册自定义工具并随 Scope 关闭释放资源。",
+    "why_modified": "本机未改。装配层没用 sdk-next，但本机自定义工具/插件机制（plugins/vision-interceptor.js 的 chat.message + experimental.chat.messages.transform 钩子）与 host 内嵌、挂载钩子的宿主模式同源。",
+    "evidence": "packages/sdk-next/README.md（in-process host 说明）；src/opencode.ts（AppNodeBuilder.build + createEmbeddedRoutes + OpenCode.make + tools.register）；src/tool.ts；src/index.ts（re-export @opencode-ai/client/effect）"
+  },
+  {
+    "id": "oc-slack",
+    "name": "@opencode-ai/slack",
+    "path": "packages/slack/",
+    "how_use": "bun dev（bun run src/index.ts）启动 Slack Bolt 机器人：env 需 SLACK_BOT_TOKEN / SLACK_SIGNING_SECRET / SLACK_APP_TOKEN（.env.example 提供）；App({socketMode:true}) 建立 Socket Mode 长连接；内部 createOpencode({port:0}) 起一个临时 opencode server，把每个 Slack 线程(channel-thread_ts)映射为独立 opencode session：收到消息 → client.session.create + session.share 分享链接 → session.prompt 发提示 → say() 回帖；订阅 message.part.updated 事件把 tool 完成状态实时回帖（app.client.chat.postMessage）。",
+    "how_scenario": "把 opencode 接入 Slack 工作区：@机器人或在频道内对话即开启独立 AI 会话，工具调用进度与最终回答以线程化消息呈现，会话可分享（share URL）。",
+    "why_design": "用 Socket Mode（无需公网回调）降低自托管门槛；一线程一会话的隔离保证多用户并发互不干扰；SDK（@opencode-ai/sdk）直连 server 复用完整会话/工具/分享协议，bot 只做 Slack 协议↔opencode 协议的翻译层。",
+    "why_modified": "本机未改，且本机装配层刻意绕开 Slack（MEMORY 中飞书为协同入口，lark-suite skill 覆盖消息/日历/文档）。slack 包是官方 IM 接入参考：本机 lark-suite + lark-cli 即同类聊天平台↔AI 会话桥的飞书版。",
+    "evidence": "packages/slack/README.md（Socket Mode + 3 个环境变量 + OAuth scopes）；src/index.ts（App socketMode、createOpencode({port:0})、thread→session 映射、message.part.updated 工具回帖、session.share）"
+  },
+  {
+    "id": "ext-deepseek",
+    "name": "DeepSeek API",
+    "kind": "LLM provider (OpenAI 兼容 REST API)",
+    "why_need": "主模型供给：plan=deepseek-v4-pro（规划/委派推理）、build 与全部 7 个子Agent=deepseek-v4-flash（执行降本）都走 DeepSeek。解决本地要有强推理 + 低成本可商用模型的需求；无它则 opencode 无模型可跑，整个装配层（调度/委派/留档/反思）全部失效。",
+    "why_current": "合理：opencode.jsonc 以 provider.deepseek 配置 @ai-sdk/deepseek + baseURL https://api.deepseek.com/v1，model 分 pro(0.435/0.87 刀) 与 flash(0.14/0.28 刀) 两档，daily/deep variant 分别限 max_tokens 8192/16384 + reasoning_effort high/max——与 auto-mode 门控的决策边界表严格对应；缓存前缀策略（auto-mode.md 静态置前、动态置后）就是为 DeepSeek prefix-cache 98-99% 命中设计的。",
+    "how_integrate": "环境变量 DEEPSEEK_API_KEY（用户级已 setx，进程内不落盘）；API 端点 https://api.deepseek.com/v1/chat/completions（OpenAI 兼容）；opencode.jsonc 中 provider.deepseek.npm=@ai-sdk/deepseek + options.baseURL/timeout(300s)/headerTimeout/chunkTimeout；模型 modalities（pro 支持 image 输入、flash 仅 text）+ interleaved.reasoning_content 字段解析推理链。",
+    "how_usage": "opencode 主进程按 agent 配置选模型：plan 回落到顶层 model（deepseek-v4-pro），build/子Agent 显式 model=deepseek-v4-flash；variant daily/deep 切换 max_tokens 与 reasoning_effort；MEMORY.md 经 instructions 注入系统提示前缀共享缓存。",
+    "evidence": "opencode.jsonc（provider.deepseek 块 + agent.*.model + variants）；auto-mode.md 决策边界表；MEMORY.md 主模型：DeepSeek V4 Pro (daily/deep)，子Agent：DeepSeek V4 Flash"
+  },
+  {
+    "id": "ext-glm",
+    "name": "智谱 GLM API (BigModel)",
+    "kind": "VLM 视觉模型 REST API",
+    "why_need": "补 DeepSeek-flash 无视觉能力的短板：read.ts 工具把图片文件经 GLM-4V 转文字描述（DeepSeek 纯文本模型才能理解）；vision-interceptor.js 插件在 chat.message 与 experimental.chat.messages.transform 钩子把用户上传图片替换为 VLM 描述文本，解决 does not support image input 报错。被依赖方：tools/read.ts、plugins/vision-interceptor.js，下游是 opencode 全部读图/图表校验流程（0807 起含 drawio 导出 PNG 的 VLM 校验）。",
+    "why_current": "合理但有过改动史：0807 修复前 glm-4.6v-flash（免费）高峰 429，改为付费 glm-4.6v 优先、429 降级免费 flash 的双模型链；Key 硬编码回退到环境变量 ZHIPU_API_KEY（用户级已 setx），避免明文泄露；插件侧用 Map 缓存 URL→描述防止历史消息重复计费。2026-08 仍为唯一视觉通道。",
+    "how_integrate": "环境变量 ZHIPU_API_KEY；端点 POST https://open.bigmodel.cn/api/paas/v4/chat/completions，Header Authorization: Bearer <key>，body: {model:glm-4.6v 或 glm-4.6v-flash, messages:[{role:user, content:[{type:image_url, image_url:{url: 图片URL 或 data:image/png;base64,...}}, {type:text, text:描述提示词}]}], max_tokens:4096, temperature:0.3}；响应取 choices[0].message.content。",
+    "how_usage": "read.ts 的 describeImage()：Bun.file→base64→按扩展名映射 mime→付费优先降级循环→返回描述文本；vision-interceptor.js 的 transformParts()：识别 part.type=file 且 mime 以 image/ 开头→调 describeImage→替换为 synthetic text part，并写日志 vision-int.log 记录 FIRED/SKIP/VLM OK 计数。",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\tools\\read.ts（GLM_URL/GLM_MODELS/describeImage）；plugins\\vision-interceptor.js（transform 钩子 + processedImages Map）；0807-VLM图片识别修复\\任务完成报告.md（双通道修复、429 降级链、setx ZHIPU_API_KEY）"
+  },
+  {
+    "id": "ext-lark-feishu",
+    "name": "飞书开放平台 + lark-cli",
+    "kind": "IM/协同办公开放 API + 本地 CLI 桥",
+    "why_need": "协同办公主通道：recruit-assist 的飞书网申进度表同步（sync_feishu.py 增量上传/全量下载）、简历求职流程的表格/文档操作、日常日历/消息/云盘任务都需要。解决 Agent 能操作飞书全部业务域的需求；无它则简历投递跟踪表与办公文档无法程序化读写。被依赖方：skills/lark-suite（路由包装层）、recruit-assist、exec-recruit preset。",
+    "why_current": "合理：lark-cli v1.0.76（Go，MIT，上游 yjwong/lark-cli）本地安装，SKILL.md 强制 Step 0 先读 references/shared.md（认证检查/--as user|bot 身份/JSON 输出合约）；23 域中 20 个占位已在 0802 修复为 lark-cli skills read 动态加载；Windows 下必须 cmd /c 调用。仅 3 个手写 reference（drive/shared/sheets），其余按需拉官方内置 skill。",
+    "how_integrate": "lark-cli auth login --recommend（输出授权 URL，浏览器完成 OAuth，自动取 token；可 --no-wait + --device-code 轮询）；lark-cli config init --new 首次配 app credentials；调用形态 cmd /c \"lark-cli <domain> +<shortcut> [flags]\"，如 lark-cli drive +upload <本地路径> <folder_token>、lark-cli drive +download <file_token> <本地路径>；输出 JSON 信封 {ok, identity, data, meta}，成功判 ok==true 而非 code==0。",
+    "how_usage": "lark-suite skill 按意图路由表加载 references/<domain>.md → 按域指令执行 lark-cli shortcut → 解析 JSON；Fallback 链：lark-cli skills read lark-<domain> → lark-cli schema → lark-cli api GET/POST → WebFetch 官方文档；recruit-assist 的 sync_feishu.py 直接调 lark-cli 做表格同步。",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skills\\lark-suite\\SKILL.md（路由表+Fallback 策略+Step 0）；references\\shared.md（auth login/config init/JSON 合约）；references\\drive.md（+upload/+download）；lark-cli --version = 1.0.76；0802-opencode改造盘点（占位修复）"
+  },
+  {
+    "id": "ext-amap",
+    "name": "高德地图 Web 服务 API",
+    "kind": "LBS 地理 REST API + 免费网页链接",
+    "why_need": "地理/LBS 能力：POI 搜索、周边搜索、路径规划、地理编码、旅游规划。解决 Agent 处理地点/路线/导航类查询需求；无它则无法回答附近美食/两地路线/地点坐标类任务。被依赖方：amap-lbs-skill（网页链接，不耗配额）、amap-budget-control（MCP API 用量预算）、amap-mcp-wrapper（MCP 入口）。",
+    "why_current": "双轨合理：amap-lbs-skill 优先生成免费网页链接（www.amap.com/search?query=、amap.com/dir 等，不消耗 API 配额），结构化数据才走 restapi.amap.com Web 服务（v5/place/text 等）——配额友好；amap MCP（npx amap-mcp-server@latest）因仅 2 工具 ~2000 tokens 极低用已在 opencode.jsonc 中 enabled:false（MCP 精兵策略），靠 skill 层满足日常。",
+    "how_integrate": "Web Service Key：环境变量 AMAP_WEBSERVICE_KEY（旧 AMAP_KEY 已废弃但兼容），或 config.json 本地持久化（chmod 600）；端点：https://restapi.amap.com/v5/place/text（POI，参数 key/keywords/region）、v3/direction/walking（步行路径）、v3/geocode/geo（地理编码）；埋点 https://restapi.amap.com/v3/log/init；MCP wrapper：amap-mcp-wrapper.ps1 设 $env:AMAP_KEY 后 npx -y amap-mcp-server@latest。",
+    "how_usage": "amap-lbs-skill 场景路由：场景一直接拼 www.amap.com/search 链接；场景二先 v3/geocode/geo 取坐标再拼带坐标链接；POI 详情/路径走 scripts/poi-search.js / route-planning.js（node 调用 index.js 的 searchPOI/walkingRoute，axios GET restapi.amap.com）；预算控制由 amap-budget-control skill 记录调用量与 5000 次/日预警。",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\amap-lbs-skill\\_SKILL.md（配置/场景/URL 格式）；index.js（ensureWebServiceKey + searchPOI v5/place/text + walkingRoute v3/direction/walking）；scripts\\poi-search.js；amap-mcp-wrapper.ps1（AMAP_KEY + npx amap-mcp-server@latest）；opencode.jsonc（mcp.amap enabled:false）"
+  },
+  {
+    "id": "ext-chrome-cdp",
+    "name": "Chrome DevTools Protocol (browser-harness)",
+    "kind": "浏览器自动化 CDP 服务",
+    "why_need": "网页交互/抓取/测试的唯一通道：browser-harness skill 要求 Always use browser-use for any web interaction——爬取（0817 DAG 3 路并行联网调研、简历投递）、页面截图/点击、SPA 轮询、表单填写都需要真实浏览器。解决 DeepSeek 无视觉且纯文本 Agent 无法直接操作网页的需求；被依赖方：browser-harness skill、recruit-assist（京东投递）、create-web preset（前端实测）、frontend-design（渲染验证）。",
+    "why_current": "合理：专用 Chrome 实例（独立 profile %LOCALAPPDATA%\\browser-harness-chrome，--remote-debugging-port=9222，chrome-debug.ps1 自动拉起/幂等检测）；BU_CDP_URL=http://localhost:9222 环境变量已设；browser-harness.exe 管道式 Python（new_tab/js/capture_screenshot/click_at_xy/cdp 原始命令）。0804 复盘教训（JS 需完整 IIFE、js() 必须 return、复杂箭头 heredoc 易错）已固化进 skill。",
+    "how_integrate": "chrome-debug.ps1：powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\\.config\\opencode\\scripts\\chrome-debug.ps1（检查 http://localhost:9222/json/version，无则启动 Chrome + --remote-debugging-port=9222 + --user-data-dir 独立 profile）；browser-harness 通过 BU_CDP_URL 连接 daemon；browser-harness --doctor 诊断；远程/云浏览器用 browser-harness auth login（Browser Use cloud）。",
+    "how_usage": "管道喂 Python 脚本：$pyScript | browser-harness.exe（Windows 用 @\"...\"@ heredoc，不用 <<PY）；流程：new_tab(url) 首次导航 → wait_for_load() → capture_screenshot() 看状态 → js()/click_at_xy() 交互 → 完成后 close-chrome-tabs.ps1 -KeepFirst 收尾；原始能力用 cdp(\"Domain.method\", ...)。",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\browser-harness\\SKILL.md（Quick Start/管道用法/doctor/BU_CDP_URL）；scripts\\chrome-debug.ps1（9222 端口 + 独立 profile）；0804-recruit优化\\任务完成报告.md（browser-harness 教训）；MEMORY.md 0804 条目"
+  },
+  {
+    "id": "ext-drawio",
+    "name": "draw.io MCP (@drawio/mcp v1.5.0 本地精简)",
+    "kind": "图表 MCP 服务 + draw.io 在线渲染",
+    "why_need": "图表交付能力：流程图/架构图/UML/思维导图/组织图批量生成与 4x PNG 导出（0816-0817 三个 DAG 项目合计 135+ 张）。解决 Agent 要产出专业可视化图表需求；无它则架构对比图、DAG 图无法生成。被依赖方：drawio-worker 子Agent（唯一工具源）、drawio-reference skill（998 行规范+导出验证第五章）。",
+    "why_current": "合理：0801 因 MCP 工具描述内嵌 33K XML + 12K Mermaid 参考导致子Agent System Prompt 18-20K tokens（50-60% 是工具定义），Fork 到 D:\\Opencode\\drawio-mcp-minimal 把描述替换为 5 行摘要 + 懒加载 skill；0803 加 Puppeteer lightbox 导出修复 CLI --scale 4 只渲染顶部 25% 的 bug（v3: ?lightbox=1 + deviceScaleFactor + waitForFunction，10280×5760 PNG 成功）；opencode.jsonc 中 drawio enabled:true、drawio-local（DRAWIO_BASE_URL=http://localhost:8080/）离线兜底 enabled:false。",
+    "how_integrate": "MCP 配置：opencode.jsonc mcp.drawio = {type:local, command:[node, D:\\Opencode\\drawio-mcp-minimal\\package\\src\\index.js], enabled:true}（stdio 传输）；环境变量 DRAWIO_BASE_URL（默认 https://app.diagrams.net/）、DRAWIO_SHAPE_INDEX_URL（CDN jsdelivr，可本地）、DRAWIO_ICON_SERVICE_URL（可 off）；导出走 export.js 的 buildLightboxUrl（pako deflateRaw 压缩 XML → #create= JSON hash → lightbox=1 参数）→ Puppeteer 截全页。",
+    "how_usage": "drawio-worker 子Agent 调用 drawio_* 8 工具（open_drawio_xml/open_drawio_mermaid/search_shapes/export 等）创建图表 → 强制 drawio_export 导出 PNG（scale=2~4）→ VLM（GLM-4V）校验无截断 → 越界检查；委派时主Agent prompt 必须精确写入 drawio-reference: 图表规范与导出验证（刚性约束，违者产生截断 PNG）。",
+    "evidence": "opencode.jsonc（mcp.drawio 命令路径/enabled）；D:\\Opencode\\drawio-mcp-minimal\\package\\src\\index.js（stdio server + DRAWIO_BASE_URL + shape/icon 索引）；export.js（lightbox v3 导出）；0803-Drawio工具链优化与缓存修正\\留档报告.md（fork 动机 + prompt 前缀碎片化回退 + CLI bug）；0801-system-prompt-optimization-report"
+  },
+  {
+    "id": "ext-pdf-reader",
+    "name": "@sylphx/pdf-reader-mcp",
+    "kind": "PDF 文本提取 MCP 服务",
+    "why_need": "PDF 文档读取能力：简历解析、财报读取、论文提取。解决 Agent 无法直接读 PDF 二进制需求；无它则所有 PDF 类任务（招聘简历、学术文档）不可用。被依赖方：pdf-worker 子Agent（唯一工具源，permission 仅放行 pdf-reader_*）。",
+    "why_current": "合理：opencode.jsonc mcp.pdf-reader = {type:local, command:[npx, -y, @sylphx/pdf-reader-mcp@latest], enabled:true}——唯二启用的 MCP 之一（MCP 精兵策略 6 台仅留 2 台）；pdf-worker 固定 Flash + L3 最小权限（仅 pdf-reader_* allow），全局 deny 兜底；无文本层时走 pdf-ocr skill 路由 OCR。",
+    "how_integrate": "npx -y @sylphx/pdf-reader-mcp@latest 按需拉取（latest 随 npm 发布更新）；stdio MCP 协议；暴露 4 个工具（read_pdf 等文本提取类）；无需 API Key/环境变量（纯本地解析）。",
+    "how_usage": "pdf-worker 子Agent 经 pdf-reader_* 工具提取文本 → 返回 8 字段 JSON（status/summary/data/files_created 等）；MCP 路由规则保证 PDF 任务始终委派 pdf-worker 且不重复加载 pdf-ocr skill（省 token）；0707 简历任务用 explore 读 xlsx 而非 PDF 的案例证明路由按文件类型分流。",
+    "evidence": "opencode.jsonc（mcp.pdf-reader enabled:true + 描述）；agent.pdf-worker（permission pdf-reader_* allow + hidden subagent）；0801-P0任务完成报告（pdf-worker 新增 Flash）；0802-opencode改造盘点（MCP 路由规则）"
+  },
+  {
+    "id": "ext-headroom",
+    "name": "Headroom (上下文压缩代理/CLI)",
+    "kind": "本地上下文压缩服务（CLI 为主）",
+    "why_need": "控制上下文膨胀：压缩超大工具输出（>2000 字符）、审计 Read-tool 流量、查看压缩节省。解决长会话 token 成本失控需求（历史 7/27 起 11 次 compress 累计节省 ~357 tokens/~$0.001）。被依赖方：auto-mode.md 输出规模控制节（L1 剪枝 → L2 结构化压缩 → L3 兜底摘要）。",
+    "why_current": "状态反转合理：0812 前 headroom 以 MCP 接入（headroom_compress/retrieve/stats 3 工具 ~279 tokens/请求），quant 审计发现工具开销 > 历史收益（$0.001），判定量化亏损 → 2026-08-12 起 mcp.enabled:false；但 CLI 仍可用（headroom proxy/audit-reads/savings/inspect/memory）。0812 修复还发现 8/5 Stop-Process -Force 误杀 headroom python 进程导致 MCP 挂死的根因，launcher v3 改为纯 stdio 转发无后台进程。",
+    "how_integrate": "CLI：headroom.exe（v0.32.1，Python 安装 D:\\program\\python\\Scripts\\headroom.exe）；命令：headroom proxy（8787 端口代理，仅手动全链路代理时启动）/ audit-reads（审计 Read 流量）/ savings（节省统计）/ inspect（压缩对比）/ memory list|stats；MCP 恢复路径：opencode.jsonc 中 headroom.enabled 改回 true（launcher v3 纯 stdio 转发 & headroom mcp serve --proxy-url http://127.0.0.1:8787）。",
+    "how_usage": "skill 懒调用规则：文件 >500 行、工具输出 >2000 字符、JSON payload 大、网页 >3000 字符时评估压缩；任务后 headroom savings 查看节省；MCP 三工具当前不可用（enabled:false），不要调用；切 Claude Code/Codex 走 proxy 时再启用 MCP。",
+    "evidence": "C:\\Users\\15057\\.config\\opencode\\skill\\headroom\\SKILL.md（MCP 禁用声明 + CLI 用法）；0812-headroom修复\\headroom修复报告.md（根因 Stop-Process 误杀、v3 launcher、量化亏损）；opencode.jsonc（mcp.headroom enabled:false）；MEMORY.md 0812（headroom MCP 量化亏损禁用）"
+  }
+]

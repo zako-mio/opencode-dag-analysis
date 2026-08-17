@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>superpowers-openspec-superpowers-workflow · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>superpowers-openspec-superpowers-workflow <span class="tag">装配层</span></h1>
+  <div class="sub">skill-superpowers-openspec-superpowers-workflow · skill · A6l-工作流 · Layer 3</div>
+
+  <h2>① 作用</h2>
+  <p>完整交付流程编排器：Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档，全程门控。作为路由控制者防止误路由到 OpenSpec proposal skill，要求先完成 Superpowers 探索才允许 OpenSpec 工件生成。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 25 步编排工作流（探索→设计→OpenSpec 工件依赖序 proposal→design→spec→tasks→TDD→验证→归档）<br>· openspec status/instructions --json 检查流程<br>· 交接命令（continue-dev/continue-review/continue-archive）<br>· 严格 Guardrails（路由保护：不得先路由到 openspec-propose）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-propose.html'>openspec-propose</a></td><td>skill-relation</td><td><small>superpowers-openspec-superpowers-workflow SKILL.md Guardrails: &#x27;do not route first to $openspec-feat</small></td></tr><tr><td><a href='skill-openspec-archive-change.html'>openspec-archive-change</a></td><td>skill-relation</td><td><small>superpowers-openspec-superpowers-workflow SKILL.md: &#x27;Accept continue-archive ... while $openspec-arc</small></td></tr><tr><td><a href='skill-superpowers-feature-workflow.html'>superpowers-feature-workflow</a></td><td>skill-relation</td><td><small>SKILL.md Guardrails 互斥引用 $openspec-feature-workflow（superpowers 系列工作流互斥路由）; 三者同属 superpowers-* 命名族</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入（obra/superpowers 3 Bundles 之一），type: orchestrator 编排器工作流。引入动机：完整交付流程编排——Superpowers 探索到 OpenSpec 锁定到 TDD 实施到验证到归档，全程门控。0803-OpenSpec_Superpower解析确认其 activation.mode: explicit-only（显式命名才激活，AI 不应该背着我做事安全需求）、standalone: false（依赖 superpowers-feature-workflow）。安装时明确不装 openspec-superpowers（与 openspec-propose + superpowers-feature 重复）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>复杂功能交付的全流程编排器：路由控制者，防止误路由到 OpenSpec proposal skill（Guardrails 明确：用户点名本 workflow 时不先路由到 openspec-propose）。0815 桥接后收入 openspec-plan preset 并降权（disable-model-invocation），与 13 个降权 openspec skill 配套。本 0817-opencode-dag 项目的 DAG 展开（proposal-specs-design-tasks）即受此流程启发。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>显式 opt-in：用户点名 $superpowers-openspec-superpowers-workflow 或仓库策略强制时触发；一旦产出 tasks.md 且用户确认/继续，流程保持激活（即使不重复点名）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>25 步状态机：1) 探索上下文；2) 一次一问澄清；3) 2-3 方案推荐等待批准；4) 设计写 docs/superpowers/specs/；5) 确认设计；6) 派生 kebab-case OpenSpec change 名；7) openspec status --change 检查工件顺序；8) 每工件前 openspec instructions &lt;artifact&gt;；9) 按依赖序完成 proposal-design-specs-tasks；10) 检查 status 直到齐备；11) 停止 OpenSpec apply 执行；12) 汇总任务；13-16) 确认任务清单/继续开发（continue-dev 主续接命令）；17-21) 实施计划/TDD/验证/continue-review；22-25) 对齐后归档（continue-archive），更新记忆。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>编排 superpowers-feature-workflow（实施）+ openspec 全家（propose/apply/archive-change 等工件）+ openspec-plan preset（dsh 侧）+ .superpowers-memory/ 记忆。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

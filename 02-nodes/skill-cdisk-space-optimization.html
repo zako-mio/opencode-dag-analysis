@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cdisk-space-optimization · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>cdisk-space-optimization <span class="tag">装配层</span></h1>
+  <div class="sub">skill-cdisk-space-optimization · skill · A6n-系统优化 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>Windows C 盘空间优化方法论：先实测（注册表/磁盘）再动手，junction 软链接零风险迁移开发缓存，还原点等高危清理项半自动确认，双轨交付（对话+MD 手册）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 空间盘点与占用大头识别<br>· 社交数据注册表实测（微信/QQ/企微）<br>· 开发缓存 junction 搬迁（mklink /J）<br>· 高危清理项量化风险收益确认<br>· 双轨交付（对话摘要+MD 操作手册）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260817-cdisk-space-optimization 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-cdisk-optimization，category=system，创建时间 2026-08-17，verdict&quot;社交数据搬迁前先查注册表实测实际存储位置…junction 软链接零风险迁移…高危项半自动确认，提炼 1 个 Skill + 3 条 Memory&quot;）。源任务 0817-C盘空间优化：C 盘仅剩 11.6GB/128.8GB，用户提供 WizTree 4.31 全盘扫描 CSV（96 万文件条目），要求识别可搬迁/可清理项。关键发现：微信/QQ/企微数据经注册表实测全部已在 D 盘（微信 4.24G/QQ 9.64G/企微 1.24G），原计划&quot;社交数据搬迁&quot;全部取消；开发缓存（opencode 3.9G/npm 823M/pnpm 486M/m2 899M 等）用 junction 零风险迁移；还原点 10-12G 等高危项半自动确认模式。方法论核心：先查注册表/实测数据位置不凭默认路径假设；不可逆操作必先确认；不报告成功除非有新鲜验证证据。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>Windows C 盘空间不足的标准处理流程：空间盘点→社交数据实测（注册表）→开发缓存 junction 搬迁→系统清理（高危项半自动确认）→验证+MD 手册留档；当前 C 盘空间管理持续复用（本 skill 是系统类元知识：关于&quot;如何安全做磁盘优化&quot;的方法论）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：C盘空间、磁盘清理、空间优化、junction、软链接、缓存搬迁、微信数据、QQ数据、还原点、系统清理；C 盘空间不足需要分析优化时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 空间盘点（统计各目录占用识别大头，确定搬迁目标盘并确认空间充足）<br>· 社交数据实测（微信/QQ/企微数据位置存注册表，勿按默认路径假设；实测已在 D 盘则取消搬迁避免无意义操作）<br>· 开发缓存 junction 搬迁（复制→删除原目录→mklink /J 保留原路径，对应用透明零风险可逆）；系统清理（还原点高危半自动确认、Edge 缓存低危直接清、未勾选一律不处理）；验证释放空间数字+MD 手册双轨留档</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与用户协作（高危项逐项确认、暂存区用户验证后删除）；委派 reflection-worker 处理 pending 队列（本任务报告中记载）；产出 MD 操作手册留档</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

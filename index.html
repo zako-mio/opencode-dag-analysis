@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>opencode DAG 依赖分析 · 改造结果与官方对比</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --panel2:#1c2230; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; --green:#5fd08a; --yellow:#e0b25e; --red:#e06b6b; --purple:#b48ae0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:40px 20px 80px; }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { font-size:28px; margin-bottom:8px; }
+  .sub { color:var(--dim); font-size:14px; margin-bottom:30px; line-height:1.8; }
+  .section { margin-top:44px; }
+  .section h2 { font-size:20px; margin-bottom:16px; color:var(--text); border-bottom:1px solid var(--border); padding-bottom:10px; }
+  .section h2 .tag { font-size:12px; background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; margin-left:10px; vertical-align:middle; }
+
+  /* 三图卡片 */
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:22px; text-decoration:none; color:var(--text); display:block; transition:all .2s; position:relative; overflow:hidden; }
+  .card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .card .tag { display:inline-block; padding:3px 12px; border-radius:20px; font-size:12px; margin-bottom:12px; }
+  .card .tag.t1 { background:#20324f; color:#7fb0ff; }
+  .card .tag.t2 { background:#3a2f1a; color:var(--yellow); }
+  .card .tag.t3 { background:#1f3a2a; color:var(--green); }
+  .card h3 { font-size:17px; margin-bottom:10px; }
+  .card .meta { color:var(--dim); font-size:13px; line-height:1.8; }
+  .card .stat { display:flex; gap:16px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12px; color:var(--dim); }
+  .card .stat b { color:var(--accent); font-size:15px; display:block; }
+
+  /* 核心结论 */
+  .concl-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+  .concl-item { background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:10px; padding:16px 18px; }
+  .concl-item h4 { font-size:15px; color:var(--accent); margin-bottom:8px; }
+  .concl-item p { font-size:13.5px; line-height:1.8; color:var(--dim); }
+
+  /* 时间线 */
+  .timeline { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); }
+  .tl-item { position:relative; margin-bottom:20px; }
+  .tl-item::before { content:''; position:absolute; left:-22px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent); }
+  .tl-date { font-size:13px; color:var(--accent); font-weight:600; margin-bottom:4px; }
+  .tl-body { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .tl-area { display:inline-block; background:#20324f; color:#7fb0ff; padding:1px 8px; border-radius:12px; font-size:11px; margin-bottom:6px; }
+  .tl-change { font-size:13px; line-height:1.7; }
+  .tl-reason { font-size:12px; color:var(--dim); margin-top:4px; font-style:italic; }
+
+  /* 装配导航 */
+  .chips { display:flex; flex-wrap:wrap; gap:10px; }
+  .chip { display:inline-flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--border); border-radius:24px; padding:8px 16px; text-decoration:none; color:var(--text); font-size:13px; transition:border-color .2s; }
+  .chip:hover { border-color:var(--accent); }
+  .chip b { font-weight:600; }
+  .chip small { background:var(--panel2); color:var(--dim); padding:1px 8px; border-radius:12px; font-size:11px; }
+
+  /* 快速入口 */
+  .links { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+  .links a { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); text-decoration:none; font-size:13px; transition:border-color .2s; }
+  .links a:hover { border-color:var(--accent); }
+  .links a small { color:var(--dim); display:block; font-size:11px; margin-top:2px; }
+
+  .ext-line { color:var(--dim); font-size:13px; margin-top:12px; }
+  .ext-line b { color:var(--green); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>opencode DAG 依赖分析</h1>
+  <div class="sub">
+    以 DAG 结构化展开 <b>opencode 改造结果</b> 与 <b>官方 opencode</b> 的对比。<br>
+    三图渐进式：<b>官方原版</b>（基线）→ <b>对比</b>（改造点）→ <b>改造版双层</b>（包级 + 装配层）。<br>
+    数据源：官方 v1.18.14 源码（35 workspace 包）+ 本机 ~/.config/opencode 装配层（61 组件）。
+  </div>
+
+  <!-- 三图卡片 -->
+  <div class="section">
+    <h2>三图总览 <span class="tag">渐进式理解</span></h2>
+    <div class="cards">
+      <a class="card" href="04-interactive/view-official.html">
+        <span class="tag t1">图1 · 基线</span>
+        <h3>官方原版包级 DAG</h3>
+        <div class="meta">opencode 官方 monorepo 的 35 个 workspace 包依赖关系，未改造基线。看官方架构：schema 数据模型 → llm/protocol 层 → core 服务 → app/cli/tui 应用。</div>
+        <div class="stat">
+          <div><b>35</b>包</div>
+          <div><b>66</b>边</div>
+          <div><b>6</b>层</div>
+          <div><b>19</b>组</div>
+        </div>
+      </a>
+      <a class="card" href="04-interactive/view-diff.html">
+        <span class="tag t2">图2 · 对比</span>
+        <h3>官方 + 改造对比 DAG</h3>
+        <div class="meta">官方包为基线，标注哪些包被改造引用（黄边）、外部服务（绿）。改造不深：仅 6 包被引用，扩展点是配置层。</div>
+        <div class="stat">
+          <div><b>43</b>节点</div>
+          <div><b>6</b>被改造</div>
+          <div><b>8</b>外部</div>
+        </div>
+      </a>
+      <a class="card" href="04-interactive/view-modified.html">
+        <span class="tag t3">图3 · 改造版</span>
+        <h3>改造版双层 DAG</h3>
+        <div class="meta">包级 + 装配层双层：35 官方包（下）+ 61 装配组件（skills/agents/mcp/tools）+ 外部服务。装配层内部有 33 条 skill 协作关系。</div>
+        <div class="stat">
+          <div><b>104</b>节点</div>
+          <div><b>154</b>边</div>
+          <div><b>38</b>组</div>
+        </div>
+      </a>
+    </div>
+    <div class="ext-line">外部服务：<b>ext-glm-api</b> / <b>ext-amap-api</b> / <b>ext-lark-api</b> / <b>ext-chrome</b> / <b>ext-deepseek-api</b> / <b>ext-drawio-service</b> / <b>ext-sylphx-pdf</b> / <b>ext-opencode-plugin</b></div>
+  </div>
+
+  <!-- 核心结论 -->
+  <div class="section">
+    <h2>核心结论 <span class="tag">本项目的洞察</span></h2>
+    <div class="concl-grid">
+    <div class="concl-item">
+      <h4>改造深度</h4>
+      <p>仅 6 个官方包（opencode/core/schema/plugin/sdk/server）被装配层直接引用。opencode 的扩展点是 <b>配置装配层</b>（~/.config/opencode），而非源码 fork。</p>
+    </div>
+    <div class="concl-item">
+      <h4>装配体系</h4>
+      <p>61 个装配组件：43 skills + 7 agents + 6 mcp + 1 plugin + 1 tool + 1 command + 2 instructions + 1 config。真正触核心包的只有配置层，skills 大多挂外部服务。</p>
+    </div>
+    <div class="concl-item">
+      <h4>skill 协作网络</h4>
+      <p>33 条 skill 间作用关系：OpenSpec 12-skill 工作流闭环、superpowers 家族、DAG 三 skill 上下游链、amap 协作路由、recruit↔browser。装配层是一个有内部协作网络的体系。</p>
+    </div>
+    <div class="concl-item">
+      <h4>历史脉络</h4>
+      <p>18 个改造事件（2026-08-01~17）：输入缓存优化 → MCP 精兵策略 → 编码安全三层防御 → Reflection 自进化 → VLM 双通道修复 → 降本（Flash）→ 部分回滚 Pro。每次改造都需求驱动、有据可查。</p>
+    </div></div>
+  </div>
+
+  <!-- 历史变迁时间线 -->
+  <div class="section">
+    <h2>改造历史时间线 <span class="tag">18 事件</span></h2>
+    <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">2026-08-01</div>
+      <div class="tl-body">
+        <div class="tl-area">provider/model/compaction/instructions</div>
+        <div class="tl-change">P0 输入缓存优化落地：small_model Pro→Flash（标题/摘要轻量任务降费约12x）；新增 compaction 配置块（auto/prune/tail_turns:4/preserve_recent_tokens:16384/reserved:10000）；plan prompt 注入 grill-me 协议（+500 tokens 固化，缓存命中后免费）；build prompt 精简 1297→50 chars；pdf-worker/drawio-worker 绑定 Flash；新增 general/explore 子Agent（Flash）；provider 加 setCacheKey:true；新增 deepseek-v4-flash 模型定义+cost 字段；创建 agent-protocol.md（合并 plan/build 调度协议）；auto-mode.md 扩充 620→2000+ chars（缓存感知原则，实测命中率 53.3%）。</div>
+        <div class="tl-reason">用户需求：输入缓存（prefix-cache）优化降本。先研究 API 缓存底层原理与 opencode/Reasonix 架构对比，制定 P0/P1/P2 三级方案。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-02</div>
+      <div class="tl-body">
+        <div class="tl-area">provider</div>
+        <div class="tl-change">setCacheKey 灰度验证：0801 开启 setCacheKey:true 验证缓存键支持，验证完成后从 opencode.jsonc 移除（backup-20260803 中已不存在）。</div>
+        <div class="tl-reason">灰度测试完成后的清理（P2-1 灰度测试：从 @ai-sdk/openai-compatible 迁移到 @ai-sdk/deepseek，验证缓存监控可行性）。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-02</div>
+      <div class="tl-body">
+        <div class="tl-area">mcp</div>
+        <div class="tl-change">vscode-mcp-server 工具审计：打包产物实测仅 6 个 MCP 工具（code_checker/focus_editor/list|start|restart|stop_debug_session，约 692 tokens），而非 README 宣称的 ~72 个，search_symbol 未打包。审计结论：低频工具建议禁用 → vscode-mcp-server 置 enabled:false（P1-2 已禁用）。</div>
+        <div class="tl-reason">成本控制：该 MCP 极少使用且工具价值低（调试工具可替代），token 开销纯浪费。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-02</div>
+      <div class="tl-body">
+        <div class="tl-area">instructions/permission/variant</div>
+        <div class="tl-change">Agent Prompt 统一 + GATE 强制门控：①plan/build prompt 统一为同一份 Grill-Me+Agent Protocol 完整版（原 build 仅 50 chars 引用）；②plan/build 均 variant=daily，model 继承全局 Pro；③agent-protocol.md 移出 instructions（消除子Agent 收到&#x27;调度者+执行者&#x27;身份冲突，每子Agent 省约450 tokens）；④auto-mode.md 的 Model Selection 重写为 MANDATORY GATE CHECK（4 维自评→Daily/Deep）；⑤Pro/Flash 的 daily.max_tokens 4096→8192。</div>
+        <div class="tl-reason">源码级研究确认 plan/build 系统提示模板相同，差异来自权限/reminder/prompt；解决子Agent 身份冲突与模型选择不被强制执行的问题。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-03</div>
+      <div class="tl-body">
+        <div class="tl-area">permission</div>
+        <div class="tl-change">编码安全纵深防御（三层）：L1 全局 deny（python -c*/rm -rf*）+ ask（*Set-Content*/*Out-File*/*Remove-Item* -Force*）+ L2 agent 覆盖 + L3 子Agent 注入；prompt 追加&#x27;编码安全规则&#x27;（优先 edit 工具、禁止 bash+python 内联管道、独立 .py 脚本）；发现 Plan 模式 code 级禁 edit→LLM 降级 python -c→PowerShell 转义截断 UTF-8 的根因链。</div>
+        <div class="tl-reason">排障教训：2026-08-03 发现 opencode.jsonc UTF-8 编码损坏（中文变 U+FFFD 替换字符），根因是 PowerShell 重解释转义序列截断中文多字节序列。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-03</div>
+      <div class="tl-body">
+        <div class="tl-area">instructions/tool</div>
+        <div class="tl-change">opencode 3 项改进落地：①auto-mode.md 子Agent Return Format 升级为 8 字段结构化 JSON（新增 files_created/files_modified/decisions/warnings，去掉 next_step）；②末尾追加 Session Memory 结构化压缩模板（L1 剪枝→L2 模板→L3 兜底摘要，5 段模板）；③创建 MEMORY.md（instructions 数组追加，置于 auto-mode.md 之后保缓存前缀）；④Mission 留档规则升级（5 段报告模板+三重门控+路径正则）。</div>
+        <div class="tl-reason">对标 Claude Code（0803-opencode-vs-claude 对比报告识别 5 维差距），P0/P1 改进：结构化压缩替代悬崖式摘要、子Agent 通信标准化、跨会话记忆持久化。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-03</div>
+      <div class="tl-body">
+        <div class="tl-area">tool/plugin/skills</div>
+        <div class="tl-change">Drawio 工具链全链路优化+缓存修正：①drawio-mcp-minimal 新增 drawio_export 工具（Puppeteer+lightbox+deviceScaleFactor，3 次迭代修复 CLI --scale 4 渲染 bug）；②drawio-reference SKILL.md 新增第五章&#x27;导出与验证&#x27;；③drawio-worker 的 agent.prompt 字段回退（实测 agent.prompt 位于系统提示位置 0，导致缓存前缀从 2→3，子Agent 缓存无法共享，用户判定&#x27;代价不值得&#x27;）；④MCP 路由规则改为&#x27;必须加载 drawio-reference&#x27;（经 Skills to Load 传递，规避 prompt 注入）。</div>
+        <div class="tl-reason">用户需求&#x27;全链路优化 draw.io 工具链&#x27;（图片导出经验价值高）；关键转折：prefix-cache 前缀碎片化代价 &gt; prompt 注入收益，per-agent 行为约束改走 skill 传递（MEMORY.md 固化准则）。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-03</div>
+      <div class="tl-body">
+        <div class="tl-area">skills/provider</div>
+        <div class="tl-change">opencode-config skill 全面重写：单文件 646 行→18 文件多级分层路由（ref/local/ops/troubleshooting），基于官方文档+源码分析+实际配置三元验证；同步修正 provider 示例（@ai-sdk/openai-compatible→@ai-sdk/deepseek）与 max_tokens（4096→8192）。</div>
+        <div class="tl-reason">用户发现 skill 不完善/无分层路由/与实际配置脱节（openai-compatible 示例已过时）。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-05</div>
+      <div class="tl-body">
+        <div class="tl-area">agent/tool/instructions</div>
+        <div class="tl-change">Reflection 系统设计与部署：新增 reflection-worker 子Agent（Flash，仅文件读写权限，bash deny）；Build 末尾封装 4 层输入（GATE自评+COMPLEXITY+决策/子Agent返回+聚合/MEMORY快照/留档报告）写入 pending.json；每轮用户消息先查 waiting_count 委派 reflection-worker 异步处理；/reflection 交互式审阅命令；opencode.jsonc 增加 reflection-worker 定义+skills 路径加 Reflection\skills+external_directory 加 Reflection。</div>
+        <div class="tl-reason">用户参考 Hermes Agent 自进化架构（Background Review/Curator），补 Plan-and-Execute 缺失的 Reflection 层：持续自我改进&gt;减少重复错误&gt;提升 Plan 质量。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-05</div>
+      <div class="tl-body">
+        <div class="tl-area">skills</div>
+        <div class="tl-change">opencode-config skill 过时修正：SHA256 C6A1...→FC85...，行数 254→240，Skill 清单 14→30（补 OpenSpec 12+Superpowers 3），Instructions 区分为 A/B 两类（补 MEMORY.md），python -c 禁令替换 3 个文件，17 子文件哈希表刷新。</div>
+        <div class="tl-reason">opencode.jsonc 已多次修改（SHA256 变化+Skill 扩至 30 个），skill 文档未同步导致严重过时（文档说自己做不到的事）。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-06</div>
+      <div class="tl-body">
+        <div class="tl-area">model</div>
+        <div class="tl-change">Plan/Build 主Agent 模型临时降级：agent.plan 与 agent.build 各新增 model=deepseek/deepseek-v4-flash（此时全 Agent 均 Flash）。</div>
+        <div class="tl-reason">用户决策：调度逻辑不复杂，Flash 能力已足够；保留 variant/GATE/Variant 继承不动，回滚只需删 model 字段。风险已知：Flash 不支持图片附件、无 reasoning_effort 分级（Daily/Deep</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-07</div>
+      <div class="tl-body">
+        <div class="tl-area">plugin/tool</div>
+        <div class="tl-change">opencode 原理源码级分析（v1.18.14，4 份子报告）：确认 runLoop 每次请求全量重发消息（252 条）、无增量机制；prefix-cache 破坏因素=compaction 重排/Reminders 注入/换模型/system 动态日期；system prompt 组装顺序（agent.prompt→env→instructions→mcp→skills）。</div>
+        <div class="tl-reason">用户需求：理解 opencode 通信与上下文机制，为后续缓存/compaction/插件改造提供源码级依据。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-07</div>
+      <div class="tl-body">
+        <div class="tl-area">tool/plugin</div>
+        <div class="tl-change">VLM 图片识别双通道修复：①tools/read.ts 模型改为 glm-4.6v（付费）优先+429 降级 glm-4.6v-flash，Key 硬编码→process.env.ZHIPU_API_KEY；②plugins/vision-interceptor.js 新增 experimental.chat.messages.transform 钩子（每轮 LLM 请求前遍历历史消息图片做 VLM 替换，修复 chat.message 钩子修改不生效的闭包问题），缓存 Set→Map（URL→描述，SKIP 复用描述不丢图）；③setx ZHIPU_API_KEY。</div>
+        <div class="tl-reason">排障：免费 flash 模型 429 限流；用户上传图片报 &#x27;does not support image input&#x27;（Flash 仅 text 输入）→ 插件通道必须把图片转文字。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-07</div>
+      <div class="tl-body">
+        <div class="tl-area">commands/instructions</div>
+        <div class="tl-change">/reflection 升级为 opencode 原生命令：创建 ~/.config/opencode/command/reflection.md（frontmatter agent:build，自包含命令体，$ARGUMENTS 区分子动作）；同步更新 plan/build prompt 2 处（/reflection 章节改为&#x27;已注册为原生命令&#x27;）；修复路径门控正则缺陷（缺分隔符 \\）；产生备份 opencode.jsonc.bak-20260807。</div>
+        <div class="tl-reason">用户指出&#x27;opencode 并没有 /reflection 指令，不符合预设&#x27;——原为提示词级&#x27;仿真命令&#x27;，TUI 输入 / 看不到，需注册为原生命令。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-12</div>
+      <div class="tl-body">
+        <div class="tl-area">mcp</div>
+        <div class="tl-change">headroom MCP 故障修复+量化禁用：①根因=8/5 Stop-Process -Force 误杀 python 进程（非 proxy 缺失），修复为 headroom-mcp-launcher.ps1 v3（纯 stdio 转发、无后台进程、纯 ASCII）；②同日量化评估（3 工具 ~279 tokens/请求 vs 历史收益仅 ~$0.001）→ 用户决策 enabled:false，保留配置与 launcher（切 Claude Code/Codex 走 proxy 时改回 true）。</div>
+        <div class="tl-reason">排障教训：&#x27;server unavailable&#x27; 未必是服务器坏（先做客户端等价测试）；MCP wrapper 铁律=不在握手路径启动后台进程/长等待；量化亏损（工具开销 &gt; 收益）成本控制。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-13</div>
+      <div class="tl-body">
+        <div class="tl-area">skills/instructions</div>
+        <div class="tl-change">opencode-config skill 全面同步+配置优化：①Schema 审计（1.18.11→1.18.16）发现 13 缺失字段（list/plan_enter/plan_exit 权限键、.env ask、enterprise 等），24 文件更新；②auto-mode.md 移除 6 处 headroom MCP 引用；③agent-protocol.md 去 next_step；④同日延续任务：opencode.jsonc 10 处 edit（7 处 MCP description 统一【已禁用/启用】格式+3 处注释），SHA256 6316944E→5BBE6925，备份 bak-20260813。</div>
+        <div class="tl-reason">opencode.jsonc 经历 6 次实质变更（0802-0812），skill 严重过时需系统性审计；用户确认 task-delegation.md 不改（Flash 降级为临时措施）与 headroom CLI 保留。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-13</div>
+      <div class="tl-body">
+        <div class="tl-area">model</div>
+        <div class="tl-change">plan 删 model 回落顶层：agent.plan.model（flash）删除→回落顶层 model=deepseek-v4-pro（只动顶层一处）；agent.build.model 保留 flash（build 用 Flash 执行者）；子Agent 全 Flash；注释标注&#x27;0806 临时降级，回滚 Pro 删此字段&#x27;。</div>
+        <div class="tl-reason">维护简化：省双层 model 维护，plan 调度决策用 Pro 质量、build 执行用 Flash 成本；MEMORY.md 固化&#x27;plan=Pro / build=Flash / 子Agent 全 Flash&#x27;。</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2026-08-17</div>
+      <div class="tl-body">
+        <div class="tl-area">plugin/其他（经验迁移）</div>
+        <div class="tl-change">经验跨项目迁移：0816-plugin-dag 优化（173 插件）应用 0817 GitHub DAG 经验——&#x27;为什么需要它&#x27;区块（52 深度 why+121 简版）、根入口统计一致性门控、站内 .md 链接原则（区分&#x27;站内导航 .md&#x27;禁止 vs &#x27;外部来源 URL&#x27;合理）、权重分档全量联网、权威源=官方 monorepo、git push 权限拦截应对（用户手动 push）。当前 0817-opencode-dag 任务即三源交叉还原本次改造史（本文件）。</div>
+        <div class="tl-reason">用户要求将 0817 经验迁移到 0816 项目；方法论沉淀（MEMORY.md §0817 三条）：人类入口一律 .html、修生成物同步修脚本、新增节点回归交互总览。</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 装配体系导航 -->
+  <div class="section">
+    <h2>装配体系 <span class="tag">61 组件</span></h2>
+    <div class="chips"><a class='chip' href='02-nodes/index.html'><b>Agents 代理</b><small>7</small></a><a class='chip' href='02-nodes/index.html'><b>命令</b><small>1</small></a><a class='chip' href='02-nodes/index.html'><b>配置本体</b><small>1</small></a><a class='chip' href='02-nodes/index.html'><b>指令</b><small>2</small></a><a class='chip' href='02-nodes/index.html'><b>MCP 服务</b><small>6</small></a><a class='chip' href='02-nodes/index.html'><b>插件</b><small>1</small></a><a class='chip' href='02-nodes/index.html'><b>Skills 技能</b><small>42</small></a><a class='chip' href='02-nodes/index.html'><b>工具</b><small>1</small></a></div>
+    <div class="ext-line">每个装配组件有完整 <b>why（历史引入动机 + 当前需求驱动）- how（触发/工作流/协作）</b> 说明，见节点页 ⑤⑥ 段。</div>
+  </div>
+
+  <!-- 快速入口 -->
+  <div class="section">
+    <h2>快速入口</h2>
+    <div class="links">
+      <a href="04-interactive/view-official.html">图1 官方 DAG<small>35 包 · 66 边 · 19 组</small></a>
+      <a href="04-interactive/view-diff.html">图2 对比 DAG<small>43 节点 · 66 边</small></a>
+      <a href="04-interactive/view-modified.html">图3 改造双层 DAG<small>104 节点 · 38 组</small></a>
+      <a href="03-groups/index.html">组目录<small>38 组索引</small></a>
+      <a href="02-nodes/index.html">节点页索引<small>104 节点全页</small></a>
+      <a href="05-diff/diff-list.html">改造差异清单<small>改造点明细</small></a>
+      <a href="05-drawio/main/modified.png">改造双层静态图<small>drawio PNG</small></a>
+      <a href="06-md/00-index.md">MD 镜像（AI 检索）<small>全节点文本</small></a>
+      <a href="01-dag-data/modified-dag.json">改造 DAG JSON<small>含 why/how 数据</small></a>
+      <a href="README.md">README<small>项目说明</small></a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

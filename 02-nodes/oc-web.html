@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>web · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>web </h1>
+  <div class="sub">oc-web · package · G11-文档站点 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>基于 Astro + Starlight 的文档与分享站点。src/pages/s/[id].astro:2-8 渲染会话分享页（Share.tsx 消费 opencode/session 类型，通过 API URL 拉取分享数据）；src/pages/[...slug].md.ts:19-34 提供 docs 内容 API（按 slug 返回 markdown 文档）；src/content/docs/ 含多语言（en/zh/ar/bs/de/...）文档与代码示例（大量引用 @opencode-ai/plugin 与 @opencode-ai/sdk 的用法）。devDependencies 引用 opencode 包（opencode: workspace:*）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 会话分享查看页（s/[id].astro + components/Share.tsx）<br>· docs 文档 API 端点（pages/[...slug].md.ts:19）<br>· Starlight 多语言文档站（content.config.ts + i18n/）<br>· 分享 WebSocket 连接状态 UI（Share.tsx:15 status 机）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>独立部署的文档+分享前端，与桌面 app 完全解耦，仅通过 API URL 消费后端数据，作为云端分享生态的展示层；Starlight 承载多语言文档站与代码示例。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用。devDependencies 引用 opencode 包（package.json:39 opencode workspace:*）仅用于类型导入 Session 模型（s/[id].astro:4），无运行时耦合。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>· astro 命令：bun dev/start（package.json:7-12）本地文档站，dev:remote 指向线上 API（VITE_API_URL=https://api.opencode.ai）；build→astro build 产出静态站，preview 本地预览<br>· 分享页：src/pages/s/[id].astro:1-8 按短 ID 渲染分享会话（Share.tsx 经 VITE_API_URL 拉取分享数据）；docs API：pages/[...slug].md.ts:19-34 按 slug 返回 markdown<br>· 内容集：src/content.config.ts:8-16 defineCollection（docs + i18n）驱动 Starlight 多语言文档</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为独立部署的文档+分享前端：与桌面 app 完全解耦，仅通过 API URL 消费后端数据。典型协作：web 的分享页 s/[id] 展示 enterprise 创建 + function 同步的分享会话，docs API 供第三方以 markdown 拉取文档，是云端分享生态的展示层。</p></div>
+  </div>
+
+
+  
+
+  
+<h3>模块内部结构 DAG（16 模块 · 24 边）</h3>
+<div id="int-oc-web" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_web = {"nodes": [{"data": {"id": "content.config.ts", "name": "content.config.ts", "path": "content.config.ts"}, "classes": "leaf"}, {"data": {"id": "middleware.ts", "name": "middleware.ts", "path": "middleware.ts"}, "classes": "leaf"}, {"data": {"id": "components/Share.tsx", "name": "Share.tsx", "path": "components/Share.tsx"}, "classes": "leaf"}, {"data": {"id": "components/icons/custom.tsx", "name": "custom.tsx", "path": "components/icons/custom.tsx"}, "classes": "leaf"}, {"data": {"id": "components/icons/index.tsx", "name": "index.tsx", "path": "components/icons/index.tsx"}, "classes": "hot"}, {"data": {"id": "components/share/common.tsx", "name": "common.tsx", "path": "components/share/common.tsx"}, "classes": "hot"}, {"data": {"id": "components/share/content-bash.tsx", "name": "content-bash.tsx", "path": "components/share/content-bash.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/content-code.tsx", "name": "content-code.tsx", "path": "components/share/content-code.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/content-diff.tsx", "name": "content-diff.tsx", "path": "components/share/content-diff.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/content-error.tsx", "name": "content-error.tsx", "path": "components/share/content-error.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/content-markdown.tsx", "name": "content-markdown.tsx", "path": "components/share/content-markdown.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/content-text.tsx", "name": "content-text.tsx", "path": "components/share/content-text.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/copy-button.tsx", "name": "copy-button.tsx", "path": "components/share/copy-button.tsx"}, "classes": "leaf"}, {"data": {"id": "components/share/part.tsx", "name": "part.tsx", "path": "components/share/part.tsx"}, "classes": "leaf"}, {"data": {"id": "i18n/locales.ts", "name": "locales.ts", "path": "i18n/locales.ts"}, "classes": "leaf"}, {"data": {"id": "pages/[...slug].md.ts", "name": "[...slug].md.ts", "path": "pages/[...slug].md.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "middleware.ts", "target": "i18n/locales.ts"}}, {"data": {"source": "components/Share.tsx", "target": "components/icons/index.tsx"}}, {"data": {"source": "components/Share.tsx", "target": "components/icons/custom.tsx"}}, {"data": {"source": "components/Share.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/Share.tsx", "target": "components/share/part.tsx"}}, {"data": {"source": "components/share/common.tsx", "target": "components/icons/index.tsx"}}, {"data": {"source": "components/share/content-bash.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/content-diff.tsx", "target": "components/share/content-code.tsx"}}, {"data": {"source": "components/share/content-error.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/content-markdown.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/content-markdown.tsx", "target": "components/share/copy-button.tsx"}}, {"data": {"source": "components/share/content-text.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/content-text.tsx", "target": "components/share/copy-button.tsx"}}, {"data": {"source": "components/share/copy-button.tsx", "target": "components/icons/index.tsx"}}, {"data": {"source": "components/share/copy-button.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/icons/index.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/icons/custom.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-code.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-diff.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-text.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-bash.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-error.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/common.tsx"}}, {"data": {"source": "components/share/part.tsx", "target": "components/share/content-markdown.tsx"}}]};
+const cyoc_web = cytoscape({
+  container: document.getElementById('int-oc-web'),
+  elements: INToc_web,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_web.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+</script>
+</div>
+</body>
+</html>

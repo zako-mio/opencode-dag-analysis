@@ -1,0 +1,192 @@
+[
+  {
+    "id": "skill-drawio-reference",
+    "name": "drawio-reference",
+    "why_history": "2026-08-01 system-prompt-optimization 任务引入：drawio MCP（@drawio/mcp v1.5.0）的 open_drawio_xml / open_drawio_mermaid 工具描述内嵌完整 XML 参考（约 33,000 chars）和 Mermaid 参考（约 12,000 chars），导致每个子Agent 固定 System Prompt 达 18K-20K tokens，其中 MCP 工具定义占 50-60%（12K-14K tokens）。方案为 Fork drawio MCP 到 D:\\Opencode\\drawio-mcp-minimal，将工具描述替换为 5 行摘要 + skill('drawio-reference') 引用，参考文档独立为懒加载 skill（47,794 bytes）。2026-08-03 Drawio工具链优化：新增第五章导出与验证（强制导出规范 + VLM 校验规则），并定为 drawio-worker 子Agent 强制加载项。",
+    "why_current": "主Agent 委派 drawio-worker 生成复杂图表（嵌套容器/泳道/自定义样式/15+ 节点）时仍必须精确写入本 skill（刚性约束），防止子Agent 用不可靠 CLI 导出产生截断 PNG。0816-plugin-dag / 0817-opencode-dag / 0817-github-dag 等 DAG 项目均靠 drawio-worker + drawio-reference 批量产出架构图（0817 三次任务合计 135+ 张 drawio）。简单流程图不加载，避免 token 浪费。",
+    "how_trigger": "drawio-worker 子Agent 被委派生成复杂图表时强制加载（skill('drawio-reference')）；或生成含嵌套容器、跨功能泳道、自定义样式、多节点(15+)的复杂图表时由主Agent 路由触发。简单流程图/线框图/ER 图不触发（SKILL.md '何时加载' 节）。",
+    "how_workflow": "1) 简单图表直接调 drawio_open_drawio_xml / drawio_open_drawio_mermaid（不加载）；2) 需要领域图标先 drawio_search_shapes 取 style 字符串；3) 复杂图表先加载本 skill 按参考生成 XML（刚性网格布局，不做坐标数学，ELK 自动路由）；4) 生成后强制 drawio_export 导出 PNG（scale=2~4）+ VLM 校验无截断。",
+    "how_collaboration": "与 drawio-worker 子Agent（强制加载项）、drawio MCP（本地精简版 D:\\Opencode\\drawio-mcp-minimal）协作；由 plan/build 主Agent 按 MCP 路由规则委派。VLM（GLM-4V describe_image）负责导出图片校验。",
+    "evidence": "0801-system-prompt-optimization-report/system-prompt-optimization-report.md；0803-Drawio工具链优化与缓存修正/留档报告.md；skills/drawio-reference/SKILL.md；0816-plugin-dag、0817-opencode-dag 执行报告"
+  },
+  {
+    "id": "skill-frontend-design",
+    "name": "frontend-design",
+    "why_history": "2026-08-05 frontend-skill-fusion 任务引入：用户想安装 GitHub 上的前端设计 Skill，5 子Agent 并行分析 5 个候选（modern-frontend-skill / taste-skill / Anthropic frontend-design / impeccable / UI-UX-Pro-Max）对 DeepSeek 纯文本模型的适配度，最终选定 Anthropic frontend-design + UI-UX-Pro-Max 融合。融合目标是解决 DeepSeek 无视觉能力导致前端设计缺乏数据支撑的问题，设计为双引擎：数据引擎（192 色板/74 字体/84 风格数据库 search.py）给 Top K 候选 + 设计主管创意裁决。用户 4 条冲突裁定：不禁用色板/硬性禁 Inter 字体/动效 cap Subtle/数据给候选主管裁决。2026-08-15 桥接时吸收 ux-ui-agent-skills 精华（WCAG 无障碍/design-tokens/反 slop 规则）。",
+    "why_current": "所有前端/网页/UI 设计任务的持续入口：新建页面/组件、UI 重构、设计审查、配色/字体选型、landing page、设计系统。0816 起 create-web preset（前端设计特化）将 frontend-design + browser-harness 作为核心领域技能。mission-archiving 的 HTML 版 5 段报告输出规范也由 frontend-design 支撑设计能力。",
+    "how_trigger": "触发关键词：网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、前端开发、landing page、设计系统；新建页面/组件、UI 重构、设计审查、配色/字体选型时（SKILL.md description）。",
+    "how_workflow": "1) Phase 1 数据驱动：python search.py '<产品> <行业> <风格>' --design-system -p 项目名，得到 3-5 个候选设计系统（可用 --domain/--stack 精化，0 结果时放宽关键词或降级内置优先级表）；2) Phase 2 设计主管裁决：挑候选/定制/超越，构建 token 系统（4-6 命名 hex + 2+ 字体角色 + ASCII wireframe + 签名元素），双轮审查（简报比对 + 唯一性测试）后确认编码；3) 交付前按 references/pro-rules.md 清单核对（图标/对比度/安全区域）。",
+    "how_collaboration": "与 browser-harness（create-web preset 组合，浏览器实测渲染）、mission-archiving（HTML 版报告设计支撑）、create-web 特化 agent 协作。参考文件 design-philosophy/quick-reference/pro-rules 按需加载。",
+    "evidence": "0805-frontend-skill-fusion/任务完成报告.md；0815-opencode-dsh桥接/决策清单.md（item33 DEV-6）；skills/frontend-design/SKILL.md；0817-opencode-dag/06-md/skill.md"
+  },
+  {
+    "id": "skill-lark-suite",
+    "name": "lark-suite",
+    "why_history": "改造盘点（2026-08-02）标注为开源+改造，上游 yjwong/lark-cli（53 星，Go，MIT），lark-cli v1.0.76 已本地安装。SKILL.md 为路由包装层（意图路由映射表指向 23 个域文件），引入动机是让 Agent 能通过 CLI 操作飞书全部业务域（日历/消息/文档/云盘/多维表格等），解决简历求职流程中飞书表格同步（网申进度表）与日常办公文档操作需求。0802 盘点发现 23 个域文件中 20 个为占位，修复为 Fallback 策略首位加 lark-cli skills read 动态加载（v1.0.76 自带 27 个官方内置 skill）。",
+    "why_current": "recruit-assist 的飞书网申进度表同步（sync_feishu.py 增量上传/全量下载）依赖 lark-cli 认证与调用规范（前置 Step 0 shared.md）。exec-recruit preset 将 lark-suite 列为 4 个降权 skill 之一，用户手势 /lark-suite 唯一入口。日常飞书文档/表格/日历/消息操作持续需要。",
+    "how_trigger": "触发关键词：飞书、lark、lark-cli、feishu、消息/发消息、群聊、日程、日历、文档、表格、电子表格、sheet、多维表格、base、任务、云盘、上传/下载文件、知识库、会议、审批、OKR、邮件等 20+ 域（SKILL.md description）。用户手势 /lark-suite。",
+    "how_workflow": "1) 强制 Step 0：先 Read references/shared.md（认证状态检查/登录/身份选择 --as user|bot/JSON 输出合约/安全规则/高风险白名单）；2) 按意图路由映射表匹配关键词，Read 对应 references/<domain>.md 或走 lark-cli skills read lark-<domain> Fallback；3) Windows 下必须 cmd /c 'lark-cli <domain> +<shortcut> [flags]' 调用，解析 JSON 输出。",
+    "how_collaboration": "与 recruit-assist（飞书同步前置）、resume-builder/soe-resume（exec-recruit preset 手势组）、lark-cli CLI + 飞书开放平台（external）、create-doc preset（文档创作领域 skill 之一）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.10 + 8.5）；0815-opencode-dsh桥接/P4-tests/exec-recruit/验证记录.md；skills/lark-suite/SKILL.md；0817-opencode-dag/06-md/skill.md"
+  },
+  {
+    "id": "skill-minimax-docx",
+    "name": "minimax-docx",
+    "why_history": "来自 MiniMaxAI（skill marketplace 分发，无独立 GitHub），本地重度改造：完整 .NET C# 工程（198 文件），net8.0 到 net9.0 适配，Windows 环境变量绑定，添加 python-docx 文本提取备用管线，18 个 reference 覆盖 IEEE/ACM/APA/MLA/Chicago 等学术格式。引入动机：DeepSeek 纯文本模型需要可靠的程序化 Word 文档生成管线（OpenXML SDK 三管线 A 创建/B 填充/C 模板套用 + XSD 校验门），解决手工写 docx XML 易错且格式不专业的问题。",
+    "why_current": "所有 Word 文档交付的骨干引擎：0811 英文简历制作（A4/Calibri/17pt 深蓝居中/54 段，business-rules 校验）；soe-resume 的 Word 管线自 2026-08-15 起改调 minimax-docx（替代 python-docx 直写）；create-doc preset 文档创作核心。0816 已制作 journal-cn/journal-en/report 3 份期刊模板存 ~/.dsh/tools/minimax-docx/templates/。",
+    "how_trigger": "SKILL.md 声明：任何产出/修改/格式化 Word 文档的任务 MUST 使用本 skill——包括用户说 write a report、draft a proposal、make a contract、fill in this form、reformat to match this template，即使没明说 docx，只要最终输出是 .docx 就触发。",
+    "how_workflow": "1) 三管线：A 从零创建 / B 填充编辑现有文档 / C 模板套用（XSD 校验门 gate-check）；2) Windows 下先 $env:PATH 前置 dotnet 路径，dotnet run --project $SKILL_DIR/scripts/dotnet/MiniMaxAIDocx.Cli -- <cmd>；3) 结构性操作（复杂表格/多节/页眉页脚/TOC/图片）直接写 C# task.csx（先读 Samples/*.cs 测试过的模式）；4) 输出后 XSD 校验 + 预览验证。",
+    "how_collaboration": "与 minimax-xlsx（create-doc 文档创作组）、soe-resume（Word 管线依赖）、resume-builder、docx-template-translator（复杂期刊排版互补）、general 子Agent（翻译任务委派时附带本 skill）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.7）；0811-英文简历制作/任务留档报告.md；0815-opencode-dsh桥接/决策清单.md（item35）；skills/minimax-docx/SKILL.md"
+  },
+  {
+    "id": "skill-minimax-xlsx",
+    "name": "minimax-xlsx",
+    "why_history": "来自 MiniMax（skill marketplace 分发），本地重度改造：Python 管线（11 脚本）+ templates/ + references/（7 文件）。引入动机：Agent 需要程序化处理 Excel/电子表格（创建/编辑/分析/验证），且曾遭遇 Windows PowerShell 5.1 编码事故——$OutputEncoding 默认 ASCII，管道传中文导致 Python dict 静默去重（真实事故：11 列变 3 列），因此内置 UTF-8 编码双层防御（非 ASCII 入文件不走管道）+ 回读验证规则（写后必回读校验列数/行数/采样值）。",
+    "why_current": "简历投递跟踪表读写（recruit-assist 的 tracker_writer.py 调用其 XML 解包-编辑-打包流程，严禁 COM）、网申数据导出、财务分析（0807 利润表任务）、create-doc preset Excel 能力。0815 补 LibreOffice 26.2.5.2 解锁动态重算 + .xls 转换（P6 实测 SUM/IF/乘法重算 + xlsx-xls-xlsx 双程无损）。",
+    "how_trigger": "触发词：spreadsheet、Excel、.xlsx、.csv、pivot table、financial model、formula、或任何要求以 Excel 格式产出表格数据的请求（SKILL.md description）。",
+    "how_workflow": "1) 首选 json2xlsx.py：JSON 数组 + map.json 生成带样式/验证的工作簿（中文全在 UTF-8 JSON 文件，退出码 0=写并验证通过）；2) 编辑现有文件：解包后 xlsx_insert_row.py / xlsx_add_column.py 结构性修改再打包（自动更新 sharedStrings/样式/SUM 公式，零格式损失）；3) 行定位规则：grep sheet XML 找标签文本，绝不依赖预览行号；4) 每次写入后回读验证（列数/行数/采样单元格）。",
+    "how_collaboration": "与 recruit-assist（tracker_writer.py 依赖）、minimax-docx（create-doc 组）、create-doc preset、LibreOffice（动态重算外部工具）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.8）；0815-opencode-dsh桥接/决策清单.md（item36 DEV-8）；skills/minimax-xlsx/SKILL.md；0816-P4试跑验收-createWeb安装/执行报告.md（P6）"
+  },
+  {
+    "id": "skill-pdf-ocr",
+    "name": "pdf-ocr",
+    "why_history": "从 @sylphx/pdf-reader-mcp 分离的轻量路由包装（87 行），引入动机：pdf-reader MCP 的 read_pdf 对扫描件/图片型 PDF 返回空文本层，需要 OCR 降级链路。0807-VLM图片识别修复前 read 工具读图片不可靠，PDF 无文本层时需 pdf_evidence 的 ocr_pages/extract_regions/analyze_regions/render_page 四操作。0802 盘点定位为仅在 PDF 无文本层时触发 OCR 的专用 skill。",
+    "why_current": "扫描件/图片型 PDF/含水印印章文档的持续需求（简历评审、offer 拒绝决策、证件扫描件等）。pdf-worker 子Agent（Flash + pdf-reader MCP 最小权限）专职 PDF 提取/OCR/文档分析，主Agent MCP 路由将 PDF/OCR 任务固定委派给它。0815 桥接后降权（disable-model-invocation），仅手势 /pdf-ocr 触发。",
+    "how_trigger": "满足任一条件加载：1) read_pdf 返回空文本层（扫描件）；2) 用户明确要求 OCR/扫描件识别；3) PDF 含印章、手写、水印等需图像识别元素（SKILL.md 触发条件）。指令：/pdf-ocr {路径} [--lang zh+en]、/pdf-ocr-table、/pdf-ocr-check。",
+    "how_workflow": "1) 先 read_pdf（include_text_layer: true）检查文本层；2) 部分页面空则仅 OCR 空页面，全空则全量 OCR（ocr_pages，languages zh/en，scale 2，max_pages 20）；3) 表格提取：analyze_regions 定位边界框后 extract_regions 提取；4) 极简用法 read_pdf include_ocr_text_layer=true 自动选参。",
+    "how_collaboration": "与 pdf-reader MCP（@sylphx/pdf-reader-mcp，pdf_evidence 工具）、pdf-worker 子Agent（L3 最小权限仅放行 pdf-reader_*）、vision-interceptor/GLM-4V（图片辅助校验）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.11）；0817-opencode-dag/06-md/agent.md（pdf-worker）；skills/pdf-ocr/SKILL.md；0815-opencode-dsh桥接/决策清单.md（item39）"
+  },
+  {
+    "id": "skill-soe-resume",
+    "name": "soe-resume",
+    "why_history": "完全自创 skill（无上游，0802 盘点标注），2026-08 求职季为央国企/体制内求职需求自建：应届生校招（央企国资委直管 97 家/地方国企/事业单位/公务员）+ 往届社招。内置 CV4SOE 四维度转换方法论（动词行政化升级/视角宏观化包装/关键词安全合规/软实力组织化呈现），解决普通简历写法不符合央国企网申系统规范与 HR 评审偏好的问题。三指令：评审（8 模块红黄绿灯）/修改（先评审后改写）/生成（本地文件+问答）。",
+    "why_current": "央国企求职持续场景（国家电网/中石化等网申前必经评审）。0815 起收入 exec-recruit preset（简历投递特化 agent），与 resume-builder/recruit-assist/lark-suite 并列降权 skill，用户手势 /soe-resume 唯一入口；Word 管线改调 minimax-docx。0816 补 user-invocable: true 字段。",
+    "how_trigger": "触发关键词：央国企简历、央企简历、国企简历、SOE简历、体制内简历、央企求职、国企求职、国家电网简历、中石化简历（SKILL.md description）。自动识别：pdf/docx/md 简历输入则评审或修改；帮我做/写/生成一份央国企简历且无文件则生成模式。用户手势 /soe-resume。",
+    "how_workflow": "1) /央国企简历评审 {路径}：8 模块评分（个人信息/教育/实习/项目等）+ 红黄绿灯速览；2) /央国企简历修改 {路径}：先评审（如未评审）后展示修改方案，用户确认后执行；3) /央国企简历生成：读个人信息文件 + 交互问答补全后生成 SOE 风格简历（Word 输出走 minimax-docx 三管线）。",
+    "how_collaboration": "与 minimax-docx（Word 输出管线）、resume-builder / recruit-assist / lark-suite（exec-recruit preset 手势组）、CV4SOE 方法论来源（github.com/Ignareo/CV4SOE）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.3 自创）；0815-opencode-dsh桥接/决策清单.md（item31）+ 安装暂存/迁移20260815/skills/soe-resume/SKILL.md；0816-P4试跑验收/执行报告.md；skills/soe-resume/SKILL.md"
+  },
+  {
+    "id": "skill-superpowers-feature-workflow",
+    "name": "superpowers-feature-workflow",
+    "why_history": "2026-08-04 Superpower 安装引入（0804-Superpower安装/安装报告.md）：用户需求为本地 OpenCode 安装 Superpower skill，用于提高编程和源码解析的流程规范性。来源 obra/superpowers 仓库（shallow clone 解析后安装 3 Bundles 之一）。选择理由：不依赖 OpenSpec CLI 的轻量级规范编程工作流（需求澄清到方案设计到 TDD 实现到验证）。安装时明确不安装冗余组件：openspec-superpowers/openspec-feature 与已有 skill 重叠，.superpowers-memory/ 模板与 MEMORY.md + headroom 重叠。",
+    "why_current": "显式 opt-in 的规范开发流程：当用户要求纪律化功能交付（且不想要 OpenSpec 工件生成）时提供 10 步工作流 + 4 条 Guardrails。0815 桥接时记忆载体从 .superpowers-memory/ 改为 dsh 原生 .agents/notes（避免第二套记忆体系）。适合中小型功能开发的质量门控。",
+    "how_trigger": "显式 opt-in：仅当用户明确要求、点名 $superpowers-feature-workflow 或仓库策略强制时使用；不默认启用（SKILL.md）。",
+    "how_workflow": "1) 探索项目上下文（.superpowers-memory/ 存在则读 PROJECT_CONTEXT/CURRENT_STATE/journal）；2) 一次一问澄清需求；3) 给 2-3 方案并推荐一个；4) 设计写入 docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md；5) 用户确认设计；6) 实施计划写 docs/superpowers/plans/；7) 非平凡任务用 repo-local worktree；8) TDD 实现（红灯到最小代码到绿灯）；9) 新鲜验证后才声称完成；10) 更新记忆文件。Guardrails：设计批准前不写生产代码、新行为不跳失败测试、无新鲜命令输出不声称完成。",
+    "how_collaboration": "与 superpowers-learning-workflow（记忆沉淀）、superpowers-openspec-superpowers-workflow（编排依赖：组合工作流 standalone:false 依赖本 skill）、.superpowers-memory/（opencode 侧）/ .agents/notes（dsh 侧）协作。",
+    "evidence": "0804-Superpower安装/安装报告.md；0803-OpenSpec_Superpower解析/analysis/01-设计解析报告.md；skills/superpowers-feature-workflow/SKILL.md；0815-opencode-dsh桥接/决策清单.md（item26）"
+  },
+  {
+    "id": "skill-superpowers-learning-workflow",
+    "name": "superpowers-learning-workflow",
+    "why_history": "2026-08-04 Superpower 安装引入（同 superpowers-feature-workflow），obra/superpowers 仓库 3 Bundles 之一。引入动机：会话后知识沉淀的规范化——把近期工作教训按四类分类（持久事实/当前状态/会话结果/可复用教训）回写项目记忆，防噪音、防一次性修复升格为规则。安装时评估认为 .superpowers-memory/ 模板与本地 MEMORY.md 体系重叠故不装脚手架，仅保留 workflow skill 本身。",
+    "why_current": "显式召唤的知识沉淀工作流：项目结束/里程碑后主动回写记忆、决策记录、可复用教训，解决 AI 是金鱼（跨会话记忆缺失）的痛点。0815 桥接后与本地 learning-workflow skill（来源同款）等价，载体映射为 AGENTS.md + .agents/notes 或 Mission 5 段报告。",
+    "how_trigger": "显式 opt-in：用户想保留近期工作教训、点名 $superpowers-learning-workflow 或仓库策略要求时触发；不默认启用（SKILL.md）。",
+    "how_workflow": "1) 回顾近期工作/决策/验证证据；2) 分类为持久事实、当前状态、会话结果、可复用教训四类；3) .superpowers-memory/ 存在则更新 PROJECT_CONTEXT.md、CURRENT_STATE.md、journal、LEARNING_BACKLOG.md；4) 不存在则告知用户装脚手架或存普通项目文档；5) 稳定事实与临时笔记分离；6) 总结下一会话该记住什么。Guardrails：不写任务噪音进 PROJECT_CONTEXT、一次性修复不升格规则、不自动编辑 skill 库。",
+    "how_collaboration": "与 superpowers-feature-workflow（交付流程配套）、Reflection 系统（0805 引入的本地替代/互补机制：pending.json + reflection-worker）、MEMORY.md 记忆体系协作。",
+    "evidence": "0804-Superpower安装/安装报告.md；0803-OpenSpec_Superpower解析/source/superpowers/MEMORY.cn.md；skills/superpowers-learning-workflow/SKILL.md；0815-opencode-dsh桥接/安装暂存/skills/learning-workflow/SKILL.md"
+  },
+  {
+    "id": "skill-superpowers-openspec-superpowers-workflow",
+    "name": "superpowers-openspec-superpowers-workflow",
+    "why_history": "2026-08-04 Superpower 安装引入（obra/superpowers 3 Bundles 之一），type: orchestrator 编排器工作流。引入动机：完整交付流程编排——Superpowers 探索到 OpenSpec 锁定到 TDD 实施到验证到归档，全程门控。0803-OpenSpec_Superpower解析确认其 activation.mode: explicit-only（显式命名才激活，AI 不应该背着我做事安全需求）、standalone: false（依赖 superpowers-feature-workflow）。安装时明确不装 openspec-superpowers（与 openspec-propose + superpowers-feature 重复）。",
+    "why_current": "复杂功能交付的全流程编排器：路由控制者，防止误路由到 OpenSpec proposal skill（Guardrails 明确：用户点名本 workflow 时不先路由到 openspec-propose）。0815 桥接后收入 openspec-plan preset 并降权（disable-model-invocation），与 13 个降权 openspec skill 配套。本 0817-opencode-dag 项目的 DAG 展开（proposal-specs-design-tasks）即受此流程启发。",
+    "how_trigger": "显式 opt-in：用户点名 $superpowers-openspec-superpowers-workflow 或仓库策略强制时触发；一旦产出 tasks.md 且用户确认/继续，流程保持激活（即使不重复点名）。",
+    "how_workflow": "25 步状态机：1) 探索上下文；2) 一次一问澄清；3) 2-3 方案推荐等待批准；4) 设计写 docs/superpowers/specs/；5) 确认设计；6) 派生 kebab-case OpenSpec change 名；7) openspec status --change 检查工件顺序；8) 每工件前 openspec instructions <artifact>；9) 按依赖序完成 proposal-design-specs-tasks；10) 检查 status 直到齐备；11) 停止 OpenSpec apply 执行；12) 汇总任务；13-16) 确认任务清单/继续开发（continue-dev 主续接命令）；17-21) 实施计划/TDD/验证/continue-review；22-25) 对齐后归档（continue-archive），更新记忆。",
+    "how_collaboration": "编排 superpowers-feature-workflow（实施）+ openspec 全家（propose/apply/archive-change 等工件）+ openspec-plan preset（dsh 侧）+ .superpowers-memory/ 记忆。",
+    "evidence": "0804-Superpower安装/安装报告.md；0803-OpenSpec_Superpower解析/analysis/01-设计解析报告.md；skills/superpowers-openspec-superpowers-workflow/SKILL.md；0815-opencode-dsh桥接/决策清单.md（D-C1）"
+  },
+  {
+    "id": "skill-release-openspec",
+    "name": "release-openspec",
+    "why_history": "2026-08-04 Superpower 安装引入：随 OpenSpec 14 Skills 一同从 Fission-AI/OpenSpec 仓库复制（0803-OpenSpec_Superpower解析/source/openspec/skills/release-openspec/ 为源）。上游定位：OpenSpec 自身发布管理 skill，仅 OpenSpec 维护者使用。安装时即作为 16 个新增 SKILL.md 之一，description 为 YAML 多行格式（安装时需精确匹配 >- 段落字符串）。",
+    "why_current": "本机作为 OpenSpec 维护者的发布操作入口（Fission-AI/OpenSpec 仓库维护场景）；0815 桥接后降权（disable-model-invocation，item28 决策），仅维护者在 openspec-plan preset 内显式召唤。以可恢复状态机运行发布工作流（每次检查 GitHub 实时状态，只做下一步安全动作），不假设前次调用完成。",
+    "how_trigger": "仅 OpenSpec 维护者使用（SKILL.md description）；用户请求 release / prepare a release / continue / resume 时触发；请求 status/readiness/advice 时默认只读审计。",
+    "how_workflow": "1) 发布审计：gh repo view 验证仓库、要求 gh/git/pnpm 认证、git fetch origin main；2) 找最新稳定 release（gh release list --exclude-drafts --exclude-pre-releases）；3) 区分两类 PR（Changeset PR 人工添加 .changeset/*.md；Version Packages PR 自动化 changeset-release/main）；4) 脏 checkout 时用临时 worktree 做发布提交；5) 永不批准自己的 PR（人工审查是刻意门）；6) merge-queue 进队不等于合并，等 GitHub 报 mergedAt 且 main 上有该 commit；7) 暂停时报告 URL/状态/所需人工动作。",
+    "how_collaboration": "与 gh/git/pnpm CLI、GitHub（Fission-AI/OpenSpec）、Changesets action（Version Packages PR）、openspec 系列 skill（openspec-plan preset 内降权成员）协作。",
+    "evidence": "0804-Superpower安装/安装报告.md；0803-OpenSpec_Superpower解析/source/openspec/skills/release-openspec/SKILL.md；0815-opencode-dsh桥接/决策清单.md（item28）；skills/release-openspec/SKILL.md"
+  },
+  {
+    "id": "skill-agency-agents",
+    "name": "agency-agents",
+    "why_history": "0802 盘点标注开源+改造，上游 agency-agents 仓库（msitarzewski/agency-agents，260+ Agent 角色文件、16 部门），本地改造为 search-agents.ps1 集成 + SKILL.md 改写为 opencode 路由模式。引入动机：DeepSeek 纯文本模型缺乏专业领域角色 prompt，复杂/专业任务（工程/设计/安全/测试/GIS/游戏等）需要专家角色系统提示词提升输出质量。0808-MCP四件套源码深挖任务实证使用：加载 agency-agents 后用 agent-index.json 检索，命中 Codebase Onboarding Engineer 角色。",
+    "why_current": "专业任务委派前的角色路由入口：判断任务是否需要专家角色、搜索匹配、加载角色 prompt 作为 System Prompt。高频使用（0815 决策清单 item13 agent-role-library 标注高频使用（专业任务委派专家角色），流程顺）。与 plan/build 主Agent 的 Agent 调度协议（search-agents.ps1 搜索角色）互补。",
+    "how_trigger": "触发关键词：工程师、前端、后端、架构、测试、安全、设计、UX、营销、SEO、数据、数据库、DevOps、CI/CD、移动端、游戏、GIS、地图、财务、法务、HR、客服、产品经理、项目管理、写代码、重构、优化性能、部署、安全审计、渗透测试、agent、agency、切换到XX模式；复杂/专业任务时激活，简单查询不触发。命令：/agency-search <query>、/agency-rebuild。",
+    "how_workflow": "1) 触发判断（软件开发/系统设计/专业领域/专业方法论/用户请求切角色则加载）；2) powershell search-agents.ps1 -Query '<任务描述>' -Top 5 搜索匹配；3) 解析 JSON 以表格呈现 1-5 供用户选择；4) 用户选择后读取 agency-agents/<RelativePath> 角色文件，作为 System Prompt 指导执行。",
+    "how_collaboration": "与 plan/build 主Agent（Agent 调度协议中的 search-agents.ps1 角色搜索）、delegation-subagent（dsh 侧 agent-role-library 对应物，角色 prompt 注入 subagent persona）、search-agents.ps1 + agent-index.json 协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.3）；0808-MCP四件套源码深挖/06-任务完成报告.md；0815-opencode-dsh桥接/决策清单.md（item13）；skill/agency-agents/SKILL.md"
+  },
+  {
+    "id": "skill-amap-budget-control",
+    "name": "amap-budget-control",
+    "why_history": "完全自创 skill（0802 盘点标注完全自创，无上游）。引入动机：高德 Web 服务 API 有 5000 次/天免费额度，Agent 若不加控制地调用 MCP amap 工具会超限产生费用。0802 盘点（附录 C 时间线）确认 amap 三件套为早期引入（Provider 迁移同期）。本 skill 负责三级预算预警 + 用量追踪（amap-usage.json 计数文件），解决 API 成本失控问题。0802 盘点发现 amap 系列用 _SKILL.md 命名刻意禁用（amap MCP disabled），MCP 精兵策略裁撤。",
+    "why_current": "amap MCP 已禁用（enabled=false，精兵策略：12 工具约 2000 tokens 极低频），本 skill 随 _SKILL.md 命名保持存档/休眠状态，仅当用户显式提及地图/导航/位置/POI/天气/路径规划等关键词时激活（description 声明）。保留价值：若按需重新启用 amap MCP，预算控制规则（精准触发/用量追踪/超限预警/替代方案）即生效。",
+    "how_trigger": "触发关键词：导航、路线、路径规划、驾车、公交、地铁、步行、骑行、地图、高德、POI、周边搜索、附近、餐厅、酒店、加油站、停车场、评分榜单、天气、测距、距离、地址转坐标、经纬度、IP定位、我在哪、amap。一级触发词必须激活；二级结合上下文判断；纯聊天地名提及/比喻/产品定位明确不激活。",
+    "how_workflow": "1) 精准触发匹配（一级/二级触发词规则）；2) 每次调用前检查 amap-usage.json 用量计数；3) 接近 5000 次/天免费限额时预警；4) 额度不足给出清晰报错与替代方案（优先引导 amap-lbs-skill 免费链接）；5) 三 skill 协作策略：简单搜索用 amap-lbs-skill（免费）；结构化数据用本 skill（计次 MCP API）；前端 JS 代码用 amap-jsapi-skill（免费）。",
+    "how_collaboration": "与 amap-lbs-skill（免费链接，优先路由）、amap-jsapi-skill（前端 JS 开发）、amap MCP（13 个 amap_* 工具授权）、amap-usage.json 计数文件协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.7 自创 + 附录 C 早期引入 + 8.4 _SKILL.md 禁用）；0817-opencode-dag/06-md/skill.md + mcp.md；skill/amap-budget-control/_SKILL.md"
+  },
+  {
+    "id": "skill-amap-jsapi-skill",
+    "name": "amap-jsapi-skill",
+    "why_history": "0802 盘点标注开源+改造，上游为高德官方 JSAPI MCP 改造（35 个引用文件：references/ 16 个 + references/api/ 17 个），_meta.json 定义版本 1.1.1。引入动机：为编写/调试高德地图前端 JS 代码提供完整 API 参考（地图生命周期/安全配置/3D 视图/覆盖物绘制/图层管理/LBS 服务集成），安全密钥强制 env 配置（AMAP_SECURITY_JS_CODE）。与另两个 amap skill 构成三件套协作（早期引入，Provider 迁移同期）。",
+    "why_current": "amap MCP 已禁用后随 _SKILL.md 命名存档/休眠（0815 桥接 opencode-skill-index 标注 amap-jsapi-skill 存档）。保留价值：若重新启用地图开发场景（编写/调试地图前端 JS 代码），本 skill 提供 JSAPI v2.0 (WebGL) 完整参考，且不消耗 API 配额（免费）。",
+    "how_trigger": "触发关键词：地图开发、JSAPI、WebGL地图、地图初始化、覆盖物、点标记、Marker、Polyline、Polygon、InfoWindow、热力图、图层、地理编码、路径规划开发、AMap、amap-jsapi（_SKILL.md description）。当前因 _SKILL.md 命名不被 opencode glob 匹配而不会自动加载（需显式引用）。",
+    "how_workflow": "1) script 标签加载 loader.js（webapi.amap.com/loader.js）；2) 强制安全密钥配置（window._AMapSecurityConfig.securityJsCode，从环境变量取，禁硬编码，生产用 serviceHost 代理）；3) AMapLoader.load({key, version 2.0, plugins}) 初始化地图（3D 视图/缩放/中心点）；4) 按场景查 references/（map-init/view-control/marker/vector-graphics/info-window/context-menu/events/layers 等）写覆盖物与交互代码。",
+    "how_collaboration": "与 amap-lbs-skill（免费链接）、amap-budget-control（结构化数据计次）三 skill 协作（_SKILL.md 协作说明：本 skill 只负责前端 JS 代码）。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.5 + 附录 C 早期引入）；0815-opencode-dsh桥接/opencode-skill-index.md（存档标注）；skill/amap-jsapi-skill/_SKILL.md"
+  },
+  {
+    "id": "skill-amap-lbs-skill",
+    "name": "amap-lbs-skill",
+    "why_history": "0802 盘点标注开源+改造，上游为高德官方 MCP 改造，_meta.json 定义版本 2.0.1，含 Python（gaode_skill.py）+ Node（scripts/）+ JS（index.js）三类脚本。引入动机：生成免费的高德网页链接（POI 搜索/路径规划/旅游规划/周边搜索/热力图），不消耗 API 配额，解决简单地图查询也烧 API 配额的成本问题。7 大场景覆盖（关键词搜索/周边/热力图/路径规划/旅游规划等）。",
+    "why_current": "amap MCP 已禁用后随 _SKILL.md 命名存档/休眠。保留价值：地图场景的零成本入口——简单搜索/导航/周边查询优先用本 skill 生成免费链接，需要结构化数据（批量 POI/路径步骤 JSON）时才转交 amap-budget-control（计次）。",
+    "how_trigger": "触发关键词：搜、找、查、附近、周边、路线、规划、旅游、热力图、美食、酒店、景点、加油站、停车场（_SKILL.md description）；用户表达搜索地点/周边/路线/旅游/热力图意图时。当前因 _SKILL.md 命名不会自动加载（需显式引用）。",
+    "how_workflow": "1) 首次配置高德 Web Service Key（环境变量 AMAP_WEBSERVICE_KEY 或本地配置文件）；2) 场景判断（明确类别/位置周边/热力图/POI 详细/路径规划/旅游规划六场景）；3) 生成免费高德网页链接（不消耗配额）；4) 需要结构化数据时转交 amap-budget-control 用 MCP API。",
+    "how_collaboration": "与 amap-budget-control（结构化数据转交）、amap-jsapi-skill（前端 JS 代码）、高德 Web Service Key + restapi.amap.com 埋点统计协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.6 + 附录 C 早期引入）；0817-opencode-dag/06-md/skill.md（三 skill 协作路由）；skill/amap-lbs-skill/_SKILL.md"
+  },
+  {
+    "id": "skill-browser-harness",
+    "name": "browser-harness (browser-use)",
+    "why_history": "0802 盘点标注开源+改造，上游 browser-use/browser-harness 仓库，本地改造为 Windows 适配 + 脚本路径绑定 + chrome-debug.ps1（一键启动 9222 端口远程调试 Chrome）。引入动机：为 Agent 提供统一浏览器交互入口（自动化/爬取/测试/站点应用），解决招聘投递（网申表单填写）、网页数据采集等需要真实浏览器操作的需求。0804-recruit优化实证：京东校招投递靠 browser-harness CDP 完成（投递跟踪表 row 774 写入成功），并沉淀 6 条环境限制实测教训（无 sleep/JS 需 IIFE/SPA 需轮询等）。",
+    "why_current": "recruit-assist 投递核心依赖（browser-harness CDP 自动化投递，exec-recruit preset 追加），0811 深圳大数据研究院调研用浏览器自动化登录知乎/脉脉采集员工评价，0813-Agent评测知识体系三重验证门控含浏览器渲染验证，create-web preset 前端设计实测渲染。0817-opencode-dag 复用 MEMORY 经验（js() 陷阱：复杂箭头函数 heredoc 转义易错，改用简单表达式+分块抓取，最终用 chrome headless --dump-dom 更可靠）。",
+    "how_trigger": "SKILL.md description：Always use browser-use for any web interaction: automation, scraping, testing, or site/app work——任何网页交互/自动化/爬取/测试/站点应用工作。skill/browser-harness 目录为 skills.paths 单独注册路径（0802 起双路径之一）。",
+    "how_workflow": "1) 前置：chrome-debug.ps1 启动 Chrome 远程调试（检查 9222 端口，无则独立 profile 启动）；2) PowerShell @\"...\"@ heredoc 写 Python 代码后管道发给 browser-harness.exe（helpers 预导入，首次导航 new_tab(url)）；3) js() 需 return/print，复杂操作分块抓取；4) 连接失败用 --doctor 诊断，daemon 挂了重跑 chrome-debug 脚本，runtime 目录残留则删除重建。",
+    "how_collaboration": "与 recruit-assist（投递核心依赖）、frontend-design（create-web preset 渲染实测）、create-web preset、Chrome（ext-chrome 外部）、browser-harness daemon（BU_CDP_URL localhost:9222）、VLM 图片校验协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.2）；0804-recruit优化/任务留档.md；0815-opencode-dsh桥接/决策清单.md（D-D1 exec-recruit 追加）；skill/browser-harness/SKILL.md；0817-opencode-dag/执行报告.md"
+  },
+  {
+    "id": "skill-grill-me",
+    "name": "grill-me",
+    "why_history": "0802 盘点标注开源+改造，上游 RobMitt/grill-me-skill（171 星，基于 Matt Pocock 作品 MIT），原为 Claude Code（AskUserQuestion tool），改造为独立 opencode skill。0802-P0 任务（输入缓存优化）将其固化进 plan/build agent prompt 开头（+500 tokens，缓存后免费），从负收益变正。引入动机：Plan 阶段对用户的模糊需求逐条追问收敛决策树，防止拍脑袋决策。0802-Mission留档系统/后期改造.md 记录一次关键修复：原两段式协议（先 [GRILL] 文字再 question 工具）制造天然断裂点，多次出现 question 工具被跳过故障，改造为一段式（[GRILL] ack + question 同消息）。0807-opencode原理分析确认 plan/build prompt 经 agent.prompt 注入完全替换内置模板。",
+    "why_current": "Plan 模式决策收敛的核心协议：0817-opencode-dag 收敛 13 项决策、0817-github-dag 收敛 12 项、0816-plugin-dag 6 项、0806-网申扩展v2 21 轮决策拆解、0807-华洋达面试复盘 27 轮结构化拷问等几乎所有 Mission 任务 Plan 阶段都在用。三层防漂移护栏（one-message rule / pre-output gate / convergence audit）保证长会话协议不退化。",
+    "how_trigger": "用户说 grill me / 拷问我 / 面试我的方案 / 压力测试这个方案 时激活（SKILL.md description）；或 Plan 模式自动进入（plan prompt 内嵌协议）。",
+    "how_workflow": "1) 用 question 工具一次一问（2-4 个多选选项 + Other 自定义），输出 [GRILL] ack（1-2 句）+ question 必须在同一消息；2) 能查代码库的答案自己查，不问用户；3) 逐分支解析决策树直到所有决策依赖解析；4) 收敛时输出 [GRILL] Decision tree resolved. + 一句话总结 + 决策编号列表。",
+    "how_collaboration": "与 plan/build 主Agent（prompt 内嵌，agent.prompt 注入）、question 工具（opencode 原生，UTF-8 支持中文）、Mission 留档系统（决策清单实时落盘）、plan-grill（dsh 侧映射 ask_user_question）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.1）；0802-P0任务完成报告/P0任务完成报告.md；0802-Mission留档系统/后期改造.md；skill/grill-me/SKILL.md + README.md；0807-opencode原理分析/总报告"
+  },
+  {
+    "id": "skill-headroom",
+    "name": "headroom",
+    "why_history": "0802 盘点标注开源+改造，上游 chopratejas/headroom（63.9k 星，Apache 2.0），上游为 MCP 服务器（无独立 skill 文件），本地编写 SKILL.md 使用规则。引入动机：opencode 缺少原生上下文压缩（dsh cache-performance skill 明确记载 opencode 因缺原生压缩才引入 headroom），需要压缩超大工具输出/长文件减少 token 消耗。0803-opencode-vs-claude 对比改进报告提出阶梯式压缩（L1 headroom_compress 到 L2 结构化模板到 L3 兜底摘要），headroom 为 L1。2026-08-12 发现 MCP 无法使用，0812-headroom修复报告根因：8/5 Stop-Process -Force 误杀 headroom python 进程 + 重连失败；同日量化亏损评估（工具定义约 279 tokens/请求大于历史收益 0.001 美元）导致 0812/0813 决策禁用 MCP，CLI 仍可用。",
+    "why_current": "CLI 版持续可用：headroom proxy / audit-reads / savings / inspect / memory 用于手动压缩超大输出、审计 Read-tool 流量、查看节省统计。0815 桥接确认不迁移（dsh 有原生 compaction-basic + tool-result-pruner，headroom 为已解决项）；MEMORY.md 2026-08-12 记录 MCP 禁用但 CLI 仍可用。切 Claude Code/Codex 走 proxy 时可将 enabled 改回 true。",
+    "how_trigger": "触发关键词：headroom、上下文压缩、压缩大输出、audit-reads、savings（SKILL.md description）。使用时机：读取 500+ 行文件后、工具输出 2000+ 字符、大 JSON payload 前、爬取网页 3000+ 字符、任务完成后 savings 看节省。",
+    "how_workflow": "1) headroom audit-reads 审计 Read-tool 流量找压缩机会；2) 大文件/大输出按阈值评估压缩（headroom inspect 对比原始 vs 压缩内容，验证不丢关键信息）；3) 需要全链路代理时手动 headroom proxy（8787 端口）；4) headroom savings 查看持久化压缩节省统计；5) 小内容 500 字符内不压缩（懒调用）。",
+    "how_collaboration": "与 auto-mode.md（Output Discipline 压缩大输出规则）、compaction 阶梯（L1 剪枝）、MEMORY.md（Compaction 阶梯式 L1/L2/L3 约定）、headroom-mcp-launcher.ps1（MCP 路径纯 stdio 转发）协作。",
+    "evidence": "0802-opencode改造盘点/opencode-改造盘点报告.md（3.1.4 + 7.2）；0812-headroom修复/headroom修复报告.md；0813-opencode-config-skill更新/任务完成报告.md；0815-opencode-dsh桥接/.dsh/skills/cache-performance/SKILL.md；skill/headroom/SKILL.md；MEMORY.md"
+  },
+  {
+    "id": "skill-opencode-config",
+    "name": "opencode-config",
+    "why_history": "0802 盘点标注文档改编，上游 opencode.ai/config.json Schema v2。0803-opencode-config-skill重写/01-信息收集：用户发现原 SKILL.md 不完善（646 行单文件基于旧 Schema、无分层路由、与实际配置脱节——示例还用 @ai-sdk/openai-compatible 实际已迁 deepseek、max_tokens 4096 与实际 8192 不一致、缺本地化标注），要求重写为多文件分级知识库（ref/ 官方 Schema 参考 + local/ 本项目本地化 + ops/ 操作指南 + troubleshooting/ 排障），基于官方文档+源码+实际配置三元验证，建立维护策略。后续 0805-opencode-config过时修正（SHA256 C6A1 到 FC85，Skill 14 到 30）与 0813-opencode-config-skill更新（对标 1.18.16，覆盖 0802-0812 六次配置变更，headroom MCP 禁用同步）持续维护。",
+    "why_current": "任何查看/修改/编写/验证 opencode.jsonc 的操作入口：三阶自检路由按需加载子文件（不一次加载全部）。0802 缓存优化/P0、0803 编码安全纵深防御、0805 Reflection、0807 原生命令、0813 配置更新等所有配置改造任务均在本 skill 指导下进行。opencode.jsonc 每次变更后需按 edit-guide 同步 SKILL.md 哈希表（SHA256 01E07...，对标 1.18.16）。",
+    "how_trigger": "触发关键词：opencode配置、opencode参数、opencode.jsonc、config schema、permission配置、provider配置、mcp配置、opencode设置、opencode文档、配置参考（SKILL.md description）。用户需要查看/修改/编写/验证 opencode 配置时。",
+    "how_workflow": "1) 三阶自检路由矩阵定位需求（改 Schema 参数到 ref/；查本项目实际配置到 local/；操作步骤到 ops/；故障到 troubleshooting/）；2) 修改 opencode.jsonc 前先备份（.bak-日期）；3) 修改后 JSON 验证 + 重算 SHA256 + 同步 SKILL.md 子文件哈希表 + 零旧值残留检查（MEMORY.md 0813 安全链）；4) 按 ops/security.md 编码安全规则（edit 优先，禁 python -c 管道）。",
+    "how_collaboration": "与 opencode.jsonc 配置本体、auto-mode.md（配置同步安全链）、MEMORY.md（0813 修改安全链记录）、opencode 官方文档（Schema v2）、D:\\Opencode_Download\\Opencode-全量备份（备份链）协作。",
+    "evidence": "0803-opencode-config-skill重写/01-信息收集与初步分析.md + 06-任务完成报告.md；0805-opencode-config过时修正/报告.md；0813-opencode-config-skill更新/任务完成报告.md；skill/opencode-config/SKILL.md；MEMORY.md（0813 安全链）"
+  }
+]

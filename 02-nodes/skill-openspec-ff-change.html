@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>openspec-ff-change · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>openspec-ff-change <span class="tag">装配层</span></h1>
+  <div class="sub">skill-openspec-ff-change · skill · A6l-工作流 · Layer 2</div>
+
+  <h2>① 作用</h2>
+  <p>快速通道一键生成所有 OpenSpec 工件，跳过逐步交互。按 requires 依赖边传递闭包确定必建工件集合（applyRequires 可达集），循环创建 proposal/specs/design/tasks。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 变更名 kebab-case 派生<br>· 依赖序工件批量生成<br>· applyRequires 传递闭包计算<br>· 条件工件跳过（design 可选）<br>· 进度 todo 跟踪</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-apply-change.html'>openspec-apply-change</a></td><td>skill-relation</td><td><small>openspec-ff-change SKILL.md: &#x27;What\&#x27;s ready ... Prompt: Run /openspec-apply-change or ask me to impl</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。FF = fast-forward，一键生成所有 OpenSpec 工件跳过逐步交互。0803 解析报告识别其机制：按 requires 依赖边传递闭包（applyRequires 可达集）确定必建工件集合，循环创建。引入动机：为有经验用户或简单变更提供快速通道，避免逐个确认的低效。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>简单变更或用户有经验时的默认快速路径；本地 DAG 化任务中作为快速建模入口，减少交互轮次。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>用户要求快速生成全部 OpenSpec 工件（&quot;快速通道&quot;&quot;ff&quot;）；或显式 /openspec-ff-change；有经验用户处理简单变更时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 派生变更名（无输入则询问要构建什么）<br>· openspec new change 创建脚手架，解析 status 的 applyRequires 与 artifacts requires 边<br>· 按依赖序循环对每个 ready 工件获取 instructions 并生成，todo 列表跟踪进度，处理 skip_specs/可选 design 条件跳过</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 propose 等价入口（两者都封装全生成）；下游交给 apply-change 实施</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

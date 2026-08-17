@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>slack · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>slack </h1>
+  <div class="sub">oc-slack · package · G18-集成 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>Slack 机器人集成（@slack/bolt Socket Mode）。src/index.ts 创建 opencode 服务端实例（createOpencode）与 Slack App，按 channel+thread 键复用 session：首次消息创建 opencode session 并分享链接，后续消息走 session.prompt；同时订阅 message.part.updated 事件把 tool 完成状态回贴到 thread（src/index.ts:24-51）。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· Slack Socket Mode 机器人（src/index.ts:4）<br>· 每 thread 独立 opencode session 的创建/复用（src/index.ts:22,70-101）<br>· 会话分享链接回帖（src/index.ts:96）<br>· tool 执行状态回帖（message.part.updated 订阅，src/index.ts:24-51）<br>· /test 命令与错误兜底回复（src/index.ts:138）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-sdk.html'>sdk</a></td><td>workspace-dep</td><td><small>@opencode-ai/slack/package.json dependencies.@opencode-ai/sdk</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 Socket Mode（无需公网回调）降低自托管门槛；一线程一会话的隔离保证多用户并发互不干扰；SDK（@opencode-ai/sdk）直连 server 复用完整会话/工具/分享协议，bot 只做 Slack 协议↔opencode 协议的翻译层。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改，且本机装配层刻意绕开 Slack（MEMORY 中飞书为协同入口，lark-suite skill 覆盖消息/日历/文档）。slack 包是官方 IM 接入参考：本机 lark-suite + lark-cli 即同类聊天平台↔AI 会话桥的飞书版。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么用</span><p>bun dev（bun run src/index.ts）启动 Slack Bolt 机器人：env 需 SLACK_BOT_TOKEN / SLACK_SIGNING_SECRET / SLACK_APP_TOKEN（.env.example 提供）；App({socketMode:true}) 建立 Socket Mode 长连接；内部 createOpencode({port:0}) 起一个临时 opencode server，把每个 Slack 线程(channel-thread_ts)映射为独立 opencode session：收到消息 → client.session.create + session.share 分享链接 → session.prompt 发提示 → say() 回帖；订阅 message.part.updated 事件把 tool 完成状态实时回帖（app.client.chat.postMessage）。</p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p>把 opencode 接入 Slack 工作区：@机器人或在频道内对话即开启独立 AI 会话，工具调用进度与最终回答以线程化消息呈现，会话可分享（share URL）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

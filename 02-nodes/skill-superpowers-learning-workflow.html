@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>superpowers-learning-workflow · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>superpowers-learning-workflow <span class="tag">装配层</span></h1>
+  <div class="sub">skill-superpowers-learning-workflow · skill · A6l-工作流 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>会话后知识沉淀工作流，回写项目记忆、决策记录与可复用教训。将学习成果分类为持久事实、当前状态、会话结果、可复用教训四类，写入 .superpowers-memory/ 记忆文件。显式 opt-in，按需显式召唤。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 6 步学习分类工作流（回顾→分类→更新记忆文件→总结下会话应记住的内容）<br>· 记忆文件更新（PROJECT_CONTEXT/CURRENT_STATE/journal/LEARNING_BACKLOG）<br>· 3 条 Guardrails（稳定事实与临时笔记分离等）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-superpowers-feature-workflow.html'>superpowers-feature-workflow</a></td><td>skill-relation</td><td><small>两 skill 均使用 .superpowers-memory/ 记忆体系（PROJECT_CONTEXT.md / CURRENT_STATE.md / journal），feature-workf</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入（同 superpowers-feature-workflow），obra/superpowers 仓库 3 Bundles 之一。引入动机：会话后知识沉淀的规范化——把近期工作教训按四类分类（持久事实/当前状态/会话结果/可复用教训）回写项目记忆，防噪音、防一次性修复升格为规则。安装时评估认为 .superpowers-memory/ 模板与本地 MEMORY.md 体系重叠故不装脚手架，仅保留 workflow skill 本身。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>显式召唤的知识沉淀工作流：项目结束/里程碑后主动回写记忆、决策记录、可复用教训，解决 AI 是金鱼（跨会话记忆缺失）的痛点。0815 桥接后与本地 learning-workflow skill（来源同款）等价，载体映射为 AGENTS.md + .agents/notes 或 Mission 5 段报告。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>显式 opt-in：用户想保留近期工作教训、点名 $superpowers-learning-workflow 或仓库策略要求时触发；不默认启用（SKILL.md）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 回顾近期工作/决策/验证证据；2) 分类为持久事实、当前状态、会话结果、可复用教训四类；3) .superpowers-memory/ 存在则更新 PROJECT_CONTEXT.md、CURRENT_STATE.md、journal、LEARNING_BACKLOG.md；4) 不存在则告知用户装脚手架或存普通项目文档；5) 稳定事实与临时笔记分离；6) 总结下一会话该记住什么。Guardrails：不写任务噪音进 PROJECT_CONTEXT、一次性修复不升格规则、不自动编辑 skill 库。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 superpowers-feature-workflow（交付流程配套）、Reflection 系统（0805 引入的本地替代/互补机制：pending.json + reflection-worker）、MEMORY.md 记忆体系协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

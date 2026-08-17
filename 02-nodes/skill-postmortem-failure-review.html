@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>postmortem-failure-review · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>postmortem-failure-review <span class="tag">装配层</span></h1>
+  <div class="sub">skill-postmortem-failure-review · skill · A6m-自进化 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>失败项目复盘方法论：先区分路线错误与执行错误，五因框架分类失败，双 explore 并行探索（失败项目+参考项目），A/B/C 资产盘点，产出 v2 设计建议与 MVP 最小化清单。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 根因层级判定（路线 vs 执行）<br>· 五因分类框架（路线/能力未就绪/过度工程/门控缺失/门槛过高）<br>· 双 explore 委派+dead code 审计<br>· A/B/C 资产分级（复用价值×影响力排序）<br>· v2 设计建议+MVP 范围最小化<br>· 5 段式复盘报告</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-reusable-asset-inventory.html'>reusable-asset-inventory</a></td><td>skill-relation</td><td><small>postmortem-failure-review SKILL.md: Step 3 资产盘点（A/B/C 三级分类）产出可复用资产清单——与 reusable-asset-inventory 方法论</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-05 23:43 创建（文件 CreationTime 证据），由 0805-网申扩展失败复盘 提炼（推断：当天失败复盘完成并留档，随即固化为方法论 skill）。0805-网申扩展失败复盘报告记载：自制网申扩展（10 Agent 矩阵、60+ 源码文件、13 BLOCKER 全修复）最终被标记失败，复盘发现五类根因——路线选择错误（架构与参考模式背道而驰）、核心能力从未就绪、过度工程（架构幻影死代码）、产品质量门控缺失、用户门槛过高（7 步安装 vs 参考方案加载即用），并产出可复用资产清单（A/B/C 三级）。本 skill 将这套复盘方法论固化为五因框架 + 双 explore 并行 + 资产盘点 + v2 建议的标准化流程。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>失败/部分失败项目的系统性复盘入口：先区分路线错误与执行错误（路线错误代价高且无法修补），五因框架分类，产出 5 段式复盘报告+可复用资产清单；当前 DAG 改造等高风险任务完成后可用作事后质量审计。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：失败复盘、为什么失败、复盘、postmortem、教训、项目失败分析；用户对失败项目要求系统性复盘时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· Step1 根因层级判定：对照参考项目判断架构模式是否一致（路线错误最高优先级）<br>· Step2 并行探索：委派 explore-failed-project（dead code 审计）与 explore-reference（核心模式统计+gap 分析）两个 explore Agent<br>· Step3 资产盘点 A/B/C 三级（复用价值×影响力排序）+ 产出 v2 设计建议与 MVP 最小化清单 + 5 段式复盘报告</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>委派 2 个 explore 子Agent（失败项目/参考项目）；产出资产清单交给 reusable-asset-inventory；复盘结论回流 Reflection 系统（本 skill 自身即反思产物）</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

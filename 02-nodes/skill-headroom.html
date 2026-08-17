@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>headroom · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>headroom <span class="tag">装配层</span></h1>
+  <div class="sub">skill-headroom · skill · A6i-上下文压缩 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>Headroom 上下文压缩层（CLI 版）。支持 proxy/audit-reads/savings/inspect/diff/memory 命令，用于手动压缩超大工具输出、审计 Read-tool 流量、查看压缩节省统计。MCP 服务器已禁用（2026-08-12 量化亏损），CLI 仍可用。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· headroom CLI 命令表（proxy 8787 端口 / audit-reads / savings / inspect / memory）<br>· 压缩触发阈值（&gt;500 行文件 / &gt;2000 字符工具输出 / &gt;3000 字符网页）<br>· MCP 禁用状态说明与恢复路径（切 Claude Code/Codex 时 enabled 改回 true）</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 chopratejas/headroom（63.9k 星，Apache 2.0），上游为 MCP 服务器（无独立 skill 文件），本地编写 SKILL.md 使用规则。引入动机：opencode 缺少原生上下文压缩（dsh cache-performance skill 明确记载 opencode 因缺原生压缩才引入 headroom），需要压缩超大工具输出/长文件减少 token 消耗。0803-opencode-vs-claude 对比改进报告提出阶梯式压缩（L1 headroom_compress 到 L2 结构化模板到 L3 兜底摘要），headroom 为 L1。2026-08-12 发现 MCP 无法使用，0812-headroom修复报告根因：8/5 Stop-Process -Force 误杀 headroom python 进程 + 重连失败；同日量化亏损评估（工具定义约 279 tokens/请求大于历史收益 0.001 美元）导致 0812/0813 决策禁用 MCP，CLI 仍可用。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>CLI 版持续可用：headroom proxy / audit-reads / savings / inspect / memory 用于手动压缩超大输出、审计 Read-tool 流量、查看节省统计。0815 桥接确认不迁移（dsh 有原生 compaction-basic + tool-result-pruner，headroom 为已解决项）；MEMORY.md 2026-08-12 记录 MCP 禁用但 CLI 仍可用。切 Claude Code/Codex 走 proxy 时可将 enabled 改回 true。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：headroom、上下文压缩、压缩大输出、audit-reads、savings（SKILL.md description）。使用时机：读取 500+ 行文件后、工具输出 2000+ 字符、大 JSON payload 前、爬取网页 3000+ 字符、任务完成后 savings 看节省。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) headroom audit-reads 审计 Read-tool 流量找压缩机会；2) 大文件/大输出按阈值评估压缩（headroom inspect 对比原始 vs 压缩内容，验证不丢关键信息）；3) 需要全链路代理时手动 headroom proxy（8787 端口）；4) headroom savings 查看持久化压缩节省统计；5) 小内容 500 字符内不压缩（懒调用）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 auto-mode.md（Output Discipline 压缩大输出规则）、compaction 阶梯（L1 剪枝）、MEMORY.md（Compaction 阶梯式 L1/L2/L3 约定）、headroom-mcp-launcher.ps1（MCP 路径纯 stdio 转发）协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ext-chrome · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>ext-chrome </h1>
+  <div class="sub">ext-chrome · external · X-外部服务 · Layer 2</div>
+
+  <h2>① 作用</h2>
+  <p>browser-harness 自动化浏览器</p>
+
+  <h2>② 提供能力</h2>
+  <p>网页自动化</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-browser-harness.html'>browser-harness</a></td><td>external</td><td><small>skill-browser-harness 关联 ext-chrome</small></td></tr><tr><td><a href='skill-recruit-assist.html'>recruit-assist</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-chrome</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">为什么需要</span><p>网页交互/抓取/测试的唯一通道：browser-harness skill 要求 Always use browser-use for any web interaction——爬取（0817 DAG 3 路并行联网调研、简历投递）、页面截图/点击、SPA 轮询、表单填写都需要真实浏览器。解决 DeepSeek 无视觉且纯文本 Agent 无法直接操作网页的需求；被依赖方：browser-harness skill、recruit-assist（京东投递）、create-web preset（前端实测）、frontend-design（渲染验证）。</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>合理：专用 Chrome 实例（独立 profile %LOCALAPPDATA%\browser-harness-chrome，--remote-debugging-port=9222，chrome-debug.ps1 自动拉起/幂等检测）；BU_CDP_URL=http://localhost:9222 环境变量已设；browser-harness.exe 管道式 Python（new_tab/js/capture_screenshot/click_at_xy/cdp 原始命令）。0804 复盘教训（JS 需完整 IIFE、js() 必须 return、复杂箭头 heredoc 易错）已固化进 skill。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">怎么接入</span><p>chrome-debug.ps1：powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\.config\opencode\scripts\chrome-debug.ps1（检查 http://localhost:9222/json/version，无则启动 Chrome + --remote-debugging-port=9222 + --user-data-dir 独立 profile）；browser-harness 通过 BU_CDP_URL 连接 daemon；browser-harness --doctor 诊断；远程/云浏览器用 browser-harness auth login（Browser Use cloud）。</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p>管道喂 Python 脚本：$pyScript | browser-harness.exe（Windows 用 @&quot;...&quot;@ heredoc，不用 &lt;&lt;PY）；流程：new_tab(url) 首次导航 → wait_for_load() → capture_screenshot() 看状态 → js()/click_at_xy() 交互 → 完成后 close-chrome-tabs.ps1 -KeepFirst 收尾；原始能力用 cdp(&quot;Domain.method&quot;, ...)。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

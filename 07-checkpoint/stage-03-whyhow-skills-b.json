@@ -1,0 +1,324 @@
+[
+    {
+        "id":  "skill-openspec-explore",
+        "name":  "openspec-explore",
+        "why_history":  "2026-08-04 随 Superpower 安装批量引入（来自 OpenSpec 上游 14 skills，作者 openspec）。0803 完成 OpenSpec/Superpower 设计细粒度解析后，用户决定取长补短、按需本地化，在 Plan 阶段识别出 openspec-superpowers 与已有 skill 重叠而剔除，最终保留 13 个 openspec skills + README，全部改为中文简短描述（zero-shot CoT）。explore 是其中\"思考立场\"型 skill：OpenSpec 设计哲学是 CLI 提供信息、Agent 做决策，探索模式不写代码、只分析需求与方案，作为进入工件 DAG 前的自由思考入口。",
+        "why_current":  "所有 OpenSpec 变更的思考前置：分析代码、理清需求、比较方案、可视化权衡。当前 DAG 化改造（0817-opencode-dag）中，装配层历史事件采集即由 explore 型子Agent 完成；本地系统强调 Plan 先行（Grill-Me 协议），explore 是 Plan 阶段的分析立场。",
+        "how_trigger":  "用户不确定要做什么、需要先思考再动手时触发；description 触发词含\"探索\"\"分析需求\"\"比较方案\"；或显式 /openspec-explore。",
+        "how_workflow":  [
+                             "进入探索立场：自由提问、挑战假设、重构问题，允许 ASCII 图可视化",
+                             "调查代码库：映射现有架构、找集成点、识别隐藏复杂度、做方案对比表",
+                             "绝不写实现代码；可创建 proposal/design/specs 等思考产物（捕获思考而非实施），想实施时提示先退出 explore 创建变更提案"
+                         ],
+        "how_collaboration":  "与 openspec-propose/ff-change/new-change 衔接（探索结论 → 工件生成）；可作为子Agent 采集语义时使用",
+        "evidence":  "SKILL.md description（探索模式，不写代码）；0804-Superpower安装报告（14 skills 安装+中文描述策略）；0803-OpenSpec_Superpower解析 01-设计解析报告（工件 DAG、CLI 提供信息 Agent 做决策）"
+    },
+    {
+        "id":  "skill-openspec-propose",
+        "name":  "openspec-propose",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。0803 解析报告识别其本质是封装 continue+ff 的一步式入口：创建 change 并一键生成全部工件（proposal/specs/design/tasks）。引入动机：让\"明确知道要做什么\"的场景不必逐步交互，直接产出 spec-driven 四工件，交给 apply-change 实施。对应 OpenSpec 工件 DAG 的快速入口设计。",
+        "why_current":  "当前用于本地装配层改造（如 openspec 系列技能自身维护、DAG 交付物生成）等明确变更的提案创建；与 apply-change 配对构成\"提案→实施\"主链路。",
+        "how_trigger":  "用户明确知道要做什么、需要创建变更提案时；description 触发词\"变更提案\"\"propose\"；或显式 /openspec-propose \u003c变更名\u003e。",
+        "how_workflow":  [
+                             "从用户描述派生 kebab-case 变更名（无输入则开放式提问）",
+                             "创建 change 目录，按 spec-driven 默认 schema 生成 proposal/specs/design/tasks 四工件（依赖序循环）",
+                             "完成后提示接续 /openspec-apply-change 实施"
+                         ],
+        "how_collaboration":  "上游衔接 openspec-explore；下游交给 openspec-apply-change；被 superpowers-openspec-superpowers-workflow 编排器作为工件生成步骤引用",
+        "evidence":  "SKILL.md description（一键生成 proposal/design/specs/tasks）；0804-Superpower安装报告；0803-01-设计解析报告（propose 是一步式入口，skip_specs 门控）"
+    },
+    {
+        "id":  "skill-openspec-new-change",
+        "name":  "openspec-new-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。与 propose 互补：propose 一键全生成，new-change 是实验性 artifact-driven 逐工件交互式创建——只创建变更目录并展示首个工件模板后停止，等待用户逐级确认。引入动机：为\"复杂或需精细控制的场景\"提供比 propose 更细粒度的路径，防止一次生成导致方向偏差。",
+        "why_current":  "复杂变更需要逐步确认每个工件时使用；本地改造强调 Grill-Me 逐项决策，new-change 与之同构（一步一确认），适合精细控制场景。",
+        "how_trigger":  "用户要求逐步创建新变更、需要精细控制时；description 触发词\"逐步创建\"\"细粒度\"；或显式 /openspec-new-change。",
+        "how_workflow":  [
+                             "询问要构建什么，派生 kebab-case 变更名",
+                             "选择 workflow schema（默认 spec-driven，用户点名时用 openspec schemas 选择）",
+                             "创建变更脚手架后展示第一个工件模板即停止，等待用户方向后再继续（防越步守门）"
+                         ],
+        "how_collaboration":  "与 openspec-continue-change 衔接（后续工件逐个续做）；被 superpowers-openspec-superpowers-workflow 作为细粒度模式引用",
+        "evidence":  "SKILL.md description（比 propose 更细粒度，逐个工件交互式创建）；0804-Superpower安装报告（13 openspec skills 安装清单）"
+    },
+    {
+        "id":  "skill-openspec-continue-change",
+        "name":  "openspec-continue-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。对应 OpenSpec 工件 DAG 的\"增量路径\"：按 DAG 依赖顺序生成下一个未完成工件后停止。引入动机：恢复中断的工作——会话打断后不需重头再来，一条命令续上缺失工件。0803 解析报告明确指出 continue 走增量路径是工件 DAG 相对瀑布流程的关键优势。",
+        "why_current":  "本地任务跨会话/被中断频繁（如多阶段 DAG 交付、长任务 checkpoint），continue-change 是恢复上下文的标准入口；也用于 openspec-apply-change 检测到 blocked 状态时的引导。",
+        "how_trigger":  "继续已有变更时触发（用户说\"继续上次的变更\"）；description 触发词\"继续\"\"恢复中断\"；或显式 /openspec-continue-change。",
+        "how_workflow":  [
+                             "选择变更（按最近修改排序并推荐最新者）",
+                             "解析 status 判断 artifacts 状态（done/skipped/ready/blocked）",
+                             "对首个 ready 工件获取 instructions（模板+context+rules）创建单个工件后停止，全部完成则提示可实施或归档"
+                         ],
+        "how_collaboration":  "上游衔接 new-change/propose（工件创建续作）；被 apply-change 在 blocked 时推荐；被 superpowers 编排器用作 continue-dev 交接命令",
+        "evidence":  "SKILL.md description（按 DAG 顺序生成下一个未完成工件）；0803-01-设计解析报告（continue 走增量路径）"
+    },
+    {
+        "id":  "skill-openspec-ff-change",
+        "name":  "openspec-ff-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。FF = fast-forward，一键生成所有 OpenSpec 工件跳过逐步交互。0803 解析报告识别其机制：按 requires 依赖边传递闭包（applyRequires 可达集）确定必建工件集合，循环创建。引入动机：为有经验用户或简单变更提供快速通道，避免逐个确认的低效。",
+        "why_current":  "简单变更或用户有经验时的默认快速路径；本地 DAG 化任务中作为快速建模入口，减少交互轮次。",
+        "how_trigger":  "用户要求快速生成全部 OpenSpec 工件（\"快速通道\"\"ff\"）；或显式 /openspec-ff-change；有经验用户处理简单变更时。",
+        "how_workflow":  [
+                             "派生变更名（无输入则询问要构建什么）",
+                             "openspec new change 创建脚手架，解析 status 的 applyRequires 与 artifacts requires 边",
+                             "按依赖序循环对每个 ready 工件获取 instructions 并生成，todo 列表跟踪进度，处理 skip_specs/可选 design 条件跳过"
+                         ],
+        "how_collaboration":  "与 propose 等价入口（两者都封装全生成）；下游交给 apply-change 实施",
+        "evidence":  "SKILL.md description（快速通道一键生成所有工件）；0803-01-设计解析报告（ff 一键全生成）"
+    },
+    {
+        "id":  "skill-openspec-apply-change",
+        "name":  "openspec-apply-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。spec-driven 工作流的实施端：tasks.md 就绪后逐条完成实现任务并打勾。引入动机：OpenSpec 强调\"先同意要构建什么再写代码\"，apply 是锁定规格后的编码执行器，通过 openspec instructions apply 获取 contextFiles/进度/任务列表，处理 blocked/all_done 状态。",
+        "why_current":  "所有 OpenSpec 变更的实施环节（specs 锁定后进入编码）；与 propose/ff 配对构成完整闭环；本地装配层代码改动若走 OpenSpec 流程即经此实施。",
+        "how_trigger":  "tasks.md 就绪开始编码时（description 触发词\"实现任务\"\"打勾\"）；或显式 /openspec-apply-change；被 propose/ff 完成后提示接续。",
+        "how_workflow":  [
+                             "选择变更并解析 status（schemaName/planningHome/actionContext）",
+                             "获取 apply 指令（contextFiles/任务列表/进度/动态指令），blocked 状态转 continue-change，all_done 建议归档",
+                             "逐条实现任务并打勾，遵守 context 项目约束与 operationGuidance 建议"
+                         ],
+        "how_collaboration":  "上游衔接 propose/ff/new-change；blocked 时转 continue-change；完成后转 verify-change 验证、archive-change 归档",
+        "evidence":  "SKILL.md description（执行 tasks.md 实现任务）；0803-01-设计解析报告（spec-driven 先规格后实现）"
+    },
+    {
+        "id":  "skill-openspec-verify-change",
+        "name":  "openspec-verify-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。归档前的可选校验步骤：验证实现是否匹配 spec/design/tasks，从完整性/正确性/一致性三维度生成 CRITICAL/WARNING/SUGGESTION 报告。引入动机：OpenSpec 的\"先规格后实现\"需要回环验证，防止实现漂移；0805-Reflection系统设计文档将其列为\"已有类似 Reflection 机制\"之一（Plan 验证信号）。",
+        "why_current":  "归档前的质量闸门：验证实现与工件一致后才允许归档；当前 DAG 交付与装配层改造中的规格实现均以此为一致性校验参照。",
+        "how_trigger":  "实现完成后、归档前可选调用（description 触发词\"验证\"\"校验\"）；或显式 /openspec-verify-change。",
+        "how_workflow":  [
+                             "选择有 tasks 工件的变更（未完成任务标 In Progress）",
+                             "解析 status 与 schema，比对 tasks/spec/design 与实现",
+                             "输出三维验证报告（CRITICAL/WARNING/SUGGESTION）与修复建议"
+                         ],
+        "how_collaboration":  "上游衔接 apply-change；下游衔接 archive-change/sync-specs；被 Reflection 系统作为验证信号参照",
+        "evidence":  "SKILL.md description（验证实现匹配 spec/design）；0805-Reflection系统设计文档 1.2（openspec-verify 是已有 Reflection 替代机制之一）"
+    },
+    {
+        "id":  "skill-openspec-archive-change",
+        "name":  "openspec-archive-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。实现完成并验证通过后归档：将 delta spec 合并到主 spec 并移动到 archive。引入动机：OpenSpec 的 Delta Spec 机制——变更中的 spec 是增量（ADDED/MODIFIED/REMOVED/RENAMED），归档时才合并到主 spec，保证并发变更与审视回滚能力（0803 解析报告）。",
+        "why_current":  "每个 OpenSpec 变更生命周期的收尾；归档时智能合并 delta 到主 spec（agent 驱动读 delta 编辑主 spec）；本地长期维护的规格知识库依赖此增量合并。",
+        "how_trigger":  "变更实现完成并验证通过后（description 触发词\"归档\"\"合并 delta\"）；或显式 /openspec-archive-change。",
+        "how_workflow":  [
+                             "选择变更，加载归档指令上下文（instructions archive）",
+                             "检查工件与任务完成度（未完成警告/冲突处理）",
+                             "delta spec 合并到主 spec（调用 sync-specs 逻辑）并移动变更到 archive"
+                         ],
+        "how_collaboration":  "上游衔接 verify-change；内部调用 sync-specs；被 superpowers 编排器作为归档收尾步骤",
+        "evidence":  "SKILL.md description（归档已完成的变更）；0803-01-设计解析报告（Delta Spec 归档时合并）"
+    },
+    {
+        "id":  "skill-openspec-bulk-archive-change",
+        "name":  "openspec-bulk-archive-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。批量归档多个已完成变更的单次操作：多选（含全选），智能处理 spec 冲突——通过检查代码库判断实际实现。引入动机：多变更并行推进后需要批量收尾，避免逐条归档的低效；冲突处理是批量场景特有需求。",
+        "why_current":  "累积多个已完成变更需要批量收尾时；本地多线程/多窗口任务（如 DAG 多窗口交付）产生多个并行变更，批量归档是配套收尾能力。",
+        "how_trigger":  "用户要求批量归档多个变更（description 触发词\"批量归档\"\"多个\"）；或显式 /openspec-bulk-archive-change。",
+        "how_workflow":  [
+                             "openspec list 获取全部 active changes（无则提示停止）",
+                             "用户多选变更（含 All changes 选项，绝不自动全选）",
+                             "逐变更收集工件状态/任务完成度/delta spec，统一校验（冲突检查与代码库核对），窄化 delta 同步范围（排除未实现 delta），混合 schema 独立评估后统一归档"
+                         ],
+        "how_collaboration":  "上游衔接多个 verify-change 完成的变更；内部复用 sync-specs 合并逻辑",
+        "evidence":  "SKILL.md description（批量归档多个已完成变更）；0804-Superpower安装报告（安装清单含 bulk-archive）"
+    },
+    {
+        "id":  "skill-openspec-update-change",
+        "name":  "openspec-update-change",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。编辑/协调已有 OpenSpec 工件并保持一致性，处理手动修改后的重新同步，不创建缺失工件。引入动机：OpenSpec 工件是文件系统状态（状态=文件系统内容，0803 解析），用户可能手动改工件导致漂移，需要协调工具保持 proposal/specs/design/tasks 间一致。",
+        "why_current":  "工件被手动修改或需求变更需要跨工件协调时；本地改造中 SKILL.md/规格文档被人工编辑后的一致性校验，与\"修改安全链\"理念一致。",
+        "how_trigger":  "编辑/协调已有 OpenSpec 工件时（description 触发词\"编辑\"\"协调\"\"重新同步\"）；或显式 /openspec-update-change。",
+        "how_workflow":  [
+                             "选择变更（按最近修改推荐）",
+                             "一致性审查（矛盾/缺口/重复）或按请求定向修改",
+                             "跨工件双向协调（任意方向），逐工件确认后写入；不创建缺失工件（缺失时指向 continue-change）"
+                         ],
+        "how_collaboration":  "与 continue-change 区分（update 不新建工件）；上游衔接手动编辑场景；被 apply/archive 作为一致性保障",
+        "evidence":  "SKILL.md description（编辑/协调已有工件）；0803-01-设计解析报告（状态=文件系统内容）"
+    },
+    {
+        "id":  "skill-openspec-sync-specs",
+        "name":  "openspec-sync-specs",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。agent 驱动的 delta→主 spec 同步操作（不归档）：读 delta specs 直接编辑主 specs，允许智能合并（如加场景不复制整个需求）。引入动机：Delta Spec 机制的中间态——归档前需要把增量合并进主 spec，但合并要\"智能\"而非机械覆盖，故做成独立 agent 驱动 skill。仅被 archive-change 或显式召唤时使用。",
+        "why_current":  "归档流程内部依赖（archive-change 调用）；需要独立合并 delta 不归档时显式使用；是主 spec 知识库保持新鲜的机制。",
+        "how_trigger":  "仅被 archive-change 内部调用或用户显式召唤（description 明确\"仅被 archive-change 或显式召唤时使用\"）。",
+        "how_workflow":  [
+                             "选择有 delta spec 的变更（specs/ 目录）",
+                             "解析 status 的 planningHome.root（store 感知主 spec 路径）",
+                             "按 existingOutputPaths 唯一定位 delta，对 ADDED/MODIFIED/REMOVED/RENAMED 段智能合并进主 spec，窄化同步范围（显式名单）"
+                         ],
+        "how_collaboration":  "被 archive-change/bulk-archive-change 内部调用；与 openspec-update-change 互补（update 管工件，sync 管 spec）",
+        "evidence":  "SKILL.md description（同步 delta spec 到主 spec）；0803-01-设计解析报告（Delta Spec 机制、归档时合并）"
+    },
+    {
+        "id":  "skill-openspec-onboard",
+        "name":  "openspec-onboard",
+        "why_history":  "2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。引导首次用户完成完整 OpenSpec 流程的教学 skill：预检 CLI 后走 welcome→选任务→建变更→proposal/specs/design/tasks→实现→归档完整周期。引入动机：OpenSpec 工件 DAG 概念（requires 边/Delta/归档）对新手有学习曲线，需要边做边讲的实战教学入口，降低首次使用门槛。",
+        "why_current":  "新成员/新项目引入 OpenSpec 工作流时；教学式引导保证首次使用者理解工件 DAG 全流程（与本地\"培训/教学\"类任务需求一致）。",
+        "how_trigger":  "首次使用 OpenSpec 的用户请求引导（description 触发词\"引导\"\"教程\"\"首次\"）；或显式 /openspec-onboard。",
+        "how_workflow":  [
+                             "预检 OpenSpec CLI 是否安装（未装则提示先安装）",
+                             "欢迎 + 选任务（TODO/FIXME 扫描 + git 活动）",
+                             "在真实代码库边做边讲完整周期（建变更→四工件→实现→归档），15-20 分钟实战走查"
+                         ],
+        "how_collaboration":  "教学主入口；周期内各步骤映射到 new-change/propose/apply/verify/archive 各 skill",
+        "evidence":  "SKILL.md description（手把手带领首次用户完成完整流程）；0804-Superpower安装报告（安装清单含 onboard）"
+    },
+    {
+        "id":  "skill-recruit-assist",
+        "name":  "recruit-assist",
+        "why_history":  "完全自创（无上游），2026-07-04 创建（早于 8 月改造周期），2026-08-05 重大优化。初始动机：简历投递全流程自动化——投简历（浏览器打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、飞书表格双向同步。0804-recruit优化报告记载：京东校招投递（campus.jd.com）执行严重卡壳（浏览器脚本试错 4+ 次、行定位误判、row 追加失败），用户反馈\"执行过程很卡壳，反思总结经验然后计划优化原 skill\"，据此新增 tracker_writer.py 一体化脚本（JSON 输入→备份→定位→写入→打包→全量验证→失败回滚）并修正 SKILL.md 三处错误。0805 又发生简历跟踪上传事故（京东数据误写 row 774 导致 737 空行污染飞书），再修正则+游标定位。0802-opencode改造盘点报告认定其为\"完全自创\"。",
+        "why_current":  "求职季投递主场景：投简历、跟踪企业、飞书同步持续使用；browser-harness（CDP 浏览器自动化）与 tracker_writer.py 组成的投递管线是当前求职流程核心工具（0815-opencode-dsh桥接将其收入 exec-recruit 特设 preset 与 browser-harness 搭配）。",
+        "how_trigger":  "触发关键词：投简历、识别简历、更新信息库、记录投递、跟踪企业、招聘、简历投递、上传简历跟踪、下载简历跟踪、提取表单；或显式 /recruit-assist（0815 起为 user-invocable 手势）。",
+        "how_workflow":  [
+                             "投简历：启动 Chrome 远程调试（chrome-debug.ps1）→ browser-harness CDP 打开招聘页 → tracker_writer.py add 写入投递跟踪表",
+                             "识别简历/更新信息库/记录投递/跟踪企业：表单字段扫描（JS IIFE 提取）匹配信息库",
+                             "飞书同步：sync_feishu.py 增量上传/全量下载（.sync_state.json 状态机），上传/下载简历跟踪"
+                         ],
+        "how_collaboration":  "依赖 browser-harness skill（CDP 浏览器自动化）；与 resume-builder/soe-resume 构成简历求职 skill 群（0815 起共同收入 exec-recruit preset）；Excel 跟踪表/飞书表格为外部数据源",
+        "evidence":  "SKILL.md description（8 个触发流程）；0804-recruit优化任务留档（卡壳复盘+tracker_writer.py 新增）；0805 简历跟踪上传事故（MEMORY 条目+tracker_writer_memory.md）；0802-opencode改造盘点报告（完全自创，414 行+4 脚本）"
+    },
+    {
+        "id":  "skill-resume-builder",
+        "name":  "resume-builder",
+        "why_history":  "自创/整合，2026-05-28 创建（早于 8 月改造周期）。0802-opencode改造盘点报告：上游最接近 yanliudesign/resume-builder-skill（36 星），本地整合 Novoresume/Jobscan/Coursera/ResumeGenius/freeCodeCamp 等 5+ 权威来源方法论，5 大命令体系（/resume-create 从零创建、ATS 优化、岗位定制、求职信、面试准备）。引入动机：用户处于求职季（硕士在读，需中英文简历多版本），需要系统化的 ATS 友好简历方法论与岗位定制能力，而非零散技巧。参考文档存放于 D:\\学，都可以学\\研一\\简历相关\\opencode缓存\\。",
+        "why_current":  "求职季简历创作主工具：从零创建、ATS 优化、JD 关键词定制、cover letter、STAR 面试演练持续使用（0811-英文简历制作任务即其方法论应用）；0815 起与 recruit-assist/soe-resume 共同收入 exec-recruit preset（简历求职域）。",
+        "how_trigger":  "触发关键词：简历、resume、CV、求职信、cover letter、面试、改简历、写简历、优化简历、找实习、找工作、STAR、ATS；或显式 /resume-builder（user-invocable 手势，0815 起 disable-model-invocation 仅手势入口）。",
+        "how_workflow":  [
+                             "/resume-create 从零创建：收集背景+目标岗位 → 分析 JD → 生成完整简历内容",
+                             "ATS 优化与评分：按 ATS 标准检查格式/关键词，简历评分与修改建议",
+                             "岗位定制（JD 关键词提取）→ 生成配套 Cover Letter → STAR 法则面试准备"
+                         ],
+        "how_collaboration":  "与 recruit-assist（投递）、soe-resume（央国企简历）构成简历求职三件套；知识源来自 5+ 权威英文来源；输出到简历相关目录供后续投递使用",
+        "evidence":  "SKILL.md description（5 大能力+自动触发规则）；0802-opencode改造盘点报告（自创/整合，上游 yanliudesign/resume-builder-skill，整合 5+ 来源）；0811-英文简历制作任务（方法论实际应用）"
+    },
+    {
+        "id":  "skill-agent-reflection",
+        "name":  "agent-reflection",
+        "why_history":  "2026-08-05 由 Reflection 系统设计部署时创建（Reflection 系统本身非反思产物，而是基础设施——Hermes 式自进化系统的核心 Skill）。0805-Reflection系统设计文档记载：用户发现当前仅有 Plan-and-Execute 模式，缺少系统化 Reflection 层（MEMORY.md 事后反馈、留档反思段、openspec-verify 都是零散被动的），参考 Hermes Agent 自进化架构（Background Review/Curator/Skills+Memory 双轨），35 项决策收敛后实现。动机三优先级：持续自我改进 \u003e 减少重复错误 \u003e 提升 Plan 质量。架构：Plan+Build 周期结束封装 4 层输入写 pending.json，下轮启动委派 reflection-worker（Flash 仅文件读写）分析产出 memory/skill 条目，/reflection 交互确认后写入 MEMORY.md 或 Reflection/skills/。",
+        "why_current":  "是全部 Reflection skills 的母系统：每个 Plan+Build 周期结束自动触发反思沉淀，维持\"系统越用越聪明\"的进化回路；当前 0817 批量确认的 DAG/cdisk/github 等 7 个 skills 均由本系统的 reflection-worker 提炼（pending.json 有完整 skill_entries 证据）。",
+        "how_trigger":  "MEMORY.md 自引用规则：用户下一条消息时主Agent 检查 meta.waiting_count\u003e0 自动加载；用户随时 /reflection 交互式逐条确认 pending 条目；触发词 reflection、同步记忆、反思。",
+        "how_workflow":  [
+                             "Plan+Build 周期结束 → 主Agent 封装 4 层输入写 pending.json（waiting）",
+                             "下一轮用户消息 → 委派 reflection-worker（Flash，仅文件读写）分析产出 memory/skill 条目（status=done），主Agent 不阻塞继续正常流程",
+                             "用户 /reflection → 逐条确认 → Memory 写 MEMORY.md（§-分段）/ Skill 写 Reflection/skills/{category}/{name}/SKILL.md → 条目 confirmed"
+                         ],
+        "how_collaboration":  "调度 reflection-worker 子Agent；产出物（Reflection skills/memory）供全部主Agent 加载；与 MEMORY.md、留档系统、agent-protocol.md 深度耦合",
+        "evidence":  "0805-Reflection系统设计文档+任务完成情况报告（架构/35 决策/实现）；agent-reflection SKILL.md（架构图：Plan+Build→pending.json→reflection-worker→/reflection）；pending.json 备份（各 cycle 的 skill_entries/memory_entries 实际产出）"
+    },
+    {
+        "id":  "skill-postmortem-failure-review",
+        "name":  "postmortem-failure-review",
+        "why_history":  "2026-08-05 23:43 创建（文件 CreationTime 证据），由 0805-网申扩展失败复盘 提炼（推断：当天失败复盘完成并留档，随即固化为方法论 skill）。0805-网申扩展失败复盘报告记载：自制网申扩展（10 Agent 矩阵、60+ 源码文件、13 BLOCKER 全修复）最终被标记失败，复盘发现五类根因——路线选择错误（架构与参考模式背道而驰）、核心能力从未就绪、过度工程（架构幻影死代码）、产品质量门控缺失、用户门槛过高（7 步安装 vs 参考方案加载即用），并产出可复用资产清单（A/B/C 三级）。本 skill 将这套复盘方法论固化为五因框架 + 双 explore 并行 + 资产盘点 + v2 建议的标准化流程。",
+        "why_current":  "失败/部分失败项目的系统性复盘入口：先区分路线错误与执行错误（路线错误代价高且无法修补），五因框架分类，产出 5 段式复盘报告+可复用资产清单；当前 DAG 改造等高风险任务完成后可用作事后质量审计。",
+        "how_trigger":  "触发关键词：失败复盘、为什么失败、复盘、postmortem、教训、项目失败分析；用户对失败项目要求系统性复盘时。",
+        "how_workflow":  [
+                             "Step1 根因层级判定：对照参考项目判断架构模式是否一致（路线错误最高优先级）",
+                             "Step2 并行探索：委派 explore-failed-project（dead code 审计）与 explore-reference（核心模式统计+gap 分析）两个 explore Agent",
+                             "Step3 资产盘点 A/B/C 三级（复用价值×影响力排序）+ 产出 v2 设计建议与 MVP 最小化清单 + 5 段式复盘报告"
+                         ],
+        "how_collaboration":  "委派 2 个 explore 子Agent（失败项目/参考项目）；产出资产清单交给 reusable-asset-inventory；复盘结论回流 Reflection 系统（本 skill 自身即反思产物）",
+        "evidence":  "SKILL.md（五因框架/双 explore 委派/资产盘点）；0805-网申扩展失败复盘失败复盘报告（五类根因与教训完全对应）；Reflection\\skills\\postmortem-failure-review\\SKILL.md CreationTime 2026-08-05 23:43"
+    },
+    {
+        "id":  "skill-reusable-asset-inventory",
+        "name":  "reusable-asset-inventory",
+        "why_history":  "2026-08-05 23:43 创建（文件 CreationTime 证据），由 0805-网申扩展失败复盘提炼（推断：与 postmortem-failure-review 同批固化）。0805-网申扩展失败复盘的可复用资产清单.md 是其直接原型：从自制扩展+参考塔塔网申神器两项目中提取 A/B/C 三级资产（A1 Handler trigger 逻辑 54 个函数、A2 表单扫描管道、A3 XPath 生成工具、A4 CSS、A5 元素分组系统），按\"复用价值×影响力\"排序，gap 清单映射 v2 补全优先级。本 skill 将\"失败项目≠全盘皆输\"的抢救方法论固化为独立 skill：三级分类标准 + 优先级排序公式 + 参考项目对标。",
+        "why_current":  "项目失败或重写 v2 前抢救可复用资产的标准流程；客观评估哪些代码值得保留、哪些该丢弃；与 postmortem 配对构成\"失败→抢救\"闭环（失败复盘后必接资产盘点）。",
+        "how_trigger":  "触发关键词：可复用资产、资产盘点、复用清单、资产清单、asset inventory、代码复用评估；项目失败/重写前需要盘点旧资产时。",
+        "how_workflow":  [
+                             "A/B/C 三级分类：A 可直接复用（成熟独立已验证）→ 直接移植；B 需修改复用（耦合旧架构）→ 列修改点再移植；C 仅参考思路（依赖已废弃路线）→ 只提取设计思路",
+                             "优先级排序：复用价值（独立完整性×逻辑成熟度）× 影响力（对填入成功率/核心能力贡献），输出\"最高优先级 \u003e ... \u003e 最低\"",
+                             "对标参考项目：统计关键组件数（如 Handler 数）+ 提炼核心模式（如\"服务端驱动+4 级 fallback 链\"）+ 找 gap → gap 清单直接映射 v2 补全优先级"
+                         ],
+        "how_collaboration":  "被 postmortem-failure-review Step3 调用（资产盘点环节）；产出供 v2 重写规划；参考项目探索依赖 explore 子Agent",
+        "evidence":  "SKILL.md（三级分类/排序公式/对标）；0805-网申扩展失败复盘可复用资产清单.md（A1-A5 实际盘点样例）；CreationTime 2026-08-05 23:43"
+    },
+    {
+        "id":  "skill-large-scale-source-parse",
+        "name":  "large-scale-source-parse",
+        "why_history":  "由 cycle-20260814-deepseek-harness-parse 反思提炼（pending.json.bak-20260817 证据：sk-20260814-source-parse，category=coding，创建时间 2026-08-17，verdict\"9层架构/7阶段委派，提炼 1 个可复用 Skill + 2 条 Memory\"）。源任务 0814-deepseek-harness源码解析：DeepSeek Harness 源码浅 clone（1316+ ts 文件+vendor），9 层抽象/235 modules/816 functions/31 drawio/双集群交付（AI 友好 MD 集群+人友好 HTML 集群）。方法论核心：主Agent 只做调度/聚合/裁决，解析工作量委派子Agent 并行；三源交叉验证（官方文档/Discussions/社区）+ 三硬依据（E1 编译/E2 运行时/E3 组合）+ 子Agent 口径不一致由主Agent 终裁。",
+        "why_current":  "大型开源项目源码架构解析的标准流程（数百至数万文件）：浅 clone 快照 + 层级骨架先行 + 三源交叉 + 并行解析 + 归一化裁决 + 双交付；是 DAG 分析（multi-window/cytoscape）的上游互补方法论（三个 DAG skill 均声明引用其为通用基础）。",
+        "how_trigger":  "触发关键词：源码解析、架构解析、source analysis、9层解析、DAG依赖链、跨层联动、源码clone、架构文档；解析大型开源项目源码架构时。",
+        "how_workflow":  [
+                             "快照准备（浅 clone+官方文档镜像双依据）→ 层级骨架先行（9 层抽象+目录交叉索引）→ 三源交叉验证（印证/矛盾/独家/待裁决/参考五类管理）",
+                             "按层分派 explore 子Agent 并行解析，每条结论要求三硬依据+源码行引用，返回结构化 JSON",
+                             "归一化与裁决（口径不一致由主Agent 终裁，异构结构统一 schema ≤2 次重试）→ 跨层联动矩阵 → 图表/文档生成 → 质量门控 → checkpoint 续传"
+                         ],
+        "how_collaboration":  "委派 explore 子Agent 按层并行；产出供 multi-window-dag-delivery（DAG 分析）与 cytoscape-dag-visualization（渲染）消费；与 drawio-worker（图表）协作",
+        "evidence":  "pending.json.bak-20260817 cycle-20260814-deepseek-harness-parse（skill_entries: large-scale-source-parse + 2 memory）；0814-deepseek-harness源码解析交付物（9层/235 modules/816 functions/31 drawio）；SKILL.md 概述（源自 DeepSeek Harness 源码架构解析实战）"
+    },
+    {
+        "id":  "skill-github-bulk-upload",
+        "name":  "github-bulk-upload",
+        "why_history":  "由 cycle-20260815-deepseek-harness-upload-github 反思提炼（pending.json.bak-20260817 证据：sk-20260815-github-upload，category=coding，创建时间 2026-08-17，verdict\"大仓库 schannel 中断 postBuffer、gh CLI 代理设备码登录、权限 deny 转用户手动 push，提炼 1 个可复用 Skill + 2 条 Memory\"）。源任务 0815-deepseek-harness-上传github：将 100+MB/8102 文件交付物全量上传 GitHub（zako-mio/deepseek-harness-analysis），经历 gh 未安装、直连超时走代理设备码登录、嵌套 .git 被识别为 gitlink（仅暂存 691 文件）、schannel 中断（postBuffer 500MB 调优）、git push 权限 deny 转用户手动 push 等坑。方法论还吸收 jiayu6954-sudo/github-upload-skill、Superstar0000/github-auto-upload-skill、zeke/faster-gh-cli-skill 三处开源方法论（本 skill 独立自建，覆盖其差距：嵌套 .git 剥离/postBuffer/代理登录/权限协作）。",
+        "why_current":  "大型交付物/源码克隆（100+MB/数千文件）上传 GitHub 的标准流程：预检（README/LICENSE/敏感扫描）→ 代理登录 → git 初始化 → 嵌套 .git 处理 → 全量提交 → postBuffer 调优 → 推送与协作（权限 deny 转用户）→ 上传后验证清单；当前 DAG 交付物（plugin-dag/opencode-dag）上传 GitHub Pages 持续复用。",
+        "how_trigger":  "触发关键词：上传GitHub、GitHub上传、大仓库上传、gh repo create、git push、嵌套git、postBuffer、设备码登录；大型目录/交付物上传 GitHub 时。",
+        "how_workflow":  [
+                             "准备环境（安装 gh CLI、git 身份、预检 README/LICENSE/.gitignore + 敏感信息扫描）→ 代理登录（直连超时 HTTPS_PROXY=127.0.0.1:7890，设备码浏览器登录，gh auth status 先行）",
+                             "git init（main 分支）+ 断链修复 + 嵌套 .git 处理（git rm --cached + 删除内部 .git 后全量 add）",
+                             "全量 commit → gh repo create --public --source --push → schannel 中断时 http.postBuffer 调优 → 权限 deny 时转用户手动 push → 验证 remote tree 条目数/README/topics"
+                         ],
+        "how_collaboration":  "与用户协作（权限 deny 时移交手动 push）；被 DAG 交付链引用（0816/0817 DAG 交付物上传）；吸收三个开源 skill 方法论",
+        "evidence":  "pending.json.bak-20260817 cycle-20260815-deepseek-harness-upload-github（skill_entries: github-bulk-upload + 2 memory）；0815-deepseek-harness-上传github任务报告（8102 文件/嵌套 git/postBuffer/手动 push 全流程）；SKILL.md（10 步流程+三开源参照）"
+    },
+    {
+        "id":  "skill-multi-window-dag-delivery",
+        "name":  "multi-window-dag-delivery",
+        "why_history":  "由 cycle-20260816-plugin-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-multi-window-dag，category=coding，创建时间 2026-08-17，verdict\"多层窗口接力 DAG 方法论…提炼 1 个 Skill(multi-window-dag-delivery) + 3 条 Memory\"）。源任务 0816-plugin-dag：DeepSeek Harness 插件级 DAG 依赖链分析，76 核心插件+36 seam+194 边+8 拓扑层+24 组，与 L2/L3 窗口共同构成 219/219 包闭环。方法论核心：大型 DAG 分析拆窗口接力（核心集→web-app→其余），每窗口独立执行+落盘 PLAN-layerN.md 接力文件，下一窗口继承数据源+接力文件，PACKAGE-MAP 覆盖度终核，三硬依据（E1 编译/E2 运行时/E3 组合）+ 源码行引用。",
+        "why_current":  "大型源码/插件库（数百包）DAG 依赖链分析的标准方法论：单窗口无法完成时拆窗口接力，每窗口可独立执行、交付物同目录累计、门控逐层升级；是多窗口 DAG 交付（HTML/MD/drawio/交互图多形态）的分析层标准。",
+        "how_trigger":  "触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付；大型源码库 DAG 分析需要拆窗口接力时。",
+        "how_workflow":  [
+                             "窗口划分（核心集 base bundle → web-app → 其余），每窗口执行边界明确（完整执行+制定下一层计划）",
+                             "每窗口内部：N 路并行 explore 采集（三硬依据+文件:行号）→ build-dag.py 层次遍历（BFS）拓扑分层+无环校验 → DATA 注入交互总览 → gen-html/gen-md/drawio 批量 → quality-gate 门控",
+                             "窗口末尾落盘 PLAN-layerN.md 接力文件（数据接口+坑经验）→ 下一窗口继承 → PACKAGE-MAP 覆盖度终核（缺包=0 多包=0）+ 交付物逐项核对"
+                         ],
+        "how_collaboration":  "委派 N 路 explore 子Agent 并行采集；下游接 cytoscape-dag-visualization（渲染其 DAG JSON）；与 dag-tutorial-authoring（内容层）、large-scale-source-parse（通用基础）互补；drawio-worker 绘制静态图",
+        "evidence":  "pending.json.bak-20260817-final cycle-20260816-plugin-dag（skill_entries: multi-window-dag-delivery + 3 memory）；0816-plugin-dag README/REPORT（L1-L3 窗口、PLAN-layerN、PACKAGE-MAP）；SKILL.md（源自 0816-plugin-dag 第一层核心集实战）"
+    },
+    {
+        "id":  "skill-cytoscape-dag-visualization",
+        "name":  "cytoscape-dag-visualization",
+        "why_history":  "由 0816-plugin-dag 的 L2 与动态 DAG 两个 cycle 反思合并提炼（pending.json.bak-20260817-final 证据：cycle-20260817-plugin-dag-l2 产出 sk-20260817-interactive-dag-viz（interactive-dag-visualization，含环修复方法论/DATA 注入/disabled 标注），cycle-20260817-plugin-dag-dyn-github 产出 sk-20260817-cytoscape-dyn-dag（cytoscape-dynamic-dag，源码级动态图批量插入/染色/幂等）；最终 2026-08-17 23:00 合并为 cytoscape-dag-visualization）。源任务：0816-plugin-dag L2（134 节点/434 边/17 层/29 组，组级+下钻交互总览）+ 动态 DAG 批量插入（215 插件/1130 模块/1073 边/171 页）。方法论核心：数据注入零风险（按行替换 const DATA 而非 __DATA__ 占位符）、样式标注语义化（node[kind=disabled]）、环修复方法论、批量插入幂等、渲染必须视觉验证（VLM+headless 双轨）。",
+        "why_current":  "cytoscape.js 交互 DAG 可视化构建的标准方法论：单页交互总览（组级+下钻）+ 批量 HTML 页源码级动态 DAG；当前 0817-opencode-dag 三图交互交付（104 节点/154 边/38 组）即其应用；DAG 交付链的渲染层标准。",
+        "how_trigger":  "触发关键词：cytoscape、交互式DAG、DAG总览、下钻、DATA注入、disabled标注、环修复、动态DAG、模块依赖图、批量插入；构建组级+下钻交互 DAG 总览或批量动态 DAG 时。",
+        "how_workflow":  [
+                             "场景A 单页总览：数据合并与环修复 → DATA 注入（按行替换）→ 两级视图（组级+下钻）→ 样式标注（disabled 红色）→ 视觉验证（headless+VLM）",
+                             "场景B 批量插入：试点先行（4 核心 3 轮迭代）→ 全量解析（Windows 路径统一）→ 幂等批量插入（gen-html 干净页+apply 单次插入）→ 质量门控 → 上传/交付",
+                             "关键坑：cytoscape 缺 dagre 布局扩展→节点 0 渲染（vendor 补 cytoscape-dagre 4.0.0）；data(cls) 直接存颜色值；rankDir 按节点数（≥12 LR 横排）"
+                         ],
+        "how_collaboration":  "上游接 multi-window-dag-delivery（消费其 DAG JSON 节点/边/组/seam/disabled）；下游接 dag-tutorial-authoring（教程交互图）；共享 _shared/dag-core-methods.md（环修复/DATA 注入/双轨视觉验证）；drawio-worker 绘制静态图",
+        "evidence":  "pending.json.bak-20260817-final cycle-20260817-plugin-dag-l2 与 cycle-20260817-plugin-dag-dyn-github（两个 skill_entries：interactive-dag-viz + cytoscape-dyn-dag）；SKILL.md（源自 0816-plugin-dag L2 交互总览 134 节点+动态 DAG 批量）；_shared/dag-core-methods.md"
+    },
+    {
+        "id":  "skill-dag-tutorial-authoring",
+        "name":  "dag-tutorial-authoring",
+        "why_history":  "由 cycle-20260817-github-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-dag-tutorial，category=coding，创建时间 2026-08-17，verdict\"调研驱动编写、可读性规律编码为门控、DAG 边方向=学习顺序写进 schema、VLM 双轨验证抓脚本盲区…提炼 1 个 Skill(dag-tutorial-authoring) + 2 条 Memory\"）。源任务 0817-github-dag：GitHub 新手全功能 DAG 教程（35 节点/41 边/7 组/9 层，零基础读者），4 路并行调研（官方 A/B + 英文 C + 中文 D）交叉验证驱动编写，把\"好教程\"可读性规律（心智模型字段/无孤立节点/术语统一/场景链/新手走查）编码为可校验门控，节点页 8 区块模板（why/intro/scenario/web/cli/terms/summary/official_links）。实战事故：DAG 边方向写反导致拓扑分层颠倒（Layer0 出现 20 个高级节点），教训是边方向=学习顺序必须写进 schema。",
+        "why_current":  "面向零基础读者的概念/技能 DAG 教程编写标准方法论：调研先行→可读性规律编码为门控→统一 schema 并行写节点→双轨验证→新手走查→用户反馈闭环；当前知识 DAG 类交付（如 GitHub/Git 教程）复用；\"双轨交付一致性三原则\"（人类入口 .html/.md 仅 AI 镜像）亦由本 skill 固化为门控。",
+        "how_trigger":  "触发关键词：DAG教程、教程编写、学习路径、knowledge DAG、可读性门控、调研驱动编写、新手教程；编写面向初学者的概念/技能 DAG 教程时。",
+        "how_workflow":  [
+                             "调研先行（4 路并行：官方 A/B+英文 C+中文 D 交叉验证）→ 先写分析报告（5 段+方法论映射）再驱动节点内容",
+                             "可读性规律编码为门控（五要素）→ 统一 schema（8 区块模板+字段长度约束）交 3 路 general 并行写节点 → DAG 边方向=学习顺序写进 schema 注释",
+                             "双轨视觉验证（门控脚本结构检查+headless 截图+VLM 抓视觉盲区）→ 新手走查（零基础视角 N 页五要素全齐）→ 用户反馈修复后同步 README+quality-gate"
+                         ],
+        "how_collaboration":  "4 路调研子Agent（代理 127.0.0.1:7890+谷歌）+ 3 路 general 并行写节点；上游接 multi-window-dag-delivery（先分析再成教程）与 cytoscape-dag-visualization（交互总览）；共享 _shared/dag-core-methods.md",
+        "evidence":  "pending.json.bak-20260817-final cycle-20260817-github-dag（skill_entries: dag-tutorial-authoring + 2 memory）；0817-github-dag执行报告-5段式（边方向写反事故/可读性门控/VLM）；SKILL.md（源自 0817 GitHub 新手全功能 DAG 教程实战）"
+    },
+    {
+        "id":  "skill-cdisk-space-optimization",
+        "name":  "cdisk-space-optimization",
+        "why_history":  "由 cycle-20260817-cdisk-space-optimization 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-cdisk-optimization，category=system，创建时间 2026-08-17，verdict\"社交数据搬迁前先查注册表实测实际存储位置…junction 软链接零风险迁移…高危项半自动确认，提炼 1 个 Skill + 3 条 Memory\"）。源任务 0817-C盘空间优化：C 盘仅剩 11.6GB/128.8GB，用户提供 WizTree 4.31 全盘扫描 CSV（96 万文件条目），要求识别可搬迁/可清理项。关键发现：微信/QQ/企微数据经注册表实测全部已在 D 盘（微信 4.24G/QQ 9.64G/企微 1.24G），原计划\"社交数据搬迁\"全部取消；开发缓存（opencode 3.9G/npm 823M/pnpm 486M/m2 899M 等）用 junction 零风险迁移；还原点 10-12G 等高危项半自动确认模式。方法论核心：先查注册表/实测数据位置不凭默认路径假设；不可逆操作必先确认；不报告成功除非有新鲜验证证据。",
+        "why_current":  "Windows C 盘空间不足的标准处理流程：空间盘点→社交数据实测（注册表）→开发缓存 junction 搬迁→系统清理（高危项半自动确认）→验证+MD 手册留档；当前 C 盘空间管理持续复用（本 skill 是系统类元知识：关于\"如何安全做磁盘优化\"的方法论）。",
+        "how_trigger":  "触发关键词：C盘空间、磁盘清理、空间优化、junction、软链接、缓存搬迁、微信数据、QQ数据、还原点、系统清理；C 盘空间不足需要分析优化时。",
+        "how_workflow":  [
+                             "空间盘点（统计各目录占用识别大头，确定搬迁目标盘并确认空间充足）",
+                             "社交数据实测（微信/QQ/企微数据位置存注册表，勿按默认路径假设；实测已在 D 盘则取消搬迁避免无意义操作）",
+                             "开发缓存 junction 搬迁（复制→删除原目录→mklink /J 保留原路径，对应用透明零风险可逆）；系统清理（还原点高危半自动确认、Edge 缓存低危直接清、未勾选一律不处理）；验证释放空间数字+MD 手册双轨留档"
+                         ],
+        "how_collaboration":  "与用户协作（高危项逐项确认、暂存区用户验证后删除）；委派 reflection-worker 处理 pending 队列（本任务报告中记载）；产出 MD 操作手册留档",
+        "evidence":  "pending.json.bak-20260817-final cycle-20260817-cdisk-space-optimization（skill_entries: cdisk-space-optimization + 3 memory）；0817-C盘空间优化任务报告（注册表实测/junction/高危半自动确认）；SKILL.md（源自 2026-08-17 C盘空间优化实战）"
+    }
+]

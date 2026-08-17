@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resume-builder · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>resume-builder <span class="tag">装配层</span></h1>
+  <div class="sub">skill-resume-builder · skill · A6e-简历求职 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>简历制作助手：从零创建、ATS 优化、岗位定制（JD 关键词提取）、求职信、面试准备（STAR）与简历评分修改建议，基于 Novoresume/Jobscan 等权威来源方法论。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· /resume-create 从零创建<br>· ATS 优化与简历评分<br>· JD 岗位定制<br>· cover letter 生成<br>· STAR 面试演练<br>· 6 大板块简历模板</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>自创/整合，2026-05-28 创建（早于 8 月改造周期）。0802-opencode改造盘点报告：上游最接近 yanliudesign/resume-builder-skill（36 星），本地整合 Novoresume/Jobscan/Coursera/ResumeGenius/freeCodeCamp 等 5+ 权威来源方法论，5 大命令体系（/resume-create 从零创建、ATS 优化、岗位定制、求职信、面试准备）。引入动机：用户处于求职季（硕士在读，需中英文简历多版本），需要系统化的 ATS 友好简历方法论与岗位定制能力，而非零散技巧。参考文档存放于 D:\学，都可以学\研一\简历相关\opencode缓存\。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>求职季简历创作主工具：从零创建、ATS 优化、JD 关键词定制、cover letter、STAR 面试演练持续使用（0811-英文简历制作任务即其方法论应用）；0815 起与 recruit-assist/soe-resume 共同收入 exec-recruit preset（简历求职域）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：简历、resume、CV、求职信、cover letter、面试、改简历、写简历、优化简历、找实习、找工作、STAR、ATS；或显式 /resume-builder（user-invocable 手势，0815 起 disable-model-invocation 仅手势入口）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· /resume-create 从零创建：收集背景+目标岗位 → 分析 JD → 生成完整简历内容<br>· ATS 优化与评分：按 ATS 标准检查格式/关键词，简历评分与修改建议<br>· 岗位定制（JD 关键词提取）→ 生成配套 Cover Letter → STAR 法则面试准备</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（投递）、soe-resume（央国企简历）构成简历求职三件套；知识源来自 5+ 权威英文来源；输出到简历相关目录供后续投递使用</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

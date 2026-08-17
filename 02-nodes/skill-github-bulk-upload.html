@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>github-bulk-upload · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>github-bulk-upload <span class="tag">装配层</span></h1>
+  <div class="sub">skill-github-bulk-upload · skill · A6m-自进化 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>GitHub 大仓库全量上传方法论：处理嵌套 .git 被识别为 gitlink、大文件推送 schannel 中断（postBuffer 调优）、gh CLI 代理设备码登录、权限 deny 转手动 push，10 步流程含上传后验证清单。</p>
+
+  <h2>② 提供能力</h2>
+  <p>· 上传前预检（README/LICENSE/.gitignore/敏感扫描）<br>· 代理设备码登录（HTTPS_PROXY=127.0.0.1:7890）<br>· 嵌套 .git 剥离（gitlink 修复）<br>· http.postBuffer 调优<br>· 权限协作转用户手动 push<br>· 上传后验证清单+批量仓库上传</p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260815-deepseek-harness-upload-github 反思提炼（pending.json.bak-20260817 证据：sk-20260815-github-upload，category=coding，创建时间 2026-08-17，verdict&quot;大仓库 schannel 中断 postBuffer、gh CLI 代理设备码登录、权限 deny 转用户手动 push，提炼 1 个可复用 Skill + 2 条 Memory&quot;）。源任务 0815-deepseek-harness-上传github：将 100+MB/8102 文件交付物全量上传 GitHub（zako-mio/deepseek-harness-analysis），经历 gh 未安装、直连超时走代理设备码登录、嵌套 .git 被识别为 gitlink（仅暂存 691 文件）、schannel 中断（postBuffer 500MB 调优）、git push 权限 deny 转用户手动 push 等坑。方法论还吸收 jiayu6954-sudo/github-upload-skill、Superstar0000/github-auto-upload-skill、zeke/faster-gh-cli-skill 三处开源方法论（本 skill 独立自建，覆盖其差距：嵌套 .git 剥离/postBuffer/代理登录/权限协作）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>大型交付物/源码克隆（100+MB/数千文件）上传 GitHub 的标准流程：预检（README/LICENSE/敏感扫描）→ 代理登录 → git 初始化 → 嵌套 .git 处理 → 全量提交 → postBuffer 调优 → 推送与协作（权限 deny 转用户）→ 上传后验证清单；当前 DAG 交付物（plugin-dag/opencode-dag）上传 GitHub Pages 持续复用。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：上传GitHub、GitHub上传、大仓库上传、gh repo create、git push、嵌套git、postBuffer、设备码登录；大型目录/交付物上传 GitHub 时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 准备环境（安装 gh CLI、git 身份、预检 README/LICENSE/.gitignore + 敏感信息扫描）→ 代理登录（直连超时 HTTPS_PROXY=127.0.0.1:7890，设备码浏览器登录，gh auth status 先行）<br>· git init（main 分支）+ 断链修复 + 嵌套 .git 处理（git rm --cached + 删除内部 .git 后全量 add）<br>· 全量 commit → gh repo create --public --source --push → schannel 中断时 http.postBuffer 调优 → 权限 deny 时转用户手动 push → 验证 remote tree 条目数/README/topics</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与用户协作（权限 deny 时移交手动 push）；被 DAG 交付链引用（0816/0817 DAG 交付物上传）；吸收三个开源 skill 方法论</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>
