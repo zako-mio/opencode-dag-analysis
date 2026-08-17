@@ -98,6 +98,7 @@ const cyoc_console_support = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_console_support.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_console_support'] = cyoc_console_support; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

@@ -98,6 +98,7 @@ const cyoc_sdk = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_sdk.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_sdk'] = cyoc_sdk; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

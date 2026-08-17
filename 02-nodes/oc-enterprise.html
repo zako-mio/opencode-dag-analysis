@@ -98,6 +98,7 @@ const cyoc_enterprise = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_enterprise.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_enterprise'] = cyoc_enterprise; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

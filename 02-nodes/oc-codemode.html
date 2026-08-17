@@ -98,6 +98,7 @@ const cyoc_codemode = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_codemode.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_codemode'] = cyoc_codemode; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

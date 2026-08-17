@@ -98,6 +98,7 @@ const cyoc_stats_server = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_stats_server.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_stats_server'] = cyoc_stats_server; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

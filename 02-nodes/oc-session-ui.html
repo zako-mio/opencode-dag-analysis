@@ -98,6 +98,7 @@ const cyoc_session_ui = cytoscape({
   wheelSensitivity: 0.3,
 });
 cyoc_session_ui.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_session_ui'] = cyoc_session_ui; // 暴露实例供调试/验证
 </script>
 </div>
 </body>

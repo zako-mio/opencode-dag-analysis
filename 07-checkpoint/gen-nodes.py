@@ -170,6 +170,10 @@ def internal_dag_html(nid):
         return f"""
 <h3>模块内部结构 DAG（{int_data['module_count']} 模块 · {int_data['edge_count']} 边 · 组级视图）</h3>
 <p style="color:var(--dim);font-size:12px;margin:4px 0;">按目录分组的组级视图：点击组节点下钻查看组内模块依赖；点击模块节点查看完整路径。</p>
+<div id="int-nav-{esc(nid)}" style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+  <button id="int-back-{esc(nid)}" style="display:none;background:#20324f;color:#7fb0ff;border:1px solid #2a2f3a;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;">← 返回组级视图</button>
+  <span id="int-crumb-{esc(nid)}" style="color:var(--dim);font-size:12px;">组级视图</span>
+</div>
 <div id="int-{esc(nid)}" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>
@@ -198,6 +202,11 @@ const cy{jsid} = cytoscape({{
   layout: {{ name: 'dagre', rankDir: 'LR', nodeSep: 24, edgeSep: 12, rankSep: 70 }},
   wheelSensitivity: 0.3,
 }});
+window['cy{jsid}'] = cy{jsid}; // 暴露实例供调试/验证
+// 保存组级元素引用（不销毁，下钻后恢复用）
+const GROUP_ELEMS{jsid} = cy{jsid}.elements().copy();
+let drilled{jsid} = false;
+let drillPath{jsid} = '';
 // 下钻：点击组节点 → 显示组内模块 DAG
 cy{jsid}.on('tap', 'node', (evt) => {{
   const n = evt.target;
@@ -205,16 +214,33 @@ cy{jsid}.on('tap', 'node', (evt) => {{
     const gname = n.data('name');
     const drill = DRILL{jsid}[gname];
     if (drill && drill.nodes.length > 0) {{
-      n.data('expanded', true);
+      drilled{jsid} = true;
+      drillPath{jsid} = gname;
+      // 移除组级，添加模块级
       cy{jsid}.elements().remove();
       cy{jsid}.add(drill.nodes);
       cy{jsid}.add(drill.edges);
       cy{jsid}.layout({{ name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 }}).run();
       cy{jsid}.fit();
+      // 显示返回按钮 + 更新面包屑
+      document.getElementById('int-back-{esc(nid)}').style.display = 'inline-block';
+      document.getElementById('int-crumb-{esc(nid)}').textContent = '组级视图 / ' + gname;
     }}
   }} else {{
     alert('模块: ' + n.data('path'));
   }}
+}});
+// 返回组级视图
+document.getElementById('int-back-{esc(nid)}').addEventListener('click', () => {{
+  if (!drilled{jsid}) return;
+  drilled{jsid} = false;
+  drillPath{jsid} = '';
+  cy{jsid}.elements().remove();
+  cy{jsid}.add(GROUP_ELEMS{jsid}.copy());
+  cy{jsid}.layout({{ name: 'dagre', rankDir: 'LR', nodeSep: 24, edgeSep: 12, rankSep: 70 }}).run();
+  cy{jsid}.fit();
+  document.getElementById('int-back-{esc(nid)}').style.display = 'none';
+  document.getElementById('int-crumb-{esc(nid)}').textContent = '组级视图';
 }});
 </script>"""
 
@@ -246,6 +272,7 @@ const cy{jsid} = cytoscape({{
   wheelSensitivity: 0.3,
 }});
 cy{jsid}.on('tap', 'node', (evt) => {{ alert(evt.target.data('path')); }});
+window['cy{jsid}'] = cy{jsid}; // 暴露实例供调试/验证
 </script>"""
 
 # ============ 每节点页 ============
