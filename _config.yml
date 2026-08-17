@@ -1,0 +1,3 @@
+# GitHub Pages 纯静态托管配置
+# 禁用 Jekyll 处理，直接托管原始 HTML/JS/PNG 文件
+# 避免 Jekyll 对 vendor/*.min.js、checkpoint 脚本等文件的干扰
