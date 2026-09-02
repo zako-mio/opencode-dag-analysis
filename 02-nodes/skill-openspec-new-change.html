@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>openspec-new-change <span class="tag">装配层</span></h1>
-  <div class="sub">skill-openspec-new-change · skill · A6l-工作流 · Layer 1</div>
+  <div class="sub">skill-openspec-new-change · skill · A6l-OpenSpec工作流 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>逐步交互式创建新变更，比 propose 更细粒度。仅创建变更目录并展示第一个工件模板后停止，等待用户方向，适合复杂或需精细控制的场景。</p>
+  <p>逐步创建新变更——比 propose 更细粒度，逐个工件交互式创建。适合复杂或需精细控制的场景。</p>
 
   <h2>② 提供能力</h2>
-  <p>· schema 选择（--schema 或 openspec schemas）<br>· 变更脚手架创建<br>· 首个工件 instructions 展示<br>· 防越步守门（不创建任何工件）<br>· kebab-case 名称校验</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>assembly-to-pkg</td><td><small>skill-openspec-new-change 关联 oc-schema</small></td></tr><tr><td><a href='skill-openspec-continue-change.html'>openspec-continue-change</a></td><td>skill-relation</td><td><small>openspec-new-change SKILL.md Guardrails: &#x27;If a change with that name already exists, suggest continu</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-update-change.html'>openspec-update-change</a></td><td>skill-relation</td><td><small>openspec-update-change SKILL.md: &#x27;If the request changes the change\&#x27;s intent ... recommend starting</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>

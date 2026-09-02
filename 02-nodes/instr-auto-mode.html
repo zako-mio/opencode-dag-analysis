@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>auto-mode <span class="tag">装配层</span></h1>
-  <div class="sub">instr-auto-mode · instruction · A4-命令指令 · Layer 5</div>
+  <div class="sub">instr-auto-mode · instruction · AG4-指令 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>全局共享前缀协议（Cache-Stable，所有 Agent 加载，session 内字节稳定以维持 DeepSeek prefix-cache）。核心内容：①强制 GATE 门控（范围/深度/操作/风险 4 维 1-5 分自评→总分→Daily≤12/Deep≥13，主Agent 强制输出）；②Variant 运行时控制（Ctrl+T 切换、DeepSeek 思考模式有效参数表、被忽略参数说明）；③Universal SubAgent Rules（结构化 JSON 返回、身份约束、工具/错误处理/通信规范）；④通用编码纪律（验证证据、从磁盘读取、路径本地化、元数据不入输出）；⑤缓存感知原则（静态前缀/动态末尾）；⑥并行批处理规范；⑦输出规模控制；⑧故障自愈协议（3 次重试上限）；⑨Session Memory 阶梯式压缩模板（L1 剪枝→L2 结构化→L3 摘要）。</p>
+  <p>Agent Universal Protocol (Cache-Stable Prefix — Do NOT modify mid-session)</p>
 
   <h2>② 提供能力</h2>
-  <p>全 Agent 统一行为协议（门控/委派/编码/缓存/容错/压缩）、成本控制基准（Daily 8192/Deep 16384 tokens）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>instr-auto-mode 关联 oc-opencode</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-vision-worker.html'>vision-worker</a></td><td>hook-mount</td><td><small>vision-worker 路由规则</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='plugin-vision-interceptor.html'>vision-interceptor</a></td><td>hook-mount</td><td><small>插件挂载于消息管线</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>instr-auto-mode 关联 ext-deepseek-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-cache.html'>cache</a></td><td>mechanism</td><td><small>共享前缀</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>经 config.instructions 数组第 1 位加载（~/.config/opencode/instructions/auto-mode.md，动态 MEMORY.md 放其后保护缓存断点）；作为 system prompt 前缀注入所有 Agent；指令按主题分段（GATE 门控→决策边界→变体运行时控制→子Agent 规则→编码准则→缓存感知→并行批处理→输出纪律→故障自愈→压缩模板）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>每个会话每次 LLM 请求都加载（共享前缀锚点）；Plan 阶段 GATE 门控触发；子Agent 委派协议；Compaction 触发时输出结构化记忆。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>config-main（instructions 引用）、instr-memory（动态内容置后）、agent-plan/build prompt（互补：prompt 内嵌委派细节，auto-mode 管通用协议）、skill 体系（per-agent 约束经 skill 传递）。</p></div>
   </div>
 

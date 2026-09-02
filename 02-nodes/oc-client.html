@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>client </h1>
-  <div class="sub">oc-client · package · G3-客户端 · Layer 2</div>
+  <div class="sub">oc-client · package · G3-客户端 · Layer 3</div>
 
   <h2>① 作用</h2>
   <p>面向 Web/桌面的客户端库。src/contract.ts:1-17 复用 protocol 的 makeDefaultApi 定义 ClientApi 与 Location/SessionLocation 中间件，并声明 groupNames/endpointNames 映射（src/contract.ts:19-51）；src/index.ts:1-2 从 generated/ 导出类型化客户端；src/generated/ 与 src/generated-effect/ 由 script/build.ts 依据 contract 生成（普通 + Effect 两版），src/effect.ts:3-25 转出 schema 数据类型并保证不 import core/server（文件头注释 src/effect.ts:1-2）。</p>
@@ -55,19 +55,19 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>workspace-dep</td><td><small>@opencode-ai/client/package.json dependencies.@opencode-ai/schema</small></td></tr><tr><td><a href='oc-protocol.html'>protocol</a></td><td>workspace-dep</td><td><small>@opencode-ai/client/package.json dependencies.@opencode-ai/protocol</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-app.html'>app</a></td><td>workspace-dep</td><td><small>@opencode-ai/app/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-sdk-next.html'>sdk-next</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-session-ui.html'>session-ui</a></td><td>workspace-dep</td><td><small>@opencode-ai/session-ui/package.json dependencies.@opencode-ai/client</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-app.html'>app</a></td><td>workspace-dep</td><td><small>@opencode-ai/app/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-sdk-next.html'>sdk-next</a></td><td>workspace-dep</td><td><small>@opencode-ai/sdk-next/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-session-ui.html'>session-ui</a></td><td>workspace-dep</td><td><small>@opencode-ai/session-ui/package.json dependencies.@opencode-ai/client</small></td></tr><tr><td><a href='oc-httpapi-codegen.html'>httpapi-codegen</a></td><td>workspace-dep</td><td><small>client depends on httpapi-codegen</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
     <div class="why-item"><span class="why-label">设计意图（官方）</span><p>面向 app/web 前端生成类型安全的 HTTP 客户端，并通过协议层复用服务端同款端点契约；强调不得反向依赖 core/server（src/effect.ts:1-2），保持客户端纯净。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未直接引用 client（本机界面是终端 CLI + 浏览器，不使用 app/web 前端与 client 包），属官方底座；但 client 与 sdk 同源（协议生成），本机若未来走 HTTP 集成可无成本接入同一契约。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>· 入口：src/index.ts:1-2 re-export generated/index 与 OpenCodeEvent 类型；src/effect.ts 提供 Effect 原生客户端。package.json exports：&#x27;.&#x27;（Promise 版，src/index.ts）与 &#x27;./effect&#x27;（Effect 版）。<br>· 生成制：由 @opencode-ai/server/api 经 httpapi-codegen 生成 src/generated/*（client.ts/types.ts/client-error.ts/index.ts）；README.md:8-12 要求改契约后 bun run generate + check:generated 防漂移。<br>· 用法示例（client/README.md:29-38）：import { OpenCode } from &#x27;@opencode-ai/client/effect&#x27;，OpenCode.make({baseUrl}) 后 client.sessions.create/prompt 直接用 canonical 类型（Session.ID/Location.Ref/Prompt）。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>client 面向 app/web/session-ui 前端生成类型安全 HTTP 客户端：零 Effect 依赖的 Promise 根（无 core/server 依赖），/effect 子路径依赖 Effect+Schema+Protocol 且浏览器打包安全。协议层复用服务端同款端点契约，前端因此获得与 server 完全一致的端点类型；sdk-next/app/session-ui 三个官方包依赖它（official-dag reverse）。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 

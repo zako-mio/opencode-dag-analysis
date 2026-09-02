@@ -43,16 +43,16 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-opencode-plugin </h1>
-  <div class="sub">ext-opencode-plugin · external · X-外部服务 · Layer 7</div>
+  <div class="sub">ext-opencode-plugin · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>插件 SDK（node_modules 1.18.9）</p>
+  <p>插件 SDK（node_modules 1.18.x）</p>
 
   <h2>② 提供能力</h2>
   <p>插件钩子类型</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='plugin-vision-interceptor.html'>vision-interceptor</a></td><td>external</td><td><small>plugin-vision-interceptor 关联 ext-opencode-plugin</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>vision-interceptor.js 插件依赖 @opencode-ai/plugin SDK（node_modules 1.18.9）提供的插件钩子类型与结构（Plugin/PluginInput/Hooks 等），使自定义插件能以官方插件协议接入 opencode 消息管线。装配层的插件机制复用官方 SDK，而非自行发明协议。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>当前用于 vision-interceptor 插件的类型基础（chat.message + messages.transform 双钩子）。本机 ~/.config/opencode/package.json 安装了 @opencode-ai/plugin，与官方 SDK 包（packages/plugin）同源，版本 1.18.9 与本机 opencode 1.18.16 基本对齐。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>plugin 开发（已无插件但 SDK 保留）</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>插件目录已空</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>通过 npm 安装：npm i @opencode-ai/plugin（本机 ~/.config/opencode/package.json 依赖）。插件文件在 ~/.config/opencode/plugins/*.js，通过 opencode 的 plugins 机制加载。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>vision-interceptor.js 从 &#x27;@opencode-ai/plugin&#x27; 导入类型，定义 Plugin 结构（id/name/tools 钩子），注册 chat.message 与 messages.transform 钩子拦截消息做 VLM 图片转文字。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>node_modules @opencode-ai/plugin</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-sylphx-pdf </h1>
-  <div class="sub">ext-sylphx-pdf · external · X-外部服务 · Layer 6</div>
+  <div class="sub">ext-sylphx-pdf · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>PDF 文本提取 npm 包</p>
@@ -52,7 +52,7 @@
   <p>PDF 提取</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='mcp-pdf-reader.html'>pdf-reader</a></td><td>external</td><td><small>mcp-pdf-reader 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='instr-memory.html'>memory</a></td><td>external</td><td><small>instr-memory 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='config-main.html'>main</a></td><td>external</td><td><small>config-main 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>external</td><td><small>skill-pdf-ocr 关联 ext-sylphx-pdf</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>external</td><td><small>PDF 提取</small></td></tr><tr><td><a href='mcp-pdf-reader.html'>pdf-reader</a></td><td>external</td><td><small>PDF MCP 服务</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>PDF 文档读取能力：简历解析、财报读取、论文提取。解决 Agent 无法直接读 PDF 二进制需求；无它则所有 PDF 类任务（招聘简历、学术文档）不可用。被依赖方：pdf-worker 子Agent（唯一工具源，permission 仅放行 pdf-reader_*）。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>合理：opencode.jsonc mcp.pdf-reader = {type:local, command:[npx, -y, @sylphx/pdf-reader-mcp@latest], enabled:true}——唯二启用的 MCP 之一（MCP 精兵策略 6 台仅留 2 台）；pdf-worker 固定 Flash + L3 最小权限（仅 pdf-reader_* allow），全局 deny 兜底；无文本层时走 pdf-ocr skill 路由 OCR。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>pdf-worker 子Agent 依赖</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>启用 mcp-pdf-reader</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>npx -y @sylphx/pdf-reader-mcp@latest 按需拉取（latest 随 npm 发布更新）；stdio MCP 协议；暴露 4 个工具（read_pdf 等文本提取类）；无需 API Key/环境变量（纯本地解析）。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>pdf-worker 子Agent 经 pdf-reader_* 工具提取文本 → 返回 8 字段 JSON（status/summary/data/files_created 等）；MCP 路由规则保证 PDF 任务始终委派 pdf-worker 且不重复加载 pdf-ocr skill（省 token）；0707 简历任务用 explore 读 xlsx 而非 PDF 的案例证明路由按文件类型分流。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>npx @sylphx/pdf-reader-mcp</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

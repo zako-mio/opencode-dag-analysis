@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>pdf-worker <span class="tag">装配层</span></h1>
-  <div class="sub">agent-pdf-worker · agent · A1-Agents · Layer 0</div>
+  <div class="sub">agent-pdf-worker · agent · AG2-子Agent · Layer 7</div>
 
   <h2>① 作用</h2>
-  <p>PDF 专家子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（PDF 提取无需 Pro 推理）。permission 仅放行 pdf-reader_* 工具（L3 最小权限注入），与全局 deny 构成三层纵深。主Agent 的 MCP 路由规则将 PDF/OCR/文档分析任务固定委派给它。</p>
+  <p>PDF reader, OCR, and document analysis specialist. Use for any task involving PDF files.</p>
 
   <h2>② 提供能力</h2>
-  <p>PDF 文本提取、OCR、文档分析（经 pdf-reader MCP 的 4 工具）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-sylphx-pdf</small></td></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\instructions\agent-protocol.md L63: PDF读取/OCR/文档分析 → 委派 pdf-worker 子</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>skill-mandate</td><td><small>pdf-ocr OCR 支持</small></td></tr><tr><td><a href='mech-subagent-rules.html'>subagent-rules</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) 经 pdf-reader MCP 的 4 工具（read_pdf 等）提取文本；2) 无文本层时触发 pdf-ocr skill 路由（OCR）；3) 返回结构化 JSON（status/summary/data/files_created 等 8 字段）；4) MCP 路由规则保证 PDF 任务始终走此 worker（避免重新加载 pdf-ocr skill，省 token）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>任何含 PDF 的任务：简历解析、财报读取、论文提取、OCR 扫描件。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>mcp-pdf-reader（唯一工具源）、pdf-ocr skill（OCR 兜底）、plan/build（MCP 路由规则委派）。</p></div>
   </div>
 

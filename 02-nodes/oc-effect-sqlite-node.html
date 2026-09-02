@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>effect-sqlite-node </h1>
-  <div class="sub">oc-effect-sqlite-node · package · G15-存储适配 · Layer 0</div>
+  <div class="sub">oc-effect-sqlite-node · package · G15-存储适配 · Layer 4</div>
 
   <h2>① 作用</h2>
   <p>基于 Node 内置 node:sqlite 的 Effect SqlClient 实现。src/index.ts:49-161 make() 用 DatabaseSync 建立同步连接（WAL 模式、外键约束，index.ts:59-70）、实现 execute/executeRaw/executeValues/executeUnprepared 全套 SqlClient 接口并挂载 Semaphore(1) 串行化（index.ts:132-134）；classifySqliteError 做错误归类（index.ts:15,80-82）；layer() 将 client 同时注册为 SqliteClient 与泛型 Client.SqlClient（index.ts:163-168），并注入 Reactivity.layer。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>为 opencode 核心提供零原生编译依赖的 Effect 化 SQLite 驱动（复用 node 内置 sqlite），与 @effect/sql-sqlite-node 定位一致但归属仓库自有实现，避免引入外部原生模块、保证跨平台可移植。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用（本机 opencode 数据走 server 侧 SQLite，未直接 import 此包）。官方依赖链：core 存储层经 drizzle 消费（见 effect-drizzle-sqlite 说明），本包是其底层驱动候选。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>为 opencode 核心提供零原生编译依赖的 Effect 化 SQLite 驱动（复用 node 内置 sqlite），与 @effect/sql-sqlite-node 定位一致但归属仓库自有实现。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>· exports &quot;.&quot; → ./src/index.ts（package.json:11-13）；核心 API：make(config)（index.ts:49-52，Effect&lt;SqliteClient&gt;，含 filename/readonly/WAL/allowExtension 等配置 index.ts:32-43）与 layer(config)（index.ts:163-168，同时注册 SqliteClient + 泛型 Client.SqlClient 并注入 Reactivity.layer）<br>· TypeId 标记 &quot;@opencode-ai/effect-sqlite-node/NodeSqliteClient&quot;（index.ts:20-21）区分服务身份；loadExtension 支持扩展加载（index.ts:26）<br>· 基于 node:sqlite DatabaseSync（index.ts:59-70 WAL/外键），Semaphore(1) 串行化执行（index.ts:132-134），classifySqliteError 做 Effect 错误分类（index.ts:15）</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为核心存储层的 Effect SQLite 驱动底座：core 的数据库层经 layer() 注入 SqliteClient 服务后，上层只需 Effect.provide 即可获得类型安全 SQL 能力。与 effect-drizzle-sqlite 配合：后者把 Drizzle 查询桥接到任意 Effect SqlClient（含本包实现）。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 

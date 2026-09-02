@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>browser-harness <span class="tag">装配层</span></h1>
-  <div class="sub">skill-browser-harness · skill · A6h-浏览器 · Layer 0</div>
+  <div class="sub">skill-browser-harness · skill · A6e-浏览器 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>统一浏览器交互入口（自动化/爬取/测试/站点应用工作）。通过 CDP 直接控制浏览器：browser-harness daemon 经 BU_CDP_URL (localhost:9222) 连接 Chrome 远程调试实例，Python 代码经管道发给 browser-harness.exe 执行，helpers 预导入。</p>
+  <p>&quot;Always use browser-use for any web interaction: automation, scraping, testing, or site/app work.&quot;</p>
 
   <h2>② 提供能力</h2>
-  <p>· browser-harness.exe CLI（PowerShell @&quot;...&quot;@ heredoc 管道编程）<br>· 预导入 helpers（new_tab/page_info 等，js() 需 return/print）<br>· chrome-debug.ps1 一键启动远程调试 Chrome（独立 profile）<br>· --doctor 连接诊断 + runtime 目录清理<br>· agent-workspace/agent_helpers.py 任务级编辑辅助</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>skill-browser-harness 关联 ext-chrome</small></td></tr><tr><td><a href='skill-recruit-assist.html'>recruit-assist</a></td><td>skill-relation</td><td><small>recruit-assist SKILL.md: 浏览器自动化使用 browser-harness（CDP），通过管道传入 Python 代码（$pyScript | browser-harness.</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>浏览器自动化</small></td></tr><tr><td><a href='mech-browser-tabs.html'>browser-tabs</a></td><td>mechanism</td><td><small>标签管理</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

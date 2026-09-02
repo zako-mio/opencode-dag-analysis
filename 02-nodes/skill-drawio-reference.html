@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>drawio-reference <span class="tag">装配层</span></h1>
-  <div class="sub">skill-drawio-reference · skill · A6a-图表 · Layer 1</div>
+  <div class="sub">skill-drawio-reference · skill · A6b-图表 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>draw.io 图表完整参考文档，包含 XML schema 样式库、Mermaid.js 全语法参考（28 种图表类型）、shape 搜索指南与强制导出规范。为 drawio-worker 子Agent 强制加载项（含防截断规则），用于生成含嵌套容器、跨功能泳道、自定义样式、多节点(≥15)的复杂 draw.io XML 图表。内置刚性网格布局规则，由 ELK 完成路由，不做坐标数学。</p>
+  <p>draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型）、shape 搜索指南、强制导出规范。对 drawio-worker 子Agent 为强制加载项（含防截断规则），不可跳过。</p>
 
   <h2>② 提供能力</h2>
-  <p>· draw.io XML 样式/边/容器/泳道/图层参考<br>· 28 种 Mermaid.js 图表语法参考<br>· search_shapes 使用决策指南（何时搜索领域图标）<br>· 刚性网格布局规则（col*180+40 / row*120+40）<br>· 强制导出规范与 reasoning budget 防截断规则</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>assembly-to-pkg</td><td><small>skill-drawio-reference 关联 oc-schema</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>skill-mandate</td><td><small>drawio-reference 强制加载</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>skill-mandate</td><td><small>drawio-reference 强制加载</small></td></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>skill-drawio-reference 关联 ext-drawio-service</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>draw.io 导出</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

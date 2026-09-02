@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>openspec-continue-change <span class="tag">装配层</span></h1>
-  <div class="sub">skill-openspec-continue-change · skill · A6l-工作流 · Layer 0</div>
+  <div class="sub">skill-openspec-continue-change · skill · A6l-OpenSpec工作流 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>继续已有变更，按 DAG 依赖顺序生成下一个未完成工件。解析状态判断 ready/blocked，获取 instructions（模板+context+rules）创建单个工件后停止，适合恢复中断工作。</p>
+  <p>继续已有的变更——按 DAG 顺序生成下一个未完成的工件。适合恢复中断的工作。</p>
 
   <h2>② 提供能力</h2>
-  <p>· 变更选择（最近修改推荐）<br>· DAG 工件状态解析（done/skipped/ready/blocked）<br>· 单工件生成（模板+context+rules+resolvedOutputPath）<br>· skip_specs 工件跳过<br>· 依赖文件磁盘重读</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-apply-change.html'>openspec-apply-change</a></td><td>skill-relation</td><td><small>openspec-apply-change SKILL.md: state=blocked（缺 artifacts）时 suggest using openspec-continue-change</small></td></tr><tr><td><a href='skill-openspec-update-change.html'>openspec-update-change</a></td><td>skill-relation</td><td><small>openspec-update-change SKILL.md: 缺失工件 defer 到 /openspec-continue-change；&#x27;Do not advance the build fr</small></td></tr><tr><td><a href='skill-openspec-new-change.html'>openspec-new-change</a></td><td>skill-relation</td><td><small>openspec-new-change SKILL.md Guardrails: &#x27;If a change with that name already exists, suggest continu</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>

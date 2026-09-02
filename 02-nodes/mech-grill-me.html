@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>grill-me · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>grill-me <span class="tag">装配层</span></h1>
+  <div class="sub">mech-grill-me · mechanism · AQ-自进化机制 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>Plan/默认阶段逐分支拷问用户，直到达成共识；问一答一（question工具），含 Drift 护栏与收敛审计。</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>mechanism</td><td><small>机制驱动</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>mechanism</td><td><small>机制驱动</small></td></tr><tr><td><a href='skill-grill-me.html'>grill-me</a></td><td>mechanism</td><td><small>机制源头</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 skill-grill-me 与 plan prompt 首段。0817 计划书已明示「Plan 阶段 Grill-Me 收敛 13 项决策」。动机：替代主Agent 随性抛多个问题或纯文本提问，强制用 question 工具弹窗逐条收敛设计树。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>Plan 模式唯一入口，保证需求澄清阶段逐分支下钻、依赖互解；防协议漂移要求每条消息必须且只能以一个 question 调用结尾。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>进入 plan/build 角色 prompt 即生效；用户发起计划类任务时。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>每条消息输出 [GRILL] &lt;ack&gt; 后同消息紧跟一次 question 调用；可自探索的先探索而非问用户；全局收敛后输出 Decision tree resolved + 决策编号清单。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build（prompt 首段注入）；skill-grill-me；内置 question 工具。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>console-resource </h1>
-  <div class="sub">oc-console-resource · package · G16-Console · Layer 0</div>
+  <div class="sub">oc-console-resource · package · G16-Console · Layer 2</div>
 
   <h2>① 作用</h2>
   <p>SST 资源访问抽象层，无 src/ 目录（文件在包根）。通过 Proxy 按运行环境暴露 Resource：resource.cloudflare.ts 在 Worker 内从 env.SST_RESOURCE_* 读取链接资源，resource.node.ts 在 Node 下回退到 sst 包并对 KV/Bucket 提供客户端实现。src/… 实际为 resource.cloudflare.ts:4 与 resource.node.ts:9 两个入口，按 exports production/import 条件切换。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 Proxy 把环境差异隐藏在统一 Resource 门面后：node 侧走 sst 资源绑定 + Cloudflare API 直连，cloudflare 侧走 env 注入，消费方零改动；类型由 sst-env.d.ts 提供。这是运行时可移植性的典型设计——同一套业务代码在本地调试与线上部署共享同一读取接口。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改该包。装配层借鉴了同样的 Proxy 门面思想：amap-lbs-skill 的 config.json 读写封装、vision-interceptor 的 GLM_KEY 环境变量回退（process.env.ZHIPU_API_KEY || 硬编码），都是密钥统一入口 + 环境回退的本地变体。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>让 app/core/function 在 Cloudflare Worker 与本地 Node 两种环境共享同一套资源访问代码，隐藏 SST 环境差异。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>两文件双环境实现，均导出 Resource Proxy：resource.node.ts 用 sst 的 Resource + cloudflare 官方 SDK（apiToken=CLOUDFLARE_API_TOKEN）提供 KV get/put/delete/list、Bucket put（no-op）；resource.cloudflare.ts 从 cloudflare:workers env（SST_RESOURCE_*）解析同一批资源。消费方统一 import { Resource }，按属性名读取（Resource.STRIPE_SECRET_KEY.value、Resource.UpstashRedisRestUrl.value、Resource.ZEN_LIMITS.value、Resource.AWS_SES_ACCESS_KEY_ID.value 等）。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>console 全包的配置/密钥注入面：Stripe secret、AWS SES key、Cloudflare token/account、Upstash Redis、GitHub/Google OAuth client、Zen 限额 JSON、Black/Lite 价格表——node（本地/sst shell）与 cloudflare（线上 Worker）两套运行时共用同一属性接口。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 

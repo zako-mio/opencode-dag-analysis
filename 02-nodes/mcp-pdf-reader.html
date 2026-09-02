@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>pdf-reader <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-pdf-reader · mcp · A2-MCP · Layer 0</div>
+  <div class="sub">mcp-pdf-reader · mcp · AG3-MCP · Layer 6</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，命令 npx -y @sylphx/pdf-reader-mcp@latest。已启用（enabled=true）：PDF 文本提取（4 工具），仅 pdf-worker 子Agent 使用（permission 按工具名前缀隔离），全局层 pdf-reader_* 为 deny（L1），子Agent 层 allow（L3）。</p>
+  <p>【启用】PDF 文本提取。仅 pdf-worker 子Agent 使用（4 工具）</p>
 
   <h2>② 提供能力</h2>
-  <p>PDF 文本提取（4 工具）能力</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>mcp-pdf-reader 关联 ext-sylphx-pdf</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>mcp-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>PDF MCP 服务</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>npx -y @sylphx/pdf-reader-mcp@latest 本地 MCP；4 工具（read_pdf 文本提取等）；与 pdf-ocr skill 协作：先 read_pdf 检查文本层，无文本层时才触发 OCR 路由。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>PDF 文本提取、OCR、文档分析——仅经 pdf-worker 子Agent 间接使用（主Agent/其他子Agent 被全局 deny）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>agent-pdf-worker（唯一使用方）、pdf-ocr skill（OCR 兜底）、plan/build（路由决策）。</p></div>
   </div>
 

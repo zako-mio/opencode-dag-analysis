@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>read <span class="tag">装配层</span></h1>
-  <div class="sub">tool-read · tool · A3-插件工具 · Layer 5</div>
+  <div class="sub">tool-read · tool · AG5-工具插件 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>自定义 read 工具（TypeScript，zod 定义参数），覆盖 opencode 内置 read：①目录→列出条目；②9 种图片扩展名→经 GLM-4V VLM 转文字描述（base64 data URL 传图，max_tokens=4096，温度 0.3，中文提示词提取文字/UI/代码/布局/报错信息）；③文本→按 offset/limit 分段读取并加行号（默认 2000 行）。模型优先级付费 glm-4.6v → 429 降级免费 glm-4.6v-flash；GLM_KEY 优先环境变量 ZHIPU_API_KEY，未设置回退硬编码值。</p>
+  <p>自定义工具 read.ts</p>
 
   <h2>② 提供能力</h2>
-  <p>图片 VLM 描述读取、文本分段带行号读取、目录列举（与 vision-interceptor 插件构成双保险的视觉链路）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>tool-read 关联 oc-opencode</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>tool-read 关联 ext-glm-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>tool-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>read.ts VLM 首选 GLM-4V</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>read.ts VLM 降级 DeepSeek 视觉</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) execute：existsSync → statSync 判断目录/文件；2) 目录 → readdirSync 列条目；3) 图片（extname 命中 IMAGE_EXTS）→ describeImage：Bun.file 读二进制 → Buffer base64 → data URL → tryVLM 循环 GLM_MODELS（付费 429 降级免费，非 429 直接报错）→ 包装为&#x27;[图片分析: 文件名]&#x27;+描述；4) 文本文件 → Bun.file.text() + offset/limit 分段（默认 2000 行）带行号输出。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>读本地图片文件（VLM 描述）、读大文件分段（&gt;2000 行）、列目录条目。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>plugin-vision-interceptor（双通道视觉链路，read 通道结果不写入插件 processedImages 缓存）、GLM API（智谱视觉模型）。</p></div>
   </div>
 

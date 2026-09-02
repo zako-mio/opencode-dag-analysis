@@ -42,20 +42,20 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>amap <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-amap · mcp · A2-MCP · Layer 4</div>
+  <h1>amap <span class="tag">装配层</span><span class="tag red">已禁用</span></h1>
+  <div class="sub">mcp-amap · mcp · AG3-MCP · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，经 powershell amap-mcp-wrapper.ps1 启动。已禁用（enabled=false）：12 个工具 ~2000 tokens 极低频（高德地图能力），与 vscode-mcp-server 同属 MCP 精兵策略裁撤对象。</p>
+  <p>【已禁用】12 个工具 ~2000 tokens 极低频</p>
 
   <h2>② 提供能力</h2>
-  <p>（禁用中）高德地图 12 工具；保留配置便于按需启用</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-server.html'>server</a></td><td>assembly-to-pkg</td><td><small>mcp-amap 关联 oc-server</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-amap-api.html'>ext-amap-api</a></td><td>external</td><td><small>mcp-amap 关联 ext-amap-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-amap-api.html'>ext-amap-api</a></td><td>external</td><td><small>地图 MCP</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>经 amap-mcp-wrapper.ps1（环境变量注入 + npx 启动）拉起；12 个工具（POI 搜索/路径规划/周边查询等）每次加载 ~2000 tokens schema。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）原本用于地图搜索、路径规划、周边查询、热力图等地理场景。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>无（禁用）；曾与 amap-jsapi-skill/amap-lbs-skill/amap-budget-control 三 skill 协作（免费链接优先→结构化数据转交 budget-control）。</p></div>
   </div>
 

@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>reflection <span class="tag">装配层</span></h1>
-  <div class="sub">command-reflection · command · A4-命令指令 · Layer 0</div>
+  <div class="sub">command-reflection · command · AG5-工具插件 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>/reflection 原生命令（frontmatter：description + agent=build），命令体自包含执行不依赖其他文档。流程：读 pending.json（校验 JSON 合法）→ 按 $ARGUMENTS 子动作过滤（无参/all 展示全部 done；memory/skill 按条目类型过滤；status 仅输出 meta 计数；browse 仅列 id/cycle_type/created_at）→ 用 question 工具逐条 yes/no/edit 确认 → yes 写入 MEMORY.md（§ 分段）或 Reflection\skills\{category}\{name}\SKILL.md（含 frontmatter）→ 清理队列并原子写回（先备份 pending.json.bak-YYYYMMDD，同步更新 meta 计数）。门控：逐条审阅不批量跳过；MEMORY.md 超 3500 字符提示手动整理；UTF-8 写后校验中文完整。</p>
+  <p>自定义命令 reflection.md</p>
 
   <h2>② 提供能力</h2>
-  <p>Memory/Skill pending 条目的交互式审阅与落地（yes 采纳 / no 拒绝 / edit 修改）、meta 计数同步、备份式原子写回</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <p class="empty">无内部依赖（或为叶子/外部）</p>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-reflection-worker.html'>reflection-worker</a></td><td>command-use</td><td><small>/reflection 调反射 worker</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-agent-reflection.html'>agent-reflection</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\agent-reflection\SKILL.md: /reflection 命令触发审阅流程（Memory 轨道写入 M</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>command-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-reflection-check.html'>reflection-check</a></td><td>mechanism</td><td><small>驱动</small></td></tr><tr><td><a href='mech-memory-gate.html'>memory-gate</a></td><td>mechanism</td><td><small>审阅</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) 读 pending.json 确认合法；2) 按 $ARGUMENTS 子动作过滤（all/memory/skill/status/browse，未知参数提示）；3) 逐条用 question 工具 yes/no/edit 确认（一次一条不批量跳过）；4) yes：Memory 写 MEMORY.md（§-分段追加）/ Skill 写 Reflection/skills/{category}/{name}/SKILL.md（含 frontmatter）；edit：用户修改后按修改内容写入；5) 清理队列更新 meta 计数（waiting/processing/done），原子写回（先备份 pending.json.bak-YYYYMMDD）；6) 容量门控：MEMORY.md 超 3500 字符提示手动整理。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>用户输入 /reflection 或 /reflection memory|skill|status|browse；存在 status=done 的 cycle 待审阅（reflection-worker 产出后）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>agent-build（命令宿主）、reflection-worker（产出 memory_entries/skill_proposals）、agent-reflection skill（架构）、MEMORY.md（写入目标）、pending.json（队列状态机）。</p></div>
   </div>
 

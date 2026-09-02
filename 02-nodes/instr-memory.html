@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>memory <span class="tag">装配层</span></h1>
-  <div class="sub">instr-memory · instruction · A4-命令指令 · Layer 5</div>
+  <div class="sub">instr-memory · instruction · AG4-指令 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>项目记忆索引（§-分段格式，上限 ~3500 字符），作为第二份 instructions 加载。记录的改造决策/经验：Reflection 系统与 /reflection 命令、模型分配（plan=Pro 回落顶层 / build=Flash / 子Agent 全 Flash）、MCP 精兵策略（6 台启用 2 台 pdf-reader/drawio，headroom 2026-08-12 量化亏损禁用）、三层权限纵深防御、compaction 参数、prefix-cache 优化（静态前缀 auto-mode.md / 动态末尾 MEMORY.md）、编码安全（edit 优先 / 禁 python -c 管道 / replaceAll 零残留检查）、多路并行领域分片检索、HTML 双交付质量门控、多维权衡矩阵选型、子Agent 口径冲突裁决、排障两原则、双轨交付一致性三原则、经验跨项目迁移方法论。</p>
+  <p>项目记忆索引（§分段格式，上限~5000字符，含[src:]签名）</p>
 
   <h2>② 提供能力</h2>
-  <p>跨会话记忆持久化、历史决策回溯、经验教训复用、config 修改安全链（备份→改→验证→哈希→零残留）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>instr-memory 关联 oc-opencode</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>MEMORY.md 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>MEMORY.md 作为 agent 指令</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>MEMORY.md 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>MEMORY.md 作为 agent 指令</small></td></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>instr-memory 关联 ext-sylphx-pdf</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-memory-gate.html'>memory-gate</a></td><td>mechanism</td><td><small>守护</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>经 config.instructions 数组第 2 位加载；§ 分段条目（日期+主题+要点，如&#x27;(2026-08-03) 编码安全：优先 edit 工具...&#x27;）；Reflection 自引用检查（任务分类前置）；/reflection 审阅后写入新 § 段落；任务完成后不再单独询问同步（统一走 /reflection）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>每个会话加载（动态内容）；跨会话经验继承（历史决策/教训直接可用）；Reflection 触发检查（waiting_count 门控）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>command-reflection（审阅写入）、agent-reflection/reflection-worker（产出条目）、config-main（instructions 引用）、instr-auto-mode（缓存序位）。</p></div>
   </div>
 

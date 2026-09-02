@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-amap-api </h1>
-  <div class="sub">ext-amap-api · external · X-外部服务 · Layer 6</div>
+  <div class="sub">ext-amap-api · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>地图 POI/路径规划服务</p>
@@ -52,7 +52,7 @@
   <p>地图能力</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='mcp-amap.html'>amap</a></td><td>external</td><td><small>mcp-amap 关联 ext-amap-api</small></td></tr><tr><td><a href='skill-amap-budget-control.html'>amap-budget-control</a></td><td>external</td><td><small>skill-amap-budget-control 关联 ext-amap-api</small></td></tr><tr><td><a href='skill-amap-jsapi-skill.html'>amap-jsapi-skill</a></td><td>external</td><td><small>skill-amap-jsapi-skill 关联 ext-amap-api</small></td></tr><tr><td><a href='skill-amap-lbs-skill.html'>amap-lbs-skill</a></td><td>external</td><td><small>skill-amap-lbs-skill 关联 ext-amap-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='mcp-amap.html'>amap</a></td><td>external</td><td><small>地图 MCP</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>地理/LBS 能力：POI 搜索、周边搜索、路径规划、地理编码、旅游规划。解决 Agent 处理地点/路线/导航类查询需求；无它则无法回答附近美食/两地路线/地点坐标类任务。被依赖方：amap-lbs-skill（网页链接，不耗配额）、amap-budget-control（MCP API 用量预算）、amap-mcp-wrapper（MCP 入口）。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>双轨合理：amap-lbs-skill 优先生成免费网页链接（www.amap.com/search?query=、amap.com/dir 等，不消耗 API 配额），结构化数据才走 restapi.amap.com Web 服务（v5/place/text 等）——配额友好；amap MCP（npx amap-mcp-server@latest）因仅 2 工具 ~2000 tokens 极低用已在 opencode.jsonc 中 enabled:false（MCP 精兵策略），靠 skill 层满足日常。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>地图类任务（amap skill 引用）</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>已禁用 mcp-amap</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>Web Service Key：环境变量 AMAP_WEBSERVICE_KEY（旧 AMAP_KEY 已废弃但兼容），或 config.json 本地持久化（chmod 600）；端点：https://restapi.amap.com/v5/place/text（POI，参数 key/keywords/region）、v3/direction/walking（步行路径）、v3/geocode/geo（地理编码）；埋点 https://restapi.amap.com/v3/log/init；MCP wrapper：amap-mcp-wrapper.ps1 设 $env:AMAP_KEY 后 npx -y amap-mcp-server@latest。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>amap-lbs-skill 场景路由：场景一直接拼 www.amap.com/search 链接；场景二先 v3/geocode/geo 取坐标再拼带坐标链接；POI 详情/路径走 scripts/poi-search.js / route-planning.js（node 调用 index.js 的 searchPOI/walkingRoute，axios GET restapi.amap.com）；预算控制由 amap-budget-control skill 记录调用量与 5000 次/日预警。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>amap-mcp-wrapper.ps1</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

@@ -42,20 +42,20 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>drawio-local <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-drawio-local · mcp · A2-MCP · Layer 0</div>
+  <h1>drawio-local <span class="tag">装配层</span><span class="tag red">已禁用</span></h1>
+  <div class="sub">mcp-drawio-local · mcp · AG3-MCP · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，与主 drawio 同一实例（同 index.js），但注入环境变量 DRAWIO_BASE_URL=http://localhost:8080/ 走本地服务。已禁用（enabled=false）：离线兜底角色，断网时启用。</p>
+  <p>【禁用·离线兜底】断网时启用，与主 drawio 同一实例</p>
 
   <h2>② 提供能力</h2>
-  <p>（兜底）离线模式 draw.io 图表创建（本地 8080 实例）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>mcp-drawio-local 关联 ext-drawio-service</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>同一 node index.js 实例，但通过 environment.DRAWIO_BASE_URL 注入本地 8080 服务地址（主 drawio 走默认在线 draw.io 服务）；断网时本地服务可继续导出。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）断网/离线时手动启用作为兜底（与主 drawio 不共存）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>mcp-drawio（同 index.js 双配置）、agent-drawio-worker（使用方）。</p></div>
   </div>
 

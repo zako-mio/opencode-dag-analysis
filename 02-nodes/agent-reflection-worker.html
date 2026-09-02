@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>reflection-worker <span class="tag">装配层</span></h1>
-  <div class="sub">agent-reflection-worker · agent · A1-Agents · Layer 0</div>
+  <div class="sub">agent-reflection-worker · agent · AG2-子Agent · Layer 7</div>
 
   <h2>① 作用</h2>
-  <p>自我进化系统反思子Agent（mode=subagent, hidden=true），model=deepseek-v4-flash（反思分析无需 Pro 推理）。permission bash 全 deny（仅文件读写，L3 收紧）。处理 Plan+Build 周期后的异步反思：读取 pending.json 中 status=processing 的 cycle（含 4 层输入数据）→ 生成 memory_entries/skill_proposals。</p>
+  <p>Reflection specialist for the self-evolution system. Analyzes Plan+Build cycles and generates Memory/Skill entries. Use ONLY for asynchronous post-cycle reflection tasks.</p>
 
   <h2>② 提供能力</h2>
-  <p>异步反思分析、Memory/Skill 条目生成、pending.json 状态流转（waiting→processing）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>agent-reflection-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='skill-agent-reflection.html'>agent-reflection</a></td><td>skill-relation</td><td><small>D:\Opencode_Download\Reflection\skills\agent-reflection\SKILL.md: 主Agent 委派 reflection-worker 子Agent</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='command-reflection.html'>reflection</a></td><td>command-use</td><td><small>/reflection 调反射 worker</small></td></tr><tr><td><a href='mech-reflection-check.html'>reflection-check</a></td><td>mechanism</td><td><small>驱动</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) 读取 pending.json 中 status=processing 的 cycle（含 4 层输入：Layer A GATE 自评+COMPLEXITY+决策 / Layer B 子Agent JSON+聚合 / Layer C MEMORY 快照 / Layer D 留档报告）；2) 生成 memory_entries / skill_proposals；3) 写回 pending.json (status=done, results 填充)；4) 触发机制：Build 末尾写 pending → 下一轮对话 MEMORY.md 自引用检查 waiting_count&gt;0 → 标 processing 委派（Path A 异步）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>每个 Plan+Build 周期后（Build 末尾封装 4 层输入）；下一轮用户消息启动时异步处理；/reflection 审阅其产出。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>plan/build（4 层输入来源）、agent-reflection skill（方法论）、command-reflection（/reflection 交互确认写入）、pending.json 状态机。</p></div>
   </div>
 

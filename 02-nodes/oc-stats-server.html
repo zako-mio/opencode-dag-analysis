@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>stats-server </h1>
-  <div class="sub">oc-stats-server · package · G17-Stats · Layer 1</div>
+  <div class="sub">oc-stats-server · package · G17-Stats · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>Stats 后端 Node HTTP 服务（Effect HttpRouter + Bun，Dockerfile 部署）。src/server.ts 用 NodeHttpServer 启动 3000 端口服务并注入 Ingest 层，src/router.ts 暴露 GET /health、/ready 与 POST / 数据摄取端点（Bearer 鉴权 + 并发信号量限流），src/ingest.ts 将事件批处理写入 AWS Firehose，src/stat-sync.ts 是每小时 Athena 同步 daemon。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>独立常驻 Node 服务承担 HTTP 接收 + Firehose 写湖，因为：1) Worker 直连 Firehose 的批处理/重试逻辑需要长驻进程承载；2) 与 console-function 的 honeycomb 直写并行，形成 honeycomb（实时观测）+ lake（数仓）双通道；3) 用 Effect Layer 组合 Ingest/Routes/Server，测试性高。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改。装配层无对应物；但本地 agent 采集→HTTP 上报→批量入湖链路与 headroom CLI 的 savings 统计（本地记录压缩收益）是同类 telemetry 思路。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为摄取网关承接 Console function 的 lake 事件流，并独立承载统计同步 daemon；与 app 站点、core 领域解耦。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>bun src/server.ts 启动（package.json start）：NodeHttpServer（PORT 默认 3000 / HOST 0.0.0.0）承载 Effect HttpRouter；router.ts 挂 GET /health、GET /ready（关停时 503）、POST /（带 Bearer 鉴权 isAuthorized + 8 并发 Semaphore 的 ingest 端点）；ingest.ts 用 @aws-sdk/client-firehose 把事件按 database.table 路由批量写 Kinesis Firehose（500 条/批、3 次重试、退出信号优雅关停）。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>Zen 网关日志的接收-转发服务：console-function 的 log-processor（Worker）把 lake ingest 事件 POST 到 stats-server，stats-server 校验鉴权后写入 Firehose → 数据湖 → Athena 供 stats-core 查询。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 
@@ -79,7 +79,7 @@
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>
 <script>
-const INToc_stats_server = {"nodes": [{"data": {"id": "ingest.ts", "name": "ingest.ts", "path": "ingest.ts"}, "classes": "leaf"}, {"data": {"id": "router.ts", "name": "router.ts", "path": "router.ts"}, "classes": "leaf"}, {"data": {"id": "server.ts", "name": "server.ts", "path": "server.ts"}, "classes": "leaf"}, {"data": {"id": "shutdown.ts", "name": "shutdown.ts", "path": "shutdown.ts"}, "classes": "leaf"}, {"data": {"id": "stat-sync.ts", "name": "stat-sync.ts", "path": "stat-sync.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "router.ts", "target": "ingest.ts"}}, {"data": {"source": "router.ts", "target": "shutdown.ts"}}, {"data": {"source": "server.ts", "target": "ingest.ts"}}, {"data": {"source": "server.ts", "target": "router.ts"}}, {"data": {"source": "server.ts", "target": "shutdown.ts"}}]};
+const INToc_stats_server = {"nodes": [{"data": {"id": "stat-sync.ts", "name": "stat-sync.ts", "path": "stat-sync.ts"}, "classes": "leaf"}, {"data": {"id": "ingest.ts", "name": "ingest.ts", "path": "ingest.ts"}, "classes": "leaf"}, {"data": {"id": "shutdown.ts", "name": "shutdown.ts", "path": "shutdown.ts"}, "classes": "leaf"}, {"data": {"id": "router.ts", "name": "router.ts", "path": "router.ts"}, "classes": "leaf"}, {"data": {"id": "server.ts", "name": "server.ts", "path": "server.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "router.ts", "target": "ingest.ts"}}, {"data": {"source": "router.ts", "target": "shutdown.ts"}}, {"data": {"source": "server.ts", "target": "ingest.ts"}}, {"data": {"source": "server.ts", "target": "router.ts"}}, {"data": {"source": "server.ts", "target": "shutdown.ts"}}]};
 const cyoc_stats_server = cytoscape({
   container: document.getElementById('int-oc-stats-server'),
   elements: INToc_stats_server,

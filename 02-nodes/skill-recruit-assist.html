@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>recruit-assist <span class="tag">装配层</span></h1>
-  <div class="sub">skill-recruit-assist · skill · A6e-简历求职 · Layer 1</div>
+  <div class="sub">skill-recruit-assist · skill · A6i-简历求职 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>简历投递辅助：投简历（浏览器打开招聘页+记录跟踪表）、识别简历（扫描表单字段匹配信息库）、维护信息库、记录投递状态、跟踪企业，飞书增量同步跟踪表。</p>
+  <p>简历投递辅助。支持投简历（打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、更新信息库、记录投递状态、跟踪企业、上传简历跟踪（本地→飞书增量同步）、下载简历跟踪（飞书→本地全量覆盖）、提取表单（归档表单填写记录）。触发关键词：投简历、识别简历、更新信息库、记录投递、跟踪企业、招聘、简历投递、上传简历跟踪、下载简历跟踪、提取表单。</p>
 
   <h2>② 提供能力</h2>
-  <p>· 浏览器自动化投递（browser-harness CDP）<br>· 表单字段识别与信息库匹配<br>· Excel 跟踪表读写（tracker_writer.py）<br>· 飞书增量上传/全量下载同步（sync_feishu.py）<br>· 企业类型识别（detect_enterprise_type.py）<br>· URL 到渠道映射（url_to_channel.py）<br>· 同步状态机（.sync_state.json）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-browser-harness.html'>browser-harness</a></td><td>skill-relation</td><td><small>recruit-assist SKILL.md: 浏览器自动化使用 browser-harness（CDP），通过管道传入 Python 代码（$pyScript | browser-harness.</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-chrome</small></td></tr><tr><td><a href='ext-lark-api.html'>ext-lark-api</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-lark-api</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>

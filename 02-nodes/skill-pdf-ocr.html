@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>pdf-ocr <span class="tag">装配层</span></h1>
-  <div class="sub">skill-pdf-ocr · skill · A6d-文档处理 · Layer 1</div>
+  <div class="sub">skill-pdf-ocr · skill · A6g-文档处理 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>PDF OCR 识别专项，处理扫描件、图片型 PDF、含水印/印章的文档。支持中英多语言 OCR、表格区域提取、印章检测。仅在 PDF 无文本层（read_pdf 返回空）时加载，先检测再按需补充 OCR 空页面。</p>
+  <p>PDF OCR 识别专项。处理扫描件、图片型 PDF、含水印/印章的文档。支持多语言 OCR（中英）、表格区域提取、印章检测。仅在 PDF 无文本层（扫描件/图片型）时加载。</p>
 
   <h2>② 提供能力</h2>
-  <p>· pdf-reader MCP pdf_evidence 工具调用规范（ocr_pages/extract_regions/analyze_regions/render_page）<br>· /pdf-ocr 与 /pdf-ocr-table 指令路由（含极简参数自动选择）<br>· 文本层检测-补充-合并流程</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\instructions\agent-protocol.md L63: PDF读取/OCR/文档分析 → 委派 pdf-worker 子</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>skill-mandate</td><td><small>pdf-ocr OCR 支持</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>skill-pdf-ocr 关联 ext-sylphx-pdf</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>PDF 提取</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

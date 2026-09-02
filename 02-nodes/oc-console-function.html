@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>console-function </h1>
-  <div class="sub">oc-console-function · package · G16-Console · Layer 2</div>
+  <div class="sub">oc-console-function · package · G16-Console · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>Cloudflare Workers 端边函数集：auth.ts 是 OpenAuth issuer（GitHub/Google 登录 + Cloudflare KV 存储，签发 account/user subject），log-processor.ts 是 tail 处理器，把 Zen/Go 网关的请求日志转发到 Honeycomb 与数据湖，stat.ts 提供 TPS 限流统计查询端点。src/auth.ts:44 用 @openauthjs/openauth 构建 OAuth issuer，src/log-processor.ts:5 解析 _metric: 前缀日志聚合指标。</p>
@@ -60,26 +60,26 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>把认证签发、限流计数查询、日志遥测拆成独立 Worker，与 app 的 SSR 路由解耦——auth 需要 KV 会话存储与 OAuth provider 配置，log-processor 需要 Trace API，放在 function 层可独立部署/独立扩缩容；console-core 的业务函数（Account/Workspace/Actor/Database）被直接 import 复用，保持单一业务源。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改；装配层没有直接复用 function 包，但其独立 Worker 做限流/遥测的架构与本地 headroom proxy（8787 端口压缩代理）、browser-harness daemon 的独立进程承载横切能力是同一设计思路。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>独立于 app 的 Cloudflare Workers 入口：认证服务与日志/统计边函数需要各自独立的 worker 部署，无法打进 Console 主应用。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>Cloudflare Worker/Lambda 入口包：src/auth.ts 导出 fetch handler（@openauthjs/openauth issuer，GitHub/Google OAuth provider + CloudflareStorage KV 会话）；src/stat.ts 导出 POST / 查询 ModelTpsRateLimitTable 近 30 个 1 分钟 interval 的 qualify/unqualify 计数；src/log-processor.ts 导出 tail()（Cloudflare Workers Trace 日志处理：解析 _metric: 前缀日志 → 转发 Honeycomb https://api.honeycomb.io/1/batch/zen + 数据湖 ingest）。依赖 ai / @ai-sdk/anthropic|openai|openai-compatible（LLM 代理链）。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>控制台的 Serverless 边缘函数：openauth 认证签发（account/user subjects）、TPS 限流计数聚合查询（配合 app 侧 modelTpsLimiter）、Zen 网关的 observability 数据管线（honeycomb 批量写入 + lake ingest，含 llm.error 事件）。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 
   
 
   
-<h3>模块内部结构 DAG（3 模块 · 0 边）</h3>
+<h3>模块内部结构 DAG（4 模块 · 1 边）</h3>
 <div id="int-oc-console-function" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>
 <script>
-const INToc_console_function = {"nodes": [{"data": {"id": "auth.ts", "name": "auth.ts", "path": "auth.ts"}, "classes": "leaf"}, {"data": {"id": "log-processor.ts", "name": "log-processor.ts", "path": "log-processor.ts"}, "classes": "leaf"}, {"data": {"id": "stat.ts", "name": "stat.ts", "path": "stat.ts"}, "classes": "leaf"}], "edges": []};
+const INToc_console_function = {"nodes": [{"data": {"id": "log-processor.ts", "name": "log-processor.ts", "path": "log-processor.ts"}, "classes": "leaf"}, {"data": {"id": "auth-redirect.ts", "name": "auth-redirect.ts", "path": "auth-redirect.ts"}, "classes": "leaf"}, {"data": {"id": "auth.ts", "name": "auth.ts", "path": "auth.ts"}, "classes": "leaf"}, {"data": {"id": "stat.ts", "name": "stat.ts", "path": "stat.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "auth.ts", "target": "auth-redirect.ts"}}]};
 const cyoc_console_function = cytoscape({
   container: document.getElementById('int-oc-console-function'),
   elements: INToc_console_function,

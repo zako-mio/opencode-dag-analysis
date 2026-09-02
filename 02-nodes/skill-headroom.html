@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>headroom <span class="tag">装配层</span></h1>
-  <div class="sub">skill-headroom · skill · A6i-上下文压缩 · Layer 0</div>
+  <div class="sub">skill-headroom · skill · A6h-上下文压缩 · Layer 4</div>
 
   <h2>① 作用</h2>
-  <p>Headroom 上下文压缩层（CLI 版）。支持 proxy/audit-reads/savings/inspect/diff/memory 命令，用于手动压缩超大工具输出、审计 Read-tool 流量、查看压缩节省统计。MCP 服务器已禁用（2026-08-12 量化亏损），CLI 仍可用。</p>
+  <p>Headroom 上下文压缩层（CLI 版）。支持 headroom proxy / audit-reads / savings / inspect / diff / memory 等命令，用于手动压缩超大工具输出、审计 Read-tool 流量、查看压缩节省统计。注意：headroom MCP 服务器已禁用（2026-08-12 量化亏损），CLI 仍可用</p>
 
   <h2>② 提供能力</h2>
-  <p>· headroom CLI 命令表（proxy 8787 端口 / audit-reads / savings / inspect / memory）<br>· 压缩触发阈值（&gt;500 行文件 / &gt;2000 字符工具输出 / &gt;3000 字符网页）<br>· MCP 禁用状态说明与恢复路径（切 Claude Code/Codex 时 enabled 改回 true）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <p class="empty">无下游依赖</p>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>skill-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-output.html'>output</a></td><td>mechanism</td><td><small>压缩</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

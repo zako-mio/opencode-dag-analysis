@@ -1,11 +1,11 @@
 # config 节点（1）
 
 ## config-main — main
-- 组: A5-配置本体 | Layer 1
-- 作用: 核心配置本体。①模型路由：model=deepseek/deepseek-v4-pro（attachment+reasoning，支持图片输入），small_model=deepseek-v4-flash（纯文本）；provider.deepseek 用 @ai-sdk/deepseek，baseURL=https://api.deepseek.com/v1，超时 300s/120s/60s，双模型均定义 daily（max_tokens 8192 / reasoning_effort high）与 deep（16384 / max）variants 及成本表（cache_read 低至 0.003625）。②compaction：auto=true, prune=true, tail_turns=4, preserve_recent_tokens=16384, reserved=10000。③skills.paths 3 个目录（skill/browser-harness、skills、D:\Opencode_Download\Reflection\skills）。④permission 三层纵深：L1 全局 deny（pdf-reader_*/drawio_*/vscode-mcp-server_* 全 deny + bash 危险命令 deny：python -c/rm -rf/git push + Set-Content/Out-File/Remove-Item -Force 为 ask + external_directory 白名单 7 条 allow）→ L2 agent 覆盖（plan 收紧 bash，build 继承）→ L3 子Agent 注入最小权限（pdf-worker 仅 pdf-reader_*、drawio-worker 仅 drawio_*、reflection-worker bash 全 deny）。
-- 提供: 模型路由与双 variant 推理预算、成本表与缓存计价、上下文压缩策略、skill 装载路径、权限安全边界（deny 默认 + allow 白名单 + ask 中间态）、MCP 启停开关
-- **为什么存在（历史）**: 0801 P0 9 处改动（small_model→Flash 降费 ~12x、compaction 块 prune+tail_turns:4、grill-me 注入 plan prompt、build prompt 精简、pdf/drawio-worker 加 Flash、新增 general/explore、provider setCacheKey:true→后移除、新增 flash 模型+cost 表、instructions 加 agent-protocol）；0802 盘点 vs 官方默认：最大定制项（agent prompt ~2000+ 行、4 子Agent、variant daily/deep 双档、permission 三层、external_directory 收窄）；0802 Mission留档：external_directory 从 D:\Opencode_Download\** 收窄为 Mission-file\**；0803 编码安全纵深防御：apiKey 明文删除（环境变量化）、python -c deny、Set-Content/Out-File/Remove-Item -Force ask、rm -rf deny、glm-vision MCP 删除；0803 Drawio 缓存修正：drawio-worker prompt 回退；0805 Reflection：reflection-worker + skills.paths + external_directory；0806 plan/build 降级 Flash（临时）；0807 /reflection 命令 prompt 同步；0812 headroom 禁用；0813 优化（7 处 description 精简省 token + 3 处注释补充 + plan 回滚 Pro 删 model 字段）；备份链 backup-20260803/bak-20260807/bak-20260813/bak-20260813-plan-pro 完整记录演化。
-- **为什么存在（当前）**: 三层纵深防御权限（L1 全局 deny：MCP 全 deny + python -c/rm -rf/git push deny + Set-Content/Out-File ask + external_directory 7 条 allow → L2 plan 收紧 bash 仅只读 → L3 子Agent 最小权限 pdf-reader_*/drawio_*/bash deny）；模型路由（plan 回落顶层 Pro / build + 5 子Agent 全 Flash）；7 MCP 精兵策略（2 启用 4 禁用，全部量化依据）；provider @ai-sdk/deepseek 直连（baseURL /v1、超时 300/120/60s、双模型 daily/deep variants + 成本表 cache_read 0.003625 降 99.2%）；compaction 自定义；skills.paths 3 目录；description 精简化（headroom 253→60 字符，每条 MCP 描述注入 system prompt 有 token 成本）。
-- **怎么用（触发）**: 
-- **怎么用（工作流）**: 
-- **怎么用（协作）**: 装配全部组件：7 agent（模型/权限/prompt）、6 mcp（启停）、2 instructions（加载）、tools/read.ts 与 plugins（经权限与环境）、command/reflection.md（agent=build 绑定）、opencode-config skill（SHA256 同步维护）。
+- 组: AG6-配置本体 | Layer 2
+- 作用: 主配置：agent/provider/mcp/compaction/skills/instructions/permission
+- 提供: 
+- **为什么存在（历史）**: opencode v1.18.14→v1.18.25 配置装配层自进化，新增 OpenCode Go 订阅套餐、智谱 GLM 官方、DeepSeek 官方三套 provider，并抽象出视觉子Agent。
+- **为什么存在（当前）**: 用 Go 订阅的包月额度覆盖高性价比编码；用 DeepSeek 官方直连兜底 Pro 与视觉；用智谱官方补 GLM-5.3/GLM-4.6v 双通道，形成多 provider 冗余与视觉出口。
+- **怎么用（触发）**: 作为 opencode 全局配置启动加载，决定顶层默认模型/small_model/compaction/agent/instruction/provider/mcp 全栈装配。
+- **怎么用（工作流）**: 维护 plan/build(daily变体)、pdf/drawio/vision/reflection 子Agent 权限与模型、provider 模型清单与成本、compaction 参数、权限白名单、MCP 开关。
+- **怎么用（协作）**: provider 段经 @ai-sdk/* 连接外部 API；agent 段配置子Agent 供 agent-protocol 路由；instructions 段挂载 auto-mode.md 与 MEMORY.md；mcp 段启用 pdf-reader/drawio。

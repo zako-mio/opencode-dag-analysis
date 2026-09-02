@@ -43,16 +43,16 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-deepseek-api </h1>
-  <div class="sub">ext-deepseek-api · external · X-外部服务 · Layer 7</div>
+  <div class="sub">ext-deepseek-api · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>deepseek-v4-pro/flash 模型 API</p>
+  <p>deepseek-v4-pro/flash/flash-vision-exp 模型 API</p>
 
   <h2>② 提供能力</h2>
-  <p>LLM 推理</p>
+  <p>LLM 推理 + 视觉</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>external</td><td><small>agent-plan 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>external</td><td><small>agent-build 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>external</td><td><small>agent-pdf-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>external</td><td><small>agent-drawio-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-general.html'>general</a></td><td>external</td><td><small>agent-general 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-explore.html'>explore</a></td><td>external</td><td><small>agent-explore 关联 ext-deepseek-api</small></td></tr><tr><td><a href='agent-reflection-worker.html'>reflection-worker</a></td><td>external</td><td><small>agent-reflection-worker 关联 ext-deepseek-api</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>external</td><td><small>instr-auto-mode 关联 ext-deepseek-api</small></td></tr><tr><td><a href='config-main.html'>main</a></td><td>external</td><td><small>config-main 关联 ext-deepseek-api</small></td></tr><tr><td><a href='skill-agent-reflection.html'>agent-reflection</a></td><td>external</td><td><small>skill-agent-reflection 关联 ext-deepseek-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-vision-worker.html'>vision-worker</a></td><td>external</td><td><small>vision 模型依赖官方 DeepSeek</small></td></tr><tr><td><a href='config-main.html'>main</a></td><td>external</td><td><small>provider DeepSeek 官方</small></td></tr><tr><td><a href='tool-read.html'>read</a></td><td>external</td><td><small>read.ts VLM 降级 DeepSeek 视觉</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>主模型供给：plan=deepseek-v4-pro（规划/委派推理）、build 与全部 7 个子Agent=deepseek-v4-flash（执行降本）都走 DeepSeek。解决本地要有强推理 + 低成本可商用模型的需求；无它则 opencode 无模型可跑，整个装配层（调度/委派/留档/反思）全部失效。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>合理：opencode.jsonc 以 provider.deepseek 配置 @ai-sdk/deepseek + baseURL https://api.deepseek.com/v1，model 分 pro(0.435/0.87 刀) 与 flash(0.14/0.28 刀) 两档，daily/deep variant 分别限 max_tokens 8192/16384 + reasoning_effort high/max——与 auto-mode 门控的决策边界表严格对应；缓存前缀策略（auto-mode.md 静态置前、动态置后）就是为 DeepSeek prefix-cache 98-99% 命中设计的。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>官方直连兜底 Pro 与视觉；主 Agent 默认模型</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>承载 deepseek-v4-pro(仅官方) + vision-exp</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>环境变量 DEEPSEEK_API_KEY（用户级已 setx，进程内不落盘）；API 端点 https://api.deepseek.com/v1/chat/completions（OpenAI 兼容）；opencode.jsonc 中 provider.deepseek.npm=@ai-sdk/deepseek + options.baseURL/timeout(300s)/headerTimeout/chunkTimeout；模型 modalities（pro 支持 image 输入、flash 仅 text）+ interleaved.reasoning_content 字段解析推理链。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>opencode 主进程按 agent 配置选模型：plan 回落到顶层 model（deepseek-v4-pro），build/子Agent 显式 model=deepseek-v4-flash；variant daily/deep 切换 max_tokens 与 reasoning_effort；MEMORY.md 经 instructions 注入系统提示前缀共享缓存。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>env DEEPSEEK_API_KEY → api.deepseek.com/v1</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>drawio <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-drawio · mcp · A2-MCP · Layer 0</div>
+  <div class="sub">mcp-drawio · mcp · AG3-MCP · Layer 5</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，命令 node D:\Opencode\drawio-mcp-minimal\package\src\index.js（本地精简版 v1.5.0）。已启用（enabled=true）：draw.io 图表创建，仅 drawio-worker 子Agent 使用（drawio_* 全局 deny，子Agent 层 allow）。</p>
+  <p>【启用】draw.io 图表创建（本地精简版 v1.5.0）。仅 drawio-worker 子Agent 使用</p>
 
   <h2>② 提供能力</h2>
-  <p>draw.io 图表创建能力（在线服务模式）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>mcp-drawio 关联 ext-drawio-service</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-plugin.html'>plugin</a></td><td>mcp-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>drawio MCP</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) node 启动本地 index.js（8 工具：create/export 等）；2) drawio_export 走 Puppeteer lightbox 模式 + deviceScaleFactor=scale + waitForFunction 确认渲染（规避 CLI bug）；3) Chromium 用系统 Chrome（下载失败兜底）；4) 导出后 VLM 校验三栏完整/中文可读/无截断（高峰期 429 降级为 PNG 结构校验）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>图表创建与 4x PNG 导出——仅经 drawio-worker 子Agent 使用（流程图/架构图/UML/思维导图）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>agent-drawio-worker（唯一使用方）、drawio-reference skill（XML/Mermaid 参考+导出验证）、mcp-drawio-local（同实例离线兜底）、VLM（内容校验）。</p></div>
   </div>
 

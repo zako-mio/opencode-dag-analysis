@@ -43,16 +43,16 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>superpowers-openspec-superpowers-workflow <span class="tag">装配层</span></h1>
-  <div class="sub">skill-superpowers-openspec-superpowers-workflow · skill · A6l-工作流 · Layer 3</div>
+  <div class="sub">skill-superpowers-openspec-superpowers-workflow · skill · A6m-Superpowers · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>完整交付流程编排器：Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档，全程门控。作为路由控制者防止误路由到 OpenSpec proposal skill，要求先完成 Superpowers 探索才允许 OpenSpec 工件生成。</p>
+  <p>完整交付流程——Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档。全程门控，需显式召唤。</p>
 
   <h2>② 提供能力</h2>
-  <p>· 25 步编排工作流（探索→设计→OpenSpec 工件依赖序 proposal→design→spec→tasks→TDD→验证→归档）<br>· openspec status/instructions --json 检查流程<br>· 交接命令（continue-dev/continue-review/continue-archive）<br>· 严格 Guardrails（路由保护：不得先路由到 openspec-propose）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-propose.html'>openspec-propose</a></td><td>skill-relation</td><td><small>superpowers-openspec-superpowers-workflow SKILL.md Guardrails: &#x27;do not route first to $openspec-feat</small></td></tr><tr><td><a href='skill-openspec-archive-change.html'>openspec-archive-change</a></td><td>skill-relation</td><td><small>superpowers-openspec-superpowers-workflow SKILL.md: &#x27;Accept continue-archive ... while $openspec-arc</small></td></tr><tr><td><a href='skill-superpowers-feature-workflow.html'>superpowers-feature-workflow</a></td><td>skill-relation</td><td><small>SKILL.md Guardrails 互斥引用 $openspec-feature-workflow（superpowers 系列工作流互斥路由）; 三者同属 superpowers-* 命名族</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>

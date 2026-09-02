@@ -1,3 +1,6 @@
+# 源码 clone（145M，不入库）
+opencode-src-v1.18.25/
+
 # 临时/验证产物不入库
 07-checkpoint/screenshots/
 07-checkpoint/shot-*.png
@@ -22,6 +25,14 @@
 07-checkpoint/headless-verify5.py
 07-checkpoint/headless-verify6.py
 
+# stage 中间数据（可再从 checkpoint 重建）
+08-collect/*.json
+08-collect/internal-v1.18.25.json
+
 # Python 缓存
 __pycache__/
 *.pyc
+
+# 临时
+/tmp/
+*.tmp

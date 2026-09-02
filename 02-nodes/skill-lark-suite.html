@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>lark-suite <span class="tag">装配层</span></h1>
-  <div class="sub">skill-lark-suite · skill · A6c-办公集成 · Layer 0</div>
+  <div class="sub">skill-lark-suite · skill · A6f-办公集成 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>飞书/Lark 全功能操作入口，通过已安装的 lark-cli v1.0.76 命令操作飞书全部业务域（日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、审批、OKR、白板、笔记、事件订阅、应用开发等）。以意图路由映射表按用户关键词加载对应域文件，未手写的域走 lark-cli skills read 动态加载 Fallback。</p>
+  <p>飞书/Lark 全功能操作入口。通过 lark-cli 命令操作飞书资源，覆盖日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、会议纪要、考勤、审批、OKR、白板、笔记、思维笔记、事件订阅、应用开发等全部业务域。触发关键词：飞书、lark、lark-cli、feishu、消息、发消息、群聊、日程、日历、meeting、</p>
 
   <h2>② 提供能力</h2>
-  <p>· 意图路由映射表（IM/邮件/日历/文档/表格/多维表格/任务/云盘/幻灯片/通讯录/知识库/会议/纪要/考勤/审批/OKR/白板/笔记等 20+ 域）<br>· 强制前置 Step 0：references/shared.md（认证/身份选择/JSON 合约/安全规则）<br>· Windows 下 cmd /c lark-cli 调用规范<br>· lark-cli skills read 动态加载 Fallback</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-lark-api.html'>ext-lark-api</a></td><td>external</td><td><small>skill-lark-suite 关联 ext-lark-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-lark-api.html'>ext-lark-api</a></td><td>external</td><td><small>lark-cli 调用飞书</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

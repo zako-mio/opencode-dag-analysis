@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>openspec-apply-change <span class="tag">装配层</span></h1>
-  <div class="sub">skill-openspec-apply-change · skill · A6l-工作流 · Layer 1</div>
+  <div class="sub">skill-openspec-apply-change · skill · A6l-OpenSpec工作流 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>执行 OpenSpec 变更中 tasks.md 的实现任务，逐条完成并打勾。通过 openspec status 与 instructions apply 获取上下文文件、进度与任务列表，处理 blocked/all_done 状态。</p>
+  <p>执行 tasks.md 中的实现任务——逐条完成并打勾。tasks.md 就绪后开始编码时使用。</p>
 
   <h2>② 提供能力</h2>
-  <p>· 变更选择与状态解析（schemaName/planningHome/actionContext）<br>· apply 指令获取（contextFiles/进度/任务列表）<br>· 任务逐条执行与勾选<br>· blocked 状态引导转 continue-change<br>· store 感知（--store 标志）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-continue-change.html'>openspec-continue-change</a></td><td>skill-relation</td><td><small>openspec-apply-change SKILL.md: state=blocked（缺 artifacts）时 suggest using openspec-continue-change</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-update-change.html'>openspec-update-change</a></td><td>skill-relation</td><td><small>openspec-update-change SKILL.md: &#x27;Change already implemented ... suggest /openspec-apply-change to c</small></td></tr><tr><td><a href='skill-openspec-propose.html'>openspec-propose</a></td><td>skill-relation</td><td><small>openspec-propose SKILL.md: &#x27;When ready to implement, run /openspec-apply-change&#x27;; &#x27;Run /openspec-app</small></td></tr><tr><td><a href='skill-openspec-ff-change.html'>openspec-ff-change</a></td><td>skill-relation</td><td><small>openspec-ff-change SKILL.md: &#x27;What\&#x27;s ready ... Prompt: Run /openspec-apply-change or ask me to impl</small></td></tr><tr><td><a href='skill-openspec-onboard.html'>openspec-onboard</a></td><td>skill-relation</td><td><small>openspec-onboard SKILL.md Phase 1: 完整流程包含 create change → 构建 artifacts → implement the tasks → archi</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>

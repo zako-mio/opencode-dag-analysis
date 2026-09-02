@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>slack </h1>
-  <div class="sub">oc-slack · package · G18-集成 · Layer 1</div>
+  <div class="sub">oc-slack · package · G18-集成 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>Slack 机器人集成（@slack/bolt Socket Mode）。src/index.ts 创建 opencode 服务端实例（createOpencode）与 Slack App，按 channel+thread 键复用 session：首次消息创建 opencode session 并分享链接，后续消息走 session.prompt；同时订阅 message.part.updated 事件把 tool 完成状态回贴到 thread（src/index.ts:24-51）。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>用 Socket Mode（无需公网回调）降低自托管门槛；一线程一会话的隔离保证多用户并发互不干扰；SDK（@opencode-ai/sdk）直连 server 复用完整会话/工具/分享协议，bot 只做 Slack 协议↔opencode 协议的翻译层。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改，且本机装配层刻意绕开 Slack（MEMORY 中飞书为协同入口，lark-suite skill 覆盖消息/日历/文档）。slack 包是官方 IM 接入参考：本机 lark-suite + lark-cli 即同类聊天平台↔AI 会话桥的飞书版。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>让用户直接在 Slack 线程内驱动 opencode agent，把聊天线程映射为独立 session；作为独立部署的集成入口，复用 @opencode-ai/sdk 而非内嵌实现。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>bun dev（bun run src/index.ts）启动 Slack Bolt 机器人：env 需 SLACK_BOT_TOKEN / SLACK_SIGNING_SECRET / SLACK_APP_TOKEN（.env.example 提供）；App({socketMode:true}) 建立 Socket Mode 长连接；内部 createOpencode({port:0}) 起一个临时 opencode server，把每个 Slack 线程(channel-thread_ts)映射为独立 opencode session：收到消息 → client.session.create + session.share 分享链接 → session.prompt 发提示 → say() 回帖；订阅 message.part.updated 事件把 tool 完成状态实时回帖（app.client.chat.postMessage）。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>把 opencode 接入 Slack 工作区：@机器人或在频道内对话即开启独立 AI 会话，工具调用进度与最终回答以线程化消息呈现，会话可分享（share URL）。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 

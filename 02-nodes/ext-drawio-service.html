@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-drawio-service </h1>
-  <div class="sub">ext-drawio-service · external · X-外部服务 · Layer 3</div>
+  <div class="sub">ext-drawio-service · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>draw.io 在线/本地图表渲染</p>
@@ -52,7 +52,7 @@
   <p>图表导出</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>external</td><td><small>agent-drawio-worker 关联 ext-drawio-service</small></td></tr><tr><td><a href='mcp-drawio.html'>drawio</a></td><td>external</td><td><small>mcp-drawio 关联 ext-drawio-service</small></td></tr><tr><td><a href='mcp-drawio-local.html'>drawio-local</a></td><td>external</td><td><small>mcp-drawio-local 关联 ext-drawio-service</small></td></tr><tr><td><a href='skill-drawio-reference.html'>drawio-reference</a></td><td>external</td><td><small>skill-drawio-reference 关联 ext-drawio-service</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-drawio-reference.html'>drawio-reference</a></td><td>external</td><td><small>draw.io 导出</small></td></tr><tr><td><a href='mcp-drawio.html'>drawio</a></td><td>external</td><td><small>drawio MCP</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>图表交付能力：流程图/架构图/UML/思维导图/组织图批量生成与 4x PNG 导出（0816-0817 三个 DAG 项目合计 135+ 张）。解决 Agent 要产出专业可视化图表需求；无它则架构对比图、DAG 图无法生成。被依赖方：drawio-worker 子Agent（唯一工具源）、drawio-reference skill（998 行规范+导出验证第五章）。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>合理：0801 因 MCP 工具描述内嵌 33K XML + 12K Mermaid 参考导致子Agent System Prompt 18-20K tokens（50-60% 是工具定义），Fork 到 D:\Opencode\drawio-mcp-minimal 把描述替换为 5 行摘要 + 懒加载 skill；0803 加 Puppeteer lightbox 导出修复 CLI --scale 4 只渲染顶部 25% 的 bug（v3: ?lightbox=1 + deviceScaleFactor + waitForFunction，10280×5760 PNG 成功）；opencode.jsonc 中 drawio enabled:true、drawio-local（DRAWIO_BASE_URL=http://localhost:8080/）离线兜底 enabled:false。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>drawio-worker 子Agent 依赖</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>启用 mcp-drawio</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>MCP 配置：opencode.jsonc mcp.drawio = {type:local, command:[node, D:\Opencode\drawio-mcp-minimal\package\src\index.js], enabled:true}（stdio 传输）；环境变量 DRAWIO_BASE_URL（默认 https://app.diagrams.net/）、DRAWIO_SHAPE_INDEX_URL（CDN jsdelivr，可本地）、DRAWIO_ICON_SERVICE_URL（可 off）；导出走 export.js 的 buildLightboxUrl（pako deflateRaw 压缩 XML → #create= JSON hash → lightbox=1 参数）→ Puppeteer 截全页。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>drawio-worker 子Agent 调用 drawio_* 8 工具（open_drawio_xml/open_drawio_mermaid/search_shapes/export 等）创建图表 → 强制 drawio_export 导出 PNG（scale=2~4）→ VLM（GLM-4V）校验无截断 → 越界检查；委派时主Agent prompt 必须精确写入 drawio-reference: 图表规范与导出验证（刚性约束，违者产生截断 PNG）。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>drawio-mcp-minimal + DRAWIO_BASE_URL</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>openspec-sync-specs <span class="tag">装配层</span></h1>
-  <div class="sub">skill-openspec-sync-specs · skill · A6l-工作流 · Layer 0</div>
+  <div class="sub">skill-openspec-sync-specs · skill · A6l-OpenSpec工作流 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>将 delta spec 同步到主 spec（不归档），agent 驱动读取 delta 并智能编辑主 spec，处理 ADDED/MODIFIED/REMOVED/RENAMED 段。仅被 archive-change 或显式召唤时使用。</p>
+  <p>同步 delta spec 到主 spec（不归档）。仅被 archive-change 或显式召唤时使用。</p>
 
   <h2>② 提供能力</h2>
-  <p>· delta spec 定位（existingOutputPaths 唯一来源）<br>· 主 spec 路径解析（store 感知 planningHome.root）<br>· ADDED/MODIFIED/REMOVED/RENAMED 合并<br>· 窄化同步范围（显式名单）</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-openspec-archive-change.html'>openspec-archive-change</a></td><td>skill-relation</td><td><small>C:\Users\15057\.config\opencode\skills\openspec-archive-change\SKILL.md: 运行 openspec-sync-specs work</small></td></tr><tr><td><a href='skill-openspec-bulk-archive-change.html'>openspec-bulk-archive-change</a></td><td>skill-relation</td><td><small>openspec-bulk-archive-change SKILL.md: bulk archive 排除找不到实现的 delta（syncing it anyway would write a m</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
   <h2>⑤ 为什么存在（why）</h2>

@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>console-mail </h1>
-  <div class="sub">oc-console-mail · package · G16-Console · Layer 0</div>
+  <div class="sub">oc-console-mail · package · G16-Console · Layer 2</div>
 
   <h2>① 作用</h2>
   <p>邮件模板包：无 src/，全部为 emails/ 下的 jsx-email 模板与共享组件/样式。emails/templates/InviteEmail.tsx 是唯一业务模板（workspace 邀请邮件），被 console-core 的 User 邀请逻辑动态 import 渲染（console/core/src/user.ts:142）。包 exports 映射到 ./emails/templates/*，纯前端渲染无服务逻辑。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>邮件模板独立成包并用 JSX 组件化渲染（@jsx-email），原因：1) 与业务逻辑隔离，纯展示层可单独预览迭代；2) JSX 类型安全 + 复用组件（styles.ts）；3) console-core 的 AWS SES 只负责发送，模板与发送解耦，模板可被 app/core 两处引用。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>本机未改。装配层的邮件能力另起炉灶（recruit-assist 用 lark-cli/飞书或 minimax-docx），未采用 SES 邮件链路。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>将邮件模板与业务代码解耦，供 console-core 按需动态 import（避免 React 依赖进入 core 主包），同时独立可预览开发。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>纯模板包：exports 映射 ./emails/templates/*（InviteEmail.tsx 等），用 @jsx-email（render/cli/all）把 React/TSX 组件渲染为 HTML 邮件；bun dev = email preview emails/templates 本地预览。被 console-core/console-app 以 workspace:* 依赖，配合 AWS SES（aws.ts 的 SendEmail）发送。</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>控制台的邀请/通知邮件模板（InviteEmail），与 billing/subscription 流程联动（付费邀请、黑金计划等场景）。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 

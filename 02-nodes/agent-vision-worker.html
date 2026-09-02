@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vision-worker · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>vision-worker <span class="tag">装配层</span></h1>
+  <div class="sub">agent-vision-worker · agent · AG2-子Agent · Layer 7</div>
+
+  <h2>① 作用</h2>
+  <p>Vision analysis specialist using DeepSeek vision model. Use for image understanding, screenshot analysis, UI restoration, and any task requiring direct image input.</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>vision 模型依赖官方 DeepSeek</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>hook-mount</td><td><small>vision-worker 路由规则</small></td></tr><tr><td><a href='instr-agent-protocol.html'>agent-protocol</a></td><td>route</td><td><small>MCP 路由 vision</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>原先 pdf-worker/drawio-worker 曾绑定 vision-exp 模型以看图，0826 解绑改走外部 VLM/read.ts；但通用图片理解仍缺一个专职视觉执行者，故 0822 独立抽象出带 DeepSeek 视觉模型的子Agent。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需要图片理解/截图分析/UI对照还原能力，且主Agent已换用 vision-exp 具备看图，委派链路上需要一个明确可路由的视觉执行角色。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>被 agent-protocol 的 MCP 路由规则触发：通用图片理解/截图分析/UI还原 → 委派 vision-worker 子Agent（DeepSeek 视觉模型）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>直接以图片作为输入理解内容、分析截图、做 UI 还原。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 pdf-worker(文本/OCR链路)、drawio-worker(图表导出) 分工；供 agent-protocol 路由；依赖 deepseek 官方 provider 的 deepseek-v4-flash-vision-exp 模型。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

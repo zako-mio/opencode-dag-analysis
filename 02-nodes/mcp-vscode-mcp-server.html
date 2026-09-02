@@ -42,17 +42,17 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>vscode-mcp-server <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-vscode-mcp-server · mcp · A2-MCP · Layer 4</div>
+  <h1>vscode-mcp-server <span class="tag">装配层</span><span class="tag red">已禁用</span></h1>
+  <div class="sub">mcp-vscode-mcp-server · mcp · AG3-MCP · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，经 powershell -ExecutionPolicy Bypass -File vscode-mcp-launcher.ps1 启动。已禁用（enabled=false）：仅 6 个工具（~692 tokens）极少使用，工具定义成本 &gt; 收益。审计报告存于 Mission-file\2026-08\0802-vscode-mcp-server-tools-audit。</p>
+  <p>【已禁用】仅 6 个工具(~692 tokens) 极少使用。审计报告见 Mission-file\\2026-08\\0802-vscode-mcp-server-tools-audit\\vscode-mcp-server-tools-audit.md</p>
 
   <h2>② 提供能力</h2>
-  <p>（禁用中）VS Code 相关 6 工具；保留配置便于按需启用</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-server.html'>server</a></td><td>assembly-to-pkg</td><td><small>mcp-vscode-mcp-server 关联 oc-server</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>经 powershell -ExecutionPolicy Bypass -File vscode-mcp-launcher.ps1 启动（本地 MCP）；6 个工具 schema ~2,766 字符 ≈ ~692 tokens；launcher 轮询 6010 端口等待 VSCode 就绪后桥接。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）原本用于：code_checker 读诊断、focus_editor 定位文件、4 个调试会话管理（start/restart/stop/list_debug_session）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>无（已禁用 + 全局 deny）；曾与 VSCode 编辑器联动。</p></div>
   </div>
 

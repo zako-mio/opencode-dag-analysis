@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>explore <span class="tag">装配层</span></h1>
-  <div class="sub">agent-explore · agent · A1-Agents · Layer 1</div>
+  <div class="sub">agent-explore · agent · AG2-子Agent · Layer 7</div>
 
   <h2>① 作用</h2>
-  <p>探索子Agent，model=deepseek-v4-flash，无 description/无专用 permission。用于代码库/知识库快速探索（glob/grep/read），并行产出数据；口径冲突时由主Agent 终裁（MEMORY 记录：包数 237/219 由主Agent 定夺，不重跑）。</p>
+  <p>Fast agent specialized for exploring codebases. Inherits parent session model.</p>
 
   <h2>② 提供能力</h2>
-  <p>快速只读探索、并行调研产出、统一 schema 归一化</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>assembly-to-pkg</td><td><small>agent-explore 关联 oc-schema</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>agent-explore 关联 ext-deepseek-api</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='mech-parallel.html'>parallel</a></td><td>mechanism</td><td><small>并行</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>1) 快速只读探索代码库/知识库（glob/grep/read，offset/limit 分段）；2) 并行产出数据（3-4 路按语义域分片）；3) 统一 schema 归一化（≤2 次重试）；4) 口径冲突时由主Agent 终裁（不重跑）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>代码库探索、目录统计（如飞书迁移 6.62GB 分析）、SHA256 哈希计算、信息收集、源码语义分析（35 包全量 implementation/provides/depends_on）。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>plan/build（委派）、large-scale-source-parse skill（方法论）、general（互补）。</p></div>
   </div>
 

@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>ext-chrome </h1>
-  <div class="sub">ext-chrome · external · X-外部服务 · Layer 2</div>
+  <div class="sub">ext-chrome · external · X-外部服务 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>browser-harness 自动化浏览器</p>
@@ -52,7 +52,7 @@
   <p>网页自动化</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-browser-harness.html'>browser-harness</a></td><td>external</td><td><small>skill-browser-harness 关联 ext-chrome</small></td></tr><tr><td><a href='skill-recruit-assist.html'>recruit-assist</a></td><td>external</td><td><small>skill-recruit-assist 关联 ext-chrome</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-browser-harness.html'>browser-harness</a></td><td>external</td><td><small>浏览器自动化</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">为什么需要</span><p>网页交互/抓取/测试的唯一通道：browser-harness skill 要求 Always use browser-use for any web interaction——爬取（0817 DAG 3 路并行联网调研、简历投递）、页面截图/点击、SPA 轮询、表单填写都需要真实浏览器。解决 DeepSeek 无视觉且纯文本 Agent 无法直接操作网页的需求；被依赖方：browser-harness skill、recruit-assist（京东投递）、create-web preset（前端实测）、frontend-design（渲染验证）。</p></div>
-    <div class="why-item"><span class="why-label">当前状态</span><p>合理：专用 Chrome 实例（独立 profile %LOCALAPPDATA%\browser-harness-chrome，--remote-debugging-port=9222，chrome-debug.ps1 自动拉起/幂等检测）；BU_CDP_URL=http://localhost:9222 环境变量已设；browser-harness.exe 管道式 Python（new_tab/js/capture_screenshot/click_at_xy/cdp 原始命令）。0804 复盘教训（JS 需完整 IIFE、js() 必须 return、复杂箭头 heredoc 易错）已固化进 skill。</p></div>
+    <div class="why-item"><span class="why-label">为什么需要</span><p>browser-harness skill 依赖</p></div>
+    <div class="why-item"><span class="why-label">当前状态</span><p>WSL2 用 agent-browser</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么接入</span><p>chrome-debug.ps1：powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\.config\opencode\scripts\chrome-debug.ps1（检查 http://localhost:9222/json/version，无则启动 Chrome + --remote-debugging-port=9222 + --user-data-dir 独立 profile）；browser-harness 通过 BU_CDP_URL 连接 daemon；browser-harness --doctor 诊断；远程/云浏览器用 browser-harness auth login（Browser Use cloud）。</p></div>
-    <div class="how-item"><span class="how-label">装配层调用</span><p>管道喂 Python 脚本：$pyScript | browser-harness.exe（Windows 用 @&quot;...&quot;@ heredoc，不用 &lt;&lt;PY）；流程：new_tab(url) 首次导航 → wait_for_load() → capture_screenshot() 看状态 → js()/click_at_xy() 交互 → 完成后 close-chrome-tabs.ps1 -KeepFirst 收尾；原始能力用 cdp(&quot;Domain.method&quot;, ...)。</p></div>
+    <div class="how-item"><span class="how-label">怎么接入</span><p>PowerShell CDP + close-chrome-tabs.ps1</p></div>
+    <div class="how-item"><span class="how-label">装配层调用</span><p></p></div>
   </div>
 
 

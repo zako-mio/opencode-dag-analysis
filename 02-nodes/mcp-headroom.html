@@ -42,14 +42,14 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>headroom <span class="tag">装配层</span></h1>
-  <div class="sub">mcp-headroom · mcp · A2-MCP · Layer 0</div>
+  <h1>headroom <span class="tag">装配层</span><span class="tag red">已禁用</span></h1>
+  <div class="sub">mcp-headroom · mcp · AG3-MCP · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>本地 MCP，经 powershell headroom-mcp-launcher.ps1 启动。已禁用（enabled=false，2026-08-12）：量化亏损（工具定义 ~279 tokens/请求 &gt; 收益）。注释明确 CLI 仍可用（proxy/audit-reads/savings），切 Claude Code/Codex 走 proxy 时改回 true。</p>
+  <p>【已禁用 2026-08-12】量化亏损（工具开销 &gt; 收益）。切 Claude Code/Codex 走 proxy 时改回 true。CLI 仍可用</p>
 
   <h2>② 提供能力</h2>
-  <p>（禁用中）token 审计/代理能力；CLI 保留 proxy/audit-reads/savings 手动压缩</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
   <p class="empty">无内部依赖（或为叶子/外部）</p>
@@ -66,8 +66,8 @@
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p></p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p></p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>经 headroom-mcp-launcher.ps1 v3 纯 stdio 转发（&amp; headroom mcp serve --proxy-url 127.0.0.1:8787，无后台进程无等待）；3 工具：headroom_compress（压缩，阈值 512 字节、无损 15% 门槛、有损多省 5%）/ headroom_retrieve（还原）/ headroom_stats（统计）；压缩路由 router:smart_crusher 自适应（表格/配置/日志类高冗余内容）。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）DeepSeek 直连工作流下亏损；未来切 Claude Code/Codex 走 ANTHROPIC_BASE_URL 全链路代理时启用。</p></div>
     <div class="how-item"><span class="how-label">协作关系</span><p>无（禁用）；headroom skill（frontmatter 补全后注册，文档化 CLI 用法）、auto-mode.md（已移除 MCP 引用）。</p></div>
   </div>
 

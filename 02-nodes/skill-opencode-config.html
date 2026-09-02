@@ -43,19 +43,19 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>opencode-config <span class="tag">装配层</span></h1>
-  <div class="sub">skill-opencode-config · skill · A6j-配置知识 · Layer 5</div>
+  <div class="sub">skill-opencode-config · skill · A6b-配置知识 · Layer 4</div>
 
   <h2>① 作用</h2>
-  <p>OpenCode 配置（opencode.jsonc）分级知识库：覆盖官方 Schema v2 全量字段、本项目实际配置的深度本地化说明、操作指南、安全规则与排障手册。LLM 通过三阶自检路由按需加载子文件，不一次加载全部。</p>
+  <p>OpenCode 配置（opencode.jsonc）分级知识库。覆盖官方 Schema v2 全部字段、本项目实际配置的本地化说明、操作指南、安全规则和排障手册。LLM 通过三阶自检路由按需加载子文件。当用户需要查看、修改、编写、验证 opencode 配置时使用。触发关键词：opencode配置、opencode参数、opencode.jsonc、con</p>
 
   <h2>② 提供能力</h2>
-  <p>· 路由矩阵四组子文件（ref/ 官方参考 7 份、local/ 本地化 5 份、ops/ 操作指南 6 份、troubleshooting/ 排障）<br>· 版本哈希表（配置 SHA256 01E07DA4... + 17 子文件哈希）<br>· 修改安全链（备份→修改→JSON 验证→重算哈希→同步子文件→零旧值残留检查）<br>· 对标 opencode 1.18.16</p>
+  <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>assembly-to-pkg</td><td><small>skill-opencode-config 关联 oc-opencode</small></td></tr><tr><td><a href='skill-openspec-propose.html'>openspec-propose</a></td><td>skill-relation</td><td><small>opencode-config SKILL.md local/skills-instructions.md 将 openspec-* 12 个 skill 归为同一 OpenSpec 体系（同族清单）</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-agent-reflection.html'>agent-reflection</a></td><td>skill-relation</td><td><small>agent-reflection SKILL.md 目录结构: 确认后写入 Reflection/skills/{category}/{name}/SKILL.md 与 C:\Users\15057\</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>skill-dep</td><td><small>装配层→官方包</small></td></tr></table>
 
   
   <h2>⑤ 为什么存在（why）</h2>

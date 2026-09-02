@@ -60,20 +60,46 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为云端分享的后端同步服务，利用 Cloudflare Durable Object 的 WebSocket 能力实现跨客户端实时会话同步，与 function 名（FaaS 云端函数）对应；R2 做持久化、secret 做访问控制。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用（本机无 Cloudflare 环境）。与 oc-enterprise、oc-web 组成官方云端分享三件套，本机离线部署不需要。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为云端分享的后端同步服务，利用 Cloudflare Durable Object 的 WebSocket 能力实现跨客户端实时会话同步，与 function 名（FaaS 云端函数）对应。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>· Cloudflare Workers 部署（sst 管理，src/api.ts:1-7 import sst Resource + cloudflare:workers）；Hono 入口 src/api.ts:116-150 暴露 POST /share_create、/share_delete、/share_delete_admin、/share_sync 与 GET /share_poll（WebSocket 升级）、/share_data<br>· SyncServer Durable Object（api.ts:15-114）：fetch 握手 101 + acceptWebSocket 订阅（api.ts:20-37）、publish 校验 session 前缀后写 R2 Bucket 并广播（api.ts:45-66）、share/assertSecret/clear 管理密钥与清理（api.ts:68-109）<br>· 环境变量注入：Env 类型要求 SYNC_SERVER（DO namespace）、Bucket（R2）、WEB_DOMAIN（api.ts:9-13）</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为云端分享的后端同步服务：enterprise 的 /share 创建端点调用 function 的 share_create 生成密钥，分享页订阅 WebSocket 经 share_poll 实时接收 session 变更广播，数据落 R2 供 web 分享页拉取。与 web/enterprise 构成完整云端分享闭环。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 
   
 
   
+<h3>模块内部结构 DAG（2 模块 · 1 边）</h3>
+<div id="int-oc-function" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/cytoscape-dagre.min.js"></script>
+<script>
+const INToc_function = {"nodes": [{"data": {"id": "github.ts", "name": "github.ts", "path": "github.ts"}, "classes": "leaf"}, {"data": {"id": "api.ts", "name": "api.ts", "path": "api.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "api.ts", "target": "github.ts"}}]};
+const cyoc_function = cytoscape({
+  container: document.getElementById('int-oc-function'),
+  elements: INToc_function,
+  style: [
+    { selector: 'node', style: {
+        'label': 'data(name)', 'font-size': '9px', 'color': '#9aa3b2',
+        'background-color': '#3a4a6b', 'width': 22, 'height': 22,
+        'text-valign': 'bottom', 'text-margin-y': 2, 'shape': 'round-rectangle',
+    } },
+    { selector: 'node.entry', style: { 'background-color': '#4f8cff', 'width': 30, 'height': 30 } },
+    { selector: 'node.hot', style: { 'background-color': '#2d6b5f' } },
+    { selector: 'node.leaf', style: { 'background-color': '#3a4a6b' } },
+    { selector: 'edge', style: { 'width': 1, 'line-color': '#2a2f3a', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.6, 'curve-style': 'bezier' } },
+  ],
+  layout: { name: 'dagre', rankDir: 'LR', nodeSep: 12, edgeSep: 8, rankSep: 40 },
+  wheelSensitivity: 0.3,
+});
+cyoc_function.on('tap', 'node', (evt) => { alert(evt.target.data('path')); });
+window['cyoc_function'] = cyoc_function; // 暴露实例供调试/验证
+</script>
 </div>
 </body>
 </html>

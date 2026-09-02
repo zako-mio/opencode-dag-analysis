@@ -43,7 +43,7 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>enterprise </h1>
-  <div class="sub">oc-enterprise · package · G10-应用 · Layer 4</div>
+  <div class="sub">oc-enterprise · package · G10-应用 · Layer 0</div>
 
   <h2>① 作用</h2>
   <p>基于 SolidStart 的企业版/云端分享服务。src/app.tsx:1-14 用 @opencode-ai/ui 的 Provider（Marked/Dialog/I18n）搭建 SSR 应用根并做 locale 检测；src/routes/api/[...path].ts:1-30 用 Hono + hono-openapi 定义 OpenAPI 文档与 /share 创建端点（zod schema，经 core/share.ts 与 sst Resource 持久化）；routes/share/[shareID].tsx 用 @opencode-ai/session-ui 的 SessionTurn/SessionReview/MessageNav 渲染只读分享会话；core/storage.ts 提供基于 R2 的存储。</p>
@@ -60,14 +60,14 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为云端托管的企业分享服务，复用 ui/session-ui 渲染能力与 core/sdk 数据模型，通过 SolidStart SSR 提供公开只读分享体验；build:cloudflare 目标使同一代码可部署到 CF Workers 边缘。</p></div>
-    <div class="why-item"><span class="why-label">改造关联</span><p>属官方底座，本机装配层未引用。官方依赖链：enterprise 依赖 ui/session-ui/core/sdk（package.json:16-19），与 app 共享会话渲染层。</p></div>
+    <div class="why-item"><span class="why-label">设计意图（官方）</span><p>作为云端托管的企业分享服务，复用 ui/session-ui 渲染能力与 core/sdk 数据模型，通过 SolidStart SSR 提供公开只读分享体验。</p></div>
+    <div class="why-item"><span class="why-label">改造关联</span><p><span class="empty">官方底座，未被本机装配层直接引用</span></p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">怎么用</span><p>· SolidStart 应用：bun dev/build/start（package.json:9-13），build:cloudflare 设 OPENCODE_DEPLOYMENT_TARGET=cloudflare 部署到 CF；shell-prod 经 sst 推生产<br>· 应用根 src/app.tsx:1-14：用 ui 的 I18nProvider/DialogProvider/MarkedProvider/Font 组装 SSR 根并 detectLocaleFromHeader（app.tsx:25-30）；API 路由 routes/api/[...path].ts:1-30 用 Hono + hono-openapi 定义 OpenAPI 与 /share 创建端点<br>· 分享页 routes/share/[shareID].tsx 复用 @opencode-ai/session-ui 的 SessionTurn/SessionReview/MessageNav 渲染只读会话；存储走 core/storage.ts（R2）</p></div>
-    <div class="how-item"><span class="how-label">典型场景与协作</span><p>作为云端托管的企业分享服务：SSR 渲染只读分享会话 + Hono OpenAPI 端点创建分享，经 function 包（Durable Object WebSocket 同步）与 web 包（分享页展示）形成完整分享生态。典型链路：app 内点分享→enterprise /api 创建→function 同步→web /s/[id] 展示。</p></div>
+    <div class="how-item"><span class="how-label">怎么用</span><p></p></div>
+    <div class="how-item"><span class="how-label">典型场景与协作</span><p></p></div>
   </div>
 
 
@@ -79,7 +79,7 @@
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>
 <script>
-const INToc_enterprise = {"nodes": [{"data": {"id": "app.tsx", "name": "app.tsx", "path": "app.tsx"}, "classes": "leaf"}, {"data": {"id": "entry-client.tsx", "name": "entry-client.tsx", "path": "entry-client.tsx"}, "classes": "leaf"}, {"data": {"id": "entry-server.tsx", "name": "entry-server.tsx", "path": "entry-server.tsx"}, "classes": "leaf"}, {"data": {"id": "core/share.ts", "name": "share.ts", "path": "core/share.ts"}, "classes": "leaf"}, {"data": {"id": "core/storage.ts", "name": "storage.ts", "path": "core/storage.ts"}, "classes": "leaf"}, {"data": {"id": "routes/index.tsx", "name": "index.tsx", "path": "routes/index.tsx"}, "classes": "leaf"}, {"data": {"id": "routes/share.tsx", "name": "share.tsx", "path": "routes/share.tsx"}, "classes": "leaf"}, {"data": {"id": "routes/[...404].tsx", "name": "[...404].tsx", "path": "routes/[...404].tsx"}, "classes": "leaf"}, {"data": {"id": "routes/api/[...path].ts", "name": "[...path].ts", "path": "routes/api/[...path].ts"}, "classes": "leaf"}, {"data": {"id": "routes/share/[shareID].tsx", "name": "[shareID].tsx", "path": "routes/share/[shareID].tsx"}, "classes": "leaf"}], "edges": [{"data": {"source": "core/share.ts", "target": "core/storage.ts"}}, {"data": {"source": "routes/share/[shareID].tsx", "target": "routes/[...404].tsx"}}]};
+const INToc_enterprise = {"nodes": [{"data": {"id": "app.tsx", "name": "app.tsx", "path": "app.tsx"}, "classes": "leaf"}, {"data": {"id": "entry-server.tsx", "name": "entry-server.tsx", "path": "entry-server.tsx"}, "classes": "leaf"}, {"data": {"id": "entry-client.tsx", "name": "entry-client.tsx", "path": "entry-client.tsx"}, "classes": "leaf"}, {"data": {"id": "routes/[...404].tsx", "name": "[...404].tsx", "path": "routes/[...404].tsx"}, "classes": "leaf"}, {"data": {"id": "routes/share.tsx", "name": "share.tsx", "path": "routes/share.tsx"}, "classes": "leaf"}, {"data": {"id": "routes/index.tsx", "name": "index.tsx", "path": "routes/index.tsx"}, "classes": "leaf"}, {"data": {"id": "routes/share/[shareID].tsx", "name": "[shareID].tsx", "path": "routes/share/[shareID].tsx"}, "classes": "leaf"}, {"data": {"id": "routes/api/[...path].ts", "name": "[...path].ts", "path": "routes/api/[...path].ts"}, "classes": "leaf"}, {"data": {"id": "core/share.ts", "name": "share.ts", "path": "core/share.ts"}, "classes": "leaf"}, {"data": {"id": "core/storage.ts", "name": "storage.ts", "path": "core/storage.ts"}, "classes": "leaf"}], "edges": [{"data": {"source": "routes/share/[shareID].tsx", "target": "routes/[...404].tsx"}}, {"data": {"source": "core/share.ts", "target": "core/storage.ts"}}]};
 const cyoc_enterprise = cytoscape({
   container: document.getElementById('int-oc-enterprise'),
   elements: INToc_enterprise,
