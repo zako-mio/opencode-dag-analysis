@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>opencode DAG 更新执行报告 (0902)</title>
+<style>
+:root{--bg:#0f1117;--panel:#161a22;--border:#2a2f3a;--text:#e6e8ee;--dim:#9aa3b2;--accent:#4f8cff;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;padding:40px 20px;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+h2{font-size:20px;margin:24px 0 8px;color:var(--accent)}
+h3{font-size:16px;margin:14px 0 6px;color:#b48ae0}
+p{color:var(--text);margin:6px 0}
+li{margin:4px 0 4px 24px;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+td{border:1px solid var(--border);padding:6px 10px;font-size:13px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:24px}
+</style></head><body><div class="wrap">
+<h1>0902-opencode-dag 执行报告（v1.18.25 + 自进化机制）</h1>
+<p>&gt; 留档时间：2026-09-02 ｜ 交付路径：`/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag`</p>
+<p>&gt; 0817 版执行报告见 `history/执行报告-0817版本.md`，本文为 0902 版</p>
+<h2>一、当时情况</h2>
+<p>0817 版交付后，opencode 自进化巨大：装配层新增 Grill-Me / Reflection / MEMORY 硬门禁 / GATE 门控 / Variant 等机制，MEMORY.md 升级为分段式记忆索引。用户要求**更新 DAG 并上传 GitHub**，具体包括：</p>
+<li>**官方源码更新**：v14 → v25（本机官方二进制已升级，源码需同步）</li>
+<li>**装配层全量重建**：从 61 组件扩到 69 组件（31 skills + 8 agents + 6 mcp + 5 instructions + 1 tool + 1 command + 1 config）</li>
+<li>**自进化机制入图**：新增 16 个 mechanism 节点（Grill-Me / Agent 委派 / GATE / Variant / Reflection / MEMORY 硬门禁 / 缓存感知 / 并行 / 输出控制 / 故障自愈 / 编码安全 / Mission 留档 / 浏览器标签 / 联网代理 / 子Agent规则 / 编码纪律）</li>
+<li>**外部服务更新**：新增 OpenCode Go 套餐，外部服务现 9 个</li>
+<h2>二、制定计划</h2>
+<p>Grill-Me 协议收敛 **16 项决策**：</p>
+<li>**官方基线**：官方源码 v14 → v25（worktree 拉取，图1以 v25 源码为准）</li>
+<li>**装配层全量重建**：61 → 69 组件（新增 8 组件，含 16 机制独立分类）</li>
+<li>**机制独立节点**：自进化机制不并入 skill/md，单独 `mechanism` kind（16 节点）</li>
+<li>**全边丰富化**：装配层边、skill 关系边、机制→装配边全量建模（不只包级）</li>
+<li>**外部服务更新**：9 个（新增 OpenCode Go 套餐），diff 图同步</li>
+<li>**官方语义保留 + 补版本变化**：v25 新特征（config v2 兼容层 / Cloudflare 分流 / session 导出）纳入 what_changed</li>
+<li>**三源深挖**：官方源码实证 + 留档报告 + MEMORY/config 备份链交叉</li>
+<li>**迁移到 0902 目录**：复制到 `Mission-file/2026-09/0902-opencode-dag`（0817 留痕 history/）</li>
+<li>**git 保留**：`.gitignore` + `.gitattributes`（统一 LF）提交</li>
+<p>10. **统一 LF**：CRLF → LF，防 Windows/WSL 迁移噪音</p>
+<p>11. **建模三图**：官方包级 / 官方+改造对比 / 改造双层</p>
+<p>12. **生成完整交付**：节点页 / 交互 / drawio / 组页 / MD</p>
+<p>13. **质量门控升级**：25 项（含悬空边清洗、机制节点校验）</p>
+<p>14. **双轨验证**：headless + VLM 三图渲染</p>
+<p>15. **why/how 建模时继承**：机制、新组件 why/how 在建模期完成（不后补）</p>
+<p>16. **单 build 会话多阶段**：S0-S7</p>
+<h2>三、执行情况</h2>
+<p>**S0 迁移**：复制到 0902 目录，0817 版 PLAN/README/执行报告留痕 `history/`，统一 LF（.gitattributes）。</p>
+<p>**S1 官方源码 v1.18.25**：git worktree 拉取 `opencode-src-v1.18.25/`，作为图1唯一基线。</p>
+<p>**S2 包级采集**：v1.18.25 源码解析出 **36 包**（比 0817 多，新增包如 console-mail/resource 等），包级依赖 36 包 / 68 边。</p>
+<p>**S3 内部模块重跑**：`s1-parse-internal` 解析 v1.18.25 全部包内部 import → 33 包 / 2245 模块 / 6073 边（opencode 主包 362 模块 / 1504 边）。</p>
+<p>**S4 装配层 69 组件采集**：`s2-all-components.json` 重建装配层清单（31 skills + 8 agents + 6 mcp + 5 instructions + 1 tool + 1 command + 1 config + 16 mechanisms = 69）。</p>
+<p>**S5 16 机制子Agent 深挖**：委派 explore 深挖 mechanism 节点 why/how（Grill-Me 协议、GATE 门控、Variant 控制、Reflection 自检、MEMORY 硬门禁等 16 个），stage-03-mechanisms.json。</p>
+<p>**S6 08 组件子Agent 深挖**：stage-03-new-assembly.json + stage-03-opencode-go.json（外部服务 + OpenCode Go 套餐）。</p>
+<p>**S7 官方包版本变化子Agent 深挖**：stage-03-package-updates.json（config v2 兼容层 / Cloudflare 分流 / session 导出等 what_changed）。</p>
+<p>**S8 建模三图**：`08-collect/build-dag.py` 生成 official/diff/modified-dag.json（36/68/114 节点），拓扑分层 + 无环 + 组。**悬空边清洗**（diff view 曾出现悬空边导致渲染失败，清洗后通过）。修 view-diff 双轨验证。</p>
+<p>**S9 生成**：节点页 114 / 交互三图 / drawio（3 主图 + 7 关键装配）/ 组页 39 / MD（11 文件）/ diff 清单表（76 差异项）。</p>
+<p>**S10 门控**：`08-collect/quality-gate.py` **25/25 ALL PASS**（JSON 合法 / DAG 无环 / HTML 断链 0 / drawio 配套 / 节点页覆盖 / 交互 DATA 一致 / 七段完整 / 统计一致 / 悬空边清洗）。</p>
+<p>**S11 双轨验证**：headless + VLM 验证 view-official/diff/modified 渲染正常，中文完整无截断。**修 view-diff 悬空边**。</p>
+<p>**S12 CRLF 统一**：`.gitattributes` 统一 LF，`* text=auto eol=lf`。</p>
+<p>**S13 git commit**：`feat: opencode DAG 更新至 v1.18.25 + 自进化机制全量重建`，加 GitHub Actions Pages 部署 workflow。</p>
+<h2>四、完成情况</h2>
+<table>
+<tr><td>交付</td><td>状态</td></tr>
+<tr><td>---</td><td>---</td></tr>
+<tr><td>图1 官方包级 DAG</td><td>✅ 36 包 / 68 边 / 6 层 / 19 组（v1.18.25 源码）</td></tr>
+<tr><td>图2 对比 DAG</td><td>✅ 45 节点 / 68 边（7 包被改造引用 + 9 外部）</td></tr>
+<tr><td>图3 改造双层 DAG</td><td>✅ 114 节点 / 167 边 / 8 层 / 39 组（36 包 + 69 装配 + 9 外部，含 16 mechanism）</td></tr>
+<tr><td>114 节点页（七段全覆盖）</td><td>✅ 全部生成（36 包 / 69 装配 / 9 外部）</td></tr>
+<tr><td>内部模块解析</td><td>✅ 33 包 / 2245 模块 / 6073 边（v1.18.25，opencode 主包 362 模块 / 1504 边）</td></tr>
+<tr><td>装配层重建</td><td>✅ 69 组件（31 skills + 8 agents + 6 mcp + 5 instr + 1 tool + 1 cmd + 1 config + 16 mechanisms）</td></tr>
+<tr><td>自进化机制入图</td><td>✅ 16 个 mechanism 节点（why/how 建模期完成）</td></tr>
+<tr><td>外部服务</td><td>✅ 9 个（新增 OpenCode Go 套餐）</td></tr>
+<tr><td>组目录 / 差异表 / MD 镜像</td><td>✅ 39 组 / 76 差异项 / 11 MD</td></tr>
+<tr><td>drawio 静态图</td><td>✅ 3 主图 + 7 关键装配（10 对 drawio+png）</td></tr>
+<tr><td>质量门控</td><td>✅ 25/25 ALL PASS</td></tr>
+<tr><td>headless + VLM</td><td>✅ view-official/diff/modified 渲染正常，中文完整无截断</td></tr>
+<tr><td>version 基线</td><td>✅ 官方 v1.18.14 → v1.18.25</td></tr>
+</table>
+<p>**关键发现**：</p>
+<li>官方包结构稳定但内容演进：v25 含 config v2 兼容层 / Cloudflare 分流 / session 导出</li>
+<li>改造不深：仅 7 官方包被装配层直接引用（比 0817 多 oc-llm），改造主体仍是配置装配层</li>
+<li>机制节点让 DAG 从&quot;碎片化&quot;变为&quot;自进化体系&quot;，16 机制 = 自进化方法论全量入图</li>
+<h2>五、反思/分析/建议</h2>
+<li>**官方包结构稳定但内容演进**：36 包结构与 0817 基本一致，但 v25 内部内容演进明显（config v2 兼容层 / Cloudflare 分流 / session 导出）。下次更新前**先 check 官方 tag** 确认版本，避免用旧源码。</li>
+<li>**机制节点让 DAG 从&quot;碎片化&quot;变&quot;自进化体系&quot;**：16 个 mechanism 节点是本次最大价值，将自进化方法论（Grill-Me/GATE/Reflection/缓存感知等）显式建模，DAG 呈现&quot;可持续演进&quot;而非静态配置。</li>
+<li>**悬空边必须建模时清洗**：view-diff 曾出现悬空边导致渲染失败（cytoscape 遇悬空边抛错中断整图）。**教训：DAG 数据生成后必须先做悬空边清洗门控，再进渲染**（复用 0817 教训，本次在建模期前置）。</li>
+<li>**why/how 深挖应建模时继承而非后补**：0817 是生成后 S8 后补 why/how（信息量不足被用户反馈），本次机制/新组件 why/how **在 S5-S7 建模期完成**，一次到位，避免二次返工。</li>
+<li>**版本基线同步策略**：官方源码、本机运行、装配层三个&quot;版本&quot;分属不同维度（源码 v25 / 运行二进制 / 配置层自进化），README 需明确以源码为准，避免混淆。</li>
+<li>**未来改进**：①机制节点可细分到&quot;作用于哪些装配组件&quot;的调用链边 ②外部服务节点可更细（bun/typescript/dotnet 等次要外部）③可加 v14→v25 包级版本变化 diff 分析。</li>
+<p>---</p>
+<p>*留档时间：2026-09-02 · 交付路径：/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag*</p>
+</div></body></html>
