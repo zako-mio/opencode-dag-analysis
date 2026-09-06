@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。spec-driven 工作流的实施端：tasks.md 就绪后逐条完成实现任务并打勾。引入动机：OpenSpec 强调&quot;先同意要构建什么再写代码&quot;，apply 是锁定规格后的编码执行器，通过 openspec instructions apply 获取 contextFiles/进度/任务列表，处理 blocked/all_done 状态。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>所有 OpenSpec 变更的实施环节（specs 锁定后进入编码）；与 propose/ff 配对构成完整闭环；本地装配层代码改动若走 OpenSpec 流程即经此实施。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>tasks.md 就绪开始编码时（description 触发词&quot;实现任务&quot;&quot;打勾&quot;）；或显式 /openspec-apply-change；被 propose/ff 完成后提示接续。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择变更并解析 status（schemaName/planningHome/actionContext）<br>· 获取 apply 指令（contextFiles/任务列表/进度/动态指令），blocked 状态转 continue-change，all_done 建议归档<br>· 逐条实现任务并打勾，遵守 context 项目约束与 operationGuidance 建议</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 propose/ff/new-change；blocked 时转 continue-change；完成后转 verify-change 验证、archive-change 归档</p></div>
-  </div>
-
 
   
 

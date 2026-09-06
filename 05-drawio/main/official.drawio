@@ -1,1 +1,326 @@
-<?xml version="1.0" encoding="UTF-8"?><mxfile host="app.diagrams.net" type="device"><diagram id="x" name="官方原版 opencode 包级 DAG (36 包 / 68 边 / 6 层)"><mxGraphModel dx="600" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="860" pageHeight="1322" math="0" shadow="0" adaptiveColors="auto"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="c1" value="官方 36 包 (按语义组泳道)" style="swimlane;startSize=22;fillColor=#ffffff;strokeColor=#b0b0b0;fontStyle=1;fontColor=#222;fontFamily=Microsoft YaHei;fontSize=12;html=1;" vertex="1" parent="1"><mxGeometry x="14" y="14" width="830" height="1202" as="geometry"/></mxCell><mxCell id="c1000" value="G19-主入口" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="36" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-opencode" value="opencode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="54" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1001" value="G6-核心服务" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="98" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-core" value="core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="116" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1002" value="G1-数据模型" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="160" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-schema" value="schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="178" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1003" value="G5-LLM请求层" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="222" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-llm" value="llm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="240" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1004" value="G7-插件SDK" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="284" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-plugin" value="plugin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="302" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1005" value="G3-客户端" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="346" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-client" value="client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="364" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-sdk" value="sdk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="364" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-sdk-next" value="sdk-next" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="242" y="364" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1006" value="G4-服务端" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="408" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-server" value="server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="426" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1007" value="G2-通信协议" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="470" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-protocol" value="protocol" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="488" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1008" value="G8-终端UI" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="532" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-tui" value="tui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="550" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1009" value="G12-沙箱" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="594" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-codemode" value="codemode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="612" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1010" value="G14-工具" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="656" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-http-recorder" value="http-recorder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="674" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-httpapi-codegen" value="httpapi-codegen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="674" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-script" value="script" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="242" y="674" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1011" value="G10-应用" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="718" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-app" value="app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="736" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-cli" value="cli" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="736" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-desktop" value="desktop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="242" y="736" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-enterprise" value="enterprise" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="350" y="736" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1012" value="G9-UI组件" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="780" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-session-ui" value="session-ui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="798" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-ui" value="ui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="798" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1013" value="G11-文档站点" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="842" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-storybook" value="storybook" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="860" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-web" value="web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="860" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1014" value="G13-边缘服务" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="904" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-function" value="function" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="922" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1015" value="G15-存储适配" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="966" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-effect-drizzle-sqlite" value="effect-drizzle-sqlite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="984" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-effect-sqlite-node" value="effect-sqlite-node" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="984" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1016" value="G16-Console" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="1028" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-console-app" value="console-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-console-core" value="console-core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-console-function" value="console-function" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="242" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-console-mail" value="console-mail" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="350" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-console-resource" value="console-resource" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="458" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-console-support" value="console-support" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="566" y="1046" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1017" value="G17-Stats" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="1090" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-stats-app" value="stats-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="1108" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-stats-core" value="stats-core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="134" y="1108" width="100" height="34" as="geometry"/></mxCell><mxCell id="oc-stats-server" value="stats-server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="242" y="1108" width="100" height="34" as="geometry"/></mxCell><mxCell id="c1018" value="G18-集成" style="swimlane;startSize=16;fillColor=#fafafa;strokeColor=#d0d0d0;fontStyle=1;fontColor=#444;fontFamily=Microsoft YaHei;fontSize=10;html=1;" vertex="1" parent="1"><mxGeometry x="22" y="1152" width="814" height="62" as="geometry"/></mxCell><mxCell id="oc-slack" value="slack" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1a1a1a;fontFamily=Microsoft YaHei;fontSize=9;" vertex="1" parent="1"><mxGeometry x="26" y="1170" width="100" height="34" as="geometry"/></mxCell><mxCell id="e3000" edge="1" parent="1" source="oc-app" target="oc-client" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3001" edge="1" parent="1" source="oc-app" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3002" edge="1" parent="1" source="oc-app" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3003" edge="1" parent="1" source="oc-app" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3004" edge="1" parent="1" source="oc-app" target="oc-session-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3005" edge="1" parent="1" source="oc-app" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3006" edge="1" parent="1" source="oc-cli" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3007" edge="1" parent="1" source="oc-cli" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3008" edge="1" parent="1" source="oc-cli" target="oc-server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3009" edge="1" parent="1" source="oc-cli" target="oc-tui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3010" edge="1" parent="1" source="oc-client" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3011" edge="1" parent="1" source="oc-client" target="oc-protocol" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3012" edge="1" parent="1" source="oc-console-app" target="oc-console-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3013" edge="1" parent="1" source="oc-console-app" target="oc-console-mail" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3014" edge="1" parent="1" source="oc-console-app" target="oc-console-resource" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3015" edge="1" parent="1" source="oc-console-app" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3016" edge="1" parent="1" source="oc-console-core" target="oc-console-mail" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3017" edge="1" parent="1" source="oc-console-core" target="oc-console-resource" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3018" edge="1" parent="1" source="oc-console-function" target="oc-console-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3019" edge="1" parent="1" source="oc-console-function" target="oc-console-resource" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3020" edge="1" parent="1" source="oc-console-support" target="oc-console-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3021" edge="1" parent="1" source="oc-core" target="oc-effect-drizzle-sqlite" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3022" edge="1" parent="1" source="oc-core" target="oc-effect-sqlite-node" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3023" edge="1" parent="1" source="oc-core" target="oc-llm" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3024" edge="1" parent="1" source="oc-core" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3025" edge="1" parent="1" source="oc-core" target="oc-plugin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3026" edge="1" parent="1" source="oc-enterprise" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3027" edge="1" parent="1" source="oc-enterprise" target="oc-session-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3028" edge="1" parent="1" source="oc-enterprise" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3029" edge="1" parent="1" source="oc-llm" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3030" edge="1" parent="1" source="oc-plugin" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3031" edge="1" parent="1" source="oc-protocol" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3032" edge="1" parent="1" source="oc-sdk-next" target="oc-client" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3033" edge="1" parent="1" source="oc-sdk-next" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3034" edge="1" parent="1" source="oc-sdk-next" target="oc-server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3035" edge="1" parent="1" source="oc-server" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3036" edge="1" parent="1" source="oc-server" target="oc-protocol" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3037" edge="1" parent="1" source="oc-session-ui" target="oc-client" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3038" edge="1" parent="1" source="oc-session-ui" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3039" edge="1" parent="1" source="oc-session-ui" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3040" edge="1" parent="1" source="oc-session-ui" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3041" edge="1" parent="1" source="oc-slack" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3042" edge="1" parent="1" source="oc-stats-app" target="oc-stats-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3043" edge="1" parent="1" source="oc-stats-app" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3044" edge="1" parent="1" source="oc-stats-server" target="oc-stats-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3045" edge="1" parent="1" source="oc-tui" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3046" edge="1" parent="1" source="oc-tui" target="oc-plugin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3047" edge="1" parent="1" source="oc-tui" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3048" edge="1" parent="1" source="oc-tui" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3049" edge="1" parent="1" source="oc-desktop" target="oc-app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#9673a6;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3050" edge="1" parent="1" source="oc-opencode" target="oc-core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3051" edge="1" parent="1" source="oc-opencode" target="oc-llm" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3052" edge="1" parent="1" source="oc-opencode" target="oc-plugin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3053" edge="1" parent="1" source="oc-opencode" target="oc-protocol" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3054" edge="1" parent="1" source="oc-opencode" target="oc-schema" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3055" edge="1" parent="1" source="oc-opencode" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3056" edge="1" parent="1" source="oc-opencode" target="oc-server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3057" edge="1" parent="1" source="oc-opencode" target="oc-tui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3058" edge="1" parent="1" source="oc-opencode" target="oc-codemode" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3059" edge="1" parent="1" source="oc-opencode" target="oc-http-recorder" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3060" edge="1" parent="1" source="oc-core" target="oc-http-recorder" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3061" edge="1" parent="1" source="oc-desktop" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3062" edge="1" parent="1" source="oc-cli" target="oc-script" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3063" edge="1" parent="1" source="oc-enterprise" target="oc-sdk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3064" edge="1" parent="1" source="oc-storybook" target="oc-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3065" edge="1" parent="1" source="oc-storybook" target="oc-session-ui" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#d79b00;strokeWidth=1.2;dashed=1;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3066" edge="1" parent="1" source="oc-opencode" target="oc-script" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3067" edge="1" parent="1" source="oc-httpapi-codegen" target="oc-client" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#6c8ebf;strokeWidth=1.2;"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="c2000" value="图例 Legend" style="text;html=1;fontFamily=Microsoft YaHei;fontSize=10;align=left;" vertex="1" parent="1"><mxGeometry x="14" y="1238" width="832" height="16" as="geometry"/></mxCell><mxCell id="c2001" value="&amp;#9632; workspace-dep (工作区依赖)" style="text;html=1;fontFamily=Microsoft YaHei;fontSize=10;align=left;" vertex="1" parent="1"><mxGeometry x="14" y="1256" width="832" height="16" as="geometry"/></mxCell><mxCell id="c2002" value="&amp;#9632; import (import 引用)" style="text;html=1;fontFamily=Microsoft YaHei;fontSize=10;align=left;" vertex="1" parent="1"><mxGeometry x="14" y="1274" width="832" height="16" as="geometry"/></mxCell><mxCell id="c2003" value="&amp;#9632; semantic-dep (语义依赖)" style="text;html=1;fontFamily=Microsoft YaHei;fontSize=10;align=left;" vertex="1" parent="1"><mxGeometry x="14" y="1292" width="832" height="16" as="geometry"/></mxCell></root></mxGraphModel></diagram></mxfile>
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="dag" name="official">
+    <mxGraphModel dx="800" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1140" pageHeight="456" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="layer_0" value="Layer 0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#cccccc;fontFamily=Microsoft YaHei;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1100" height="414" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-schema" value="@opencode-ai/schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-app" value="@opencode-ai/app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-cli" value="@opencode-ai/cli" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-desktop" value="@opencode-ai/desktop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-enterprise" value="@opencode-ai/enterprise" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-storybook" value="@opencode-ai/storybook" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="62" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-web" value="@opencode-ai/web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-codemode" value="@opencode-ai/codemode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-function" value="@opencode-ai/function" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-http-recorder" value="@opencode-ai/http-recorder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-httpapi-codegen" value="@opencode-ai/httpapi-codegen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-script" value="@opencode-ai/script" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="124" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-effect-drizzle-sqlite" value="@opencode-ai/effect-drizzle-sqlite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-effect-sqlite-node" value="@opencode-ai/effect-sqlite-node" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-app" value="@opencode-ai/console-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-core" value="@opencode-ai/console-core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-function" value="@opencode-ai/console-function" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-mail" value="@opencode-ai/console-mail" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="186" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-resource" value="@opencode-ai/console-resource" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-console-support" value="@opencode-ai/console-support" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-stats-app" value="@opencode-ai/stats-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-stats-core" value="@opencode-ai/stats-core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-stats-server" value="@opencode-ai/stats-server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-slack" value="@opencode-ai/slack" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="248" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-opencode" value="opencode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-protocol" value="@opencode-ai/protocol" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-client" value="@opencode-ai/client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-sdk" value="@opencode-ai/sdk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-sdk-next" value="@opencode-ai/sdk-next" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-server" value="@opencode-ai/server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="310" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-llm" value="@opencode-ai/llm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-core" value="@opencode-ai/core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="220" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-plugin" value="@opencode-ai/plugin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="400" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-tui" value="@opencode-ai/tui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-session-ui" value="@opencode-ai/session-ui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="oc-ui" value="@opencode-ai/ui" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Microsoft YaHei;fontSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="372" width="160" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-client">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-session-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-app" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-cli" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-cli" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-cli" target="oc-server">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-cli" target="oc-tui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-client" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-client" target="oc-protocol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-app" target="oc-console-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-app" target="oc-console-mail">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-app" target="oc-console-resource">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-app" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-core" target="oc-console-mail">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-core" target="oc-console-resource">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-function" target="oc-console-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-function" target="oc-console-resource">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-console-support" target="oc-console-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-effect-drizzle-sqlite">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-effect-sqlite-node">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e24" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-llm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-plugin">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-enterprise" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-enterprise" target="oc-session-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e29" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-enterprise" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e30" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-llm" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e31" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-plugin" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e32" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-protocol" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e33" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-sdk-next" target="oc-client">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e34" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-sdk-next" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e35" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-sdk-next" target="oc-server">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e36" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-server" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e37" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-server" target="oc-protocol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e38" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-session-ui" target="oc-client">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e39" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-session-ui" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e40" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-session-ui" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e41" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-session-ui" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e42" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-slack" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e43" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-stats-app" target="oc-stats-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e44" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-stats-app" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e45" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-stats-server" target="oc-stats-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e46" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-tui" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e47" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-tui" target="oc-plugin">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e48" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-tui" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e49" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-tui" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e50" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-desktop" target="oc-app">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e51" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-core">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e52" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-llm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e53" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-plugin">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e54" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-protocol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e55" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e56" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e57" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-server">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e58" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-tui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e59" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-codemode">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e60" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-http-recorder">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e61" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-core" target="oc-http-recorder">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e62" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-desktop" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e63" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-cli" target="oc-script">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e64" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-enterprise" target="oc-sdk">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e65" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-storybook" target="oc-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e66" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-storybook" target="oc-session-ui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e67" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-opencode" target="oc-script">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e68" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;strokeColor=#999999;strokeWidth=1.1;" edge="1" parent="1" source="oc-httpapi-codegen" target="oc-client">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

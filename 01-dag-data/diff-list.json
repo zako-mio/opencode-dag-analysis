@@ -72,6 +72,15 @@
     "enabled": true
   },
   {
+    "node_id": "agent-search-worker",
+    "node_name": "search-worker",
+    "kind": "agent",
+    "group": "AG2-子Agent",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "mcp-vscode-mcp-server",
     "node_name": "vscode-mcp-server",
     "kind": "mcp",
@@ -155,6 +164,15 @@
   {
     "node_id": "instr-downloads",
     "node_name": "downloads",
+    "kind": "instruction",
+    "group": "AG4-指令",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "instr-search-behavior",
+    "node_name": "search-behavior",
     "kind": "instruction",
     "group": "AG4-指令",
     "change": "新增装配",
@@ -283,6 +301,15 @@
     "node_name": "lark-suite",
     "kind": "skill",
     "group": "A6f-办公集成",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-login-auth-channel",
+    "node_name": "login-auth-channel",
+    "kind": "skill",
+    "group": "A6j-联网搜索",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -423,6 +450,15 @@
     "enabled": true
   },
   {
+    "node_id": "skill-search-methodology",
+    "node_name": "search-methodology",
+    "kind": "skill",
+    "group": "A6j-联网搜索",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-soe-resume",
     "node_name": "soe-resume",
     "kind": "skill",
@@ -460,7 +496,7 @@
   },
   {
     "node_id": "mech-grill-me",
-    "node_name": "Grill-Me Protocol",
+    "node_name": "Grill-Me 协议",
     "kind": "mechanism",
     "group": "AQ-自进化机制",
     "change": "新增装配",
@@ -487,7 +523,7 @@
   },
   {
     "node_id": "mech-variant",
-    "node_name": "Variant 继承与运行时控制",
+    "node_name": "Variant 运行时控制",
     "kind": "mechanism",
     "group": "AQ-自进化机制",
     "change": "新增装配",
@@ -603,10 +639,10 @@
     "enabled": true
   },
   {
-    "node_id": "instr-memory",
-    "node_name": "MEMORY.md",
-    "kind": "instruction",
-    "group": "AG4-指令",
+    "node_id": "mech-session-memory",
+    "node_name": "Session Memory 结构化压缩",
+    "kind": "mechanism",
+    "group": "AQ-自进化机制",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -621,37 +657,10 @@
     "enabled": true
   },
   {
-    "node_id": "oc-sdk",
-    "node_name": "sdk",
+    "node_id": "oc-plugin",
+    "node_name": "plugin",
     "kind": "package",
-    "group": "G3-客户端",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-opencode",
-    "node_name": "opencode",
-    "kind": "package",
-    "group": "G19-主入口",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-core",
-    "node_name": "core",
-    "kind": "package",
-    "group": "G6-核心服务",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-server",
-    "node_name": "server",
-    "kind": "package",
-    "group": "G4-服务端",
+    "group": "G7-插件SDK",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true
@@ -666,10 +675,10 @@
     "enabled": true
   },
   {
-    "node_id": "oc-plugin",
-    "node_name": "plugin",
+    "node_id": "oc-opencode",
+    "node_name": "opencode",
     "kind": "package",
-    "group": "G7-插件SDK",
+    "group": "G19-主入口",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true
@@ -679,6 +688,33 @@
     "node_name": "schema",
     "kind": "package",
     "group": "G1-数据模型",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-server",
+    "node_name": "server",
+    "kind": "package",
+    "group": "G4-服务端",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-core",
+    "node_name": "core",
+    "kind": "package",
+    "group": "G6-核心服务",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-sdk",
+    "node_name": "sdk",
+    "kind": "package",
+    "group": "G3-客户端",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>search-worker · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>search-worker <span class="tag">装配层</span></h1>
+  <div class="sub">agent-search-worker · agent · AG2-子Agent · Layer 7</div>
+
+  <h2>① 作用</h2>
+  <p>搜索管线执行 Agent。只做搜索管线(发现+获取+交叉验证)，输出结构化证据包。Use for any task requiring external search, query disambiguation, multi-source fact-checking, or evidence-pack construction.</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-tavily-api.html'>ext-tavily-api</a></td><td>external</td><td><small>搜索管线依赖 Tavily 外部搜索</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='skill-search-methodology.html'>search-methodology</a></td><td>skill-mandate</td><td><small>search-methodology 强制加载</small></td></tr><tr><td><a href='instr-search-behavior.html'>search-behavior</a></td><td>route</td><td><small>搜索行为路由 search-worker</small></td></tr><tr><td><a href='mech-subagent-rules.html'>subagent-rules</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0905 联网搜索能力架构落地时缺口清单最高优先级——「无独立搜索子Agent」，此前搜索被混入 general 子Agent，方法论散落 MEMORY 跨会话不稳。作为搜索执行层，只做发现+获取+交叉验证三段管线，不写报告。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需要实体消歧、多源事实核查、证据包构建等高价值搜索场景，由独立子Agent 承担可将方法论/后端退化链固化，且与主Agent 调度解耦（主Agent 只委派不执行）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>主Agent 在 plan/build prompt 的 MCP 路由中判定「需联网/多源核查/证据包」类任务时委派（Task 调用），模式=subagent，hidden=true，继承父会话模型。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①主Agent 委派前注入【时间基线】今日= T 到 prompt 首行；②search-worker 加载 search-methodology skill 走决策树路由（Path1 通用/Path2 垂直域/HYBRID/Path3 登录态），执行 LLM初发现→信用地图导航→外部搜索降级链；③curl 静态→agent-browser 动态回源获取；④多源交叉验证/信源分级；⑤按证据包契约输出结构化 JSON（query/metas/cross_validation/gaps），提交前跑 validate_evpack.py 自动校验；⑥构造失败时降级标注「单一来源/blocked:true」，绝不编造。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 search-methodology skill（方法论与证据包契约）、search-behavior instruction（行为层强制）、login-auth-channel skill（Path3 命中需登录态时由主Agent 登录后重委派）、browser-harness/agent-browser（动态获取）、source_credibility_map.md（信源导航）、opencode.env（Tavily key）、代理纪律（境内直连/境外 7890）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

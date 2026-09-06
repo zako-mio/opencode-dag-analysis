@@ -46,7 +46,7 @@
   <div class="sub">mech-cache · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>DeepSeek prefix-cache：前缀字节级稳定，动态内容放末尾，协议不中途修改。</p>
+  <p>DeepSeek prefix-cache：前缀字节级稳定，动态内容放末尾，协议不中途修改</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 输入缓存优化项目，0817 auto-mode 已含。动机：DeepSeek prefix-cache 命中可降 input 成本 98-99%。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>严格保证共享前缀（auto-mode.md）session 内字节稳定、不重排不动态注入；静态内容前置、动态内容置末。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>本项目 API 调用基于 DeepSeek prefix-cache 机制：缓存命中时 input token 成本降 98%~99%，前缀字节级变化会导致整个缓存失效，故把静态内容稳定置前以最大化命中。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>作为成本优化核心纪律，要求所有文档/规则/工具定义等静态内容保持在 prompt 前缀且不改，动态内容(用户问题/检索结果/变化参数)始终放末尾；auto-mode.md 全 Agent 作为共享前缀加载，委派协议经 agent.plan/build.prompt 注入(方案 A prompt 隔离)。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>每次 prompt 组装时恒生效。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>静态规则/工具定义/共享协议放前缀不动；动态内容放末尾；委派协议经 agent.{plan,build}.prompt 注入。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>instr-auto-mode；config-main（instructions 顺序 + cost 字段）；provider deepseek。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>持续作用于每次 API 调用设计：任何静态共享前缀内容必须字节稳定；缓存协议承诺本文档 session 运行期间不修改/不重排/不动态注入。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①把共享前缀(如 auto-mode.md/协议)固定在 prompt 最前且冻结；②动态内容追加到尾部；③避免在同一前缀间插入时间戳/会话 ID/动态内容导致缓存失效；④MCP/Skill 工具 schema 首次加载后已被缓存，后续同类任务不做重复 tool discovery。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>作用于所有指令源：instructions/auto-mode.md『Cache Awareness』与『协议稳定性承诺』；与 Parallel &amp; Batching(mech-parallel)及 Variant(mech-variant)协作；配置体现于 opencode.jsonc compaction 段。</p></div>
   </div>
 
 

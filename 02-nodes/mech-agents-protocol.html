@@ -46,7 +46,7 @@
   <div class="sub">mech-agents-protocol · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>主 Agent 任务调度者→拆解→搜索角色→委派子 Agent→聚合；含 MCP 路由规则。</p>
+  <p>主Agent 任务调度者→拆解→search-agents 匹配→委派子Agent→聚合；含 MCP 路由规则</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>源于 0801/0802 的 agent-prompt-unification 统一各 Agent 角色，确立「主Agent=调度者、子Agent=执行者」边界。0817 已存在。动机：解决主Agent 亲力亲为导致上下文爆炸、执行面过大。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>将需≥2工具/联网/多步的任务分解后委派子Agent，仅保留编排+聚合；通过 search-agents 匹配角色、MCP 路由（pdf/drawio/vision）精准指派。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为解决单 Agent 上下文爆炸与执行者模式问题，设定&#x27;调度者非执行者&#x27;分工：主 Agent 只编排(拆解/匹配/委派/聚合)，子 Agent 只执行，角色优先匹配 agency-agents。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>复杂/多步/联网任务经由 task() 委派子 Agent 并行或接力，主 Agent 上下文不爆；对垂直领域(RL/LLM 推理等)search-agents 命中率低时改走 general 子 Agent+自写角色提示词，保证任意任务都可委派且有正确角色激活。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>判断任务是否需多工具/联网/多步推理；是则触发。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>5 步：分类判断→search-agents 搜角色→拆解任务→组装子Agent prompt→聚合。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；skill-agency-agents；search-agents(.ps1/.py)；agent-pdf-worker/agent-drawio-worker/agent-vision-worker/agent-general/agent-explore。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>收到请求先分类判断：是否需要≥2 个工具/联网/多步推理→ YES 则第一条工具调用必须是 search-agents。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①search-agents -Query 关键词 -Top 5 搜角色(只看 JSON 元数据)或自写 2-3 句角色提示词；②拆解任务：独立→并行 Task，有依赖→串行接力(data 传递)，耦合→单 Agent；③组装子 Agent prompt(SUBAGENT 身份+Role Activation+Skills to Load+Task+No Self-Assessment+Return Format)，drawio-worker 须精确写 drawio-reference；④聚合：success→summary|partial→+errors|failed→询问用户；⑤超 3 分钟没发 task→默念失败模式自查(执行者/例外滥用/假并行)。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 skill/agency-agents/search-agents.py 与 agent-index.json；主 Agent prompt 来自 opencode.jsonc agent.plan/build.prompt 内 Agent Protocol 与 instructions/agent-protocol.md；子 Agent 角色定义在 opencode.jsonc agent(plan/build/pdf-worker/drawio-worker/vision-worker/general/explore/reflection-worker/search-worker)；opencode.jsonc plan.permission 限制 bash 默认 deny。</p></div>
   </div>
 
 

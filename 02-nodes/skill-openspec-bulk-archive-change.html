@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。批量归档多个已完成变更的单次操作：多选（含全选），智能处理 spec 冲突——通过检查代码库判断实际实现。引入动机：多变更并行推进后需要批量收尾，避免逐条归档的低效；冲突处理是批量场景特有需求。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>累积多个已完成变更需要批量收尾时；本地多线程/多窗口任务（如 DAG 多窗口交付）产生多个并行变更，批量归档是配套收尾能力。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>用户要求批量归档多个变更（description 触发词&quot;批量归档&quot;&quot;多个&quot;）；或显式 /openspec-bulk-archive-change。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· openspec list 获取全部 active changes（无则提示停止）<br>· 用户多选变更（含 All changes 选项，绝不自动全选）<br>· 逐变更收集工件状态/任务完成度/delta spec，统一校验（冲突检查与代码库核对），窄化 delta 同步范围（排除未实现 delta），混合 schema 独立评估后统一归档</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接多个 verify-change 完成的变更；内部复用 sync-specs 合并逻辑</p></div>
-  </div>
-
 
   
 

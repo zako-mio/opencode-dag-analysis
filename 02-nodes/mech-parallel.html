@@ -46,7 +46,7 @@
   <div class="sub">mech-parallel · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>独立工具调用并行发出；相邻只读操作合并批次；读优先于写。</p>
+  <p>独立工具调用并行发出；相邻只读操作合并批次；读优先于写</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0813 多路并行领域分片检索模式，0817 auto-mode 已含。动机：互不依赖的独立工具调用串行发出会浪费多轮 API 调用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>要求同一消息并行发出多个 read/glob/grep 等独立操作；相邻同类只读合并批次。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为降低 API 调用轮次与缓存寿命损耗：互不依赖的独立工具调用必须同一消息并行发出，避免先 glob 再 read 这种浪费一轮的串行。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>作为缓存性能优化关键，要求探索代码库时先并行 glob(找文件)+grep(搜内容)，结果汇总再决定下一步；相邻同类只读操作合并为批次，不在同一消息混合读写。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>存在多个互不依赖的读/查询操作、或探索库需并行 glob+grep。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>同一消息并行多工具；相邻同类合并批次；先并行 glob 找文件+grep 搜内容再决定下一步；不在同消息混读写。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；agent-explore/agent-general；instr-auto-mode。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任何含多个互不依赖工具调用/相邻同类只读操作的场景；首次加载 Skill 后不要重复 tool discovery(PDF 任务始终用 pdf-worker 而非重载 pdf-ocr)。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①识别互不依赖操作：glob+grep+read 三个独立操作一轮并行发出；②合并相邻同类只读批次；③先并行探索(glob+grep)汇总再定下一步；④写后读等依赖操作必须串行；⑤MCP/Skill 工具 schema 首次加载后缓存，后续同类不重复发现。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Parallel &amp; Batching』；与 mech-cache(缓存寿命)和 mech-output(只读优先)协作；子 Agent 多路并行领域分片检索模式见于 MEMORY.md cycle_20260813_parallel_search。</p></div>
   </div>
 
 

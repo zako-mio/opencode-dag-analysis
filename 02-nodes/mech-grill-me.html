@@ -46,7 +46,7 @@
   <div class="sub">mech-grill-me · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>Plan/默认阶段逐分支拷问用户，直到达成共识；问一答一（question工具），含 Drift 护栏与收敛审计。</p>
+  <p>Plan 阶段逐分支追问收敛方案，问一答一（question 工具），含 Drift 护栏与收敛审计</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 skill-grill-me 与 plan prompt 首段。0817 计划书已明示「Plan 阶段 Grill-Me 收敛 13 项决策」。动机：替代主Agent 随性抛多个问题或纯文本提问，强制用 question 工具弹窗逐条收敛设计树。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>Plan 模式唯一入口，保证需求澄清阶段逐分支下钻、依赖互解；防协议漂移要求每条消息必须且只能以一个 question 调用结尾。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 RobMitt/grill-me-skill(基于 Matt Pocock 作品 MIT)，用于对用户方案/设计进行压力测试，逐问题拷问直至设计意图完全对齐(Fork 自外部 skill 集成)。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>作为 Plan 模式的默认协议被内联进 opencode.jsonc agent.plan.prompt/subagent 角色，确保正式编码前决策树所有分支被显式解析，避免模糊需求导致 Build 返工；在长会话中靠三层护栏防协议漂移。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>进入 plan/build 角色 prompt 即生效；用户发起计划类任务时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>每条消息输出 [GRILL] &lt;ack&gt; 后同消息紧跟一次 question 调用；可自探索的先探索而非问用户；全局收敛后输出 Decision tree resolved + 决策编号清单。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build（prompt 首段注入）；skill-grill-me；内置 question 工具。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>用户关键词触发(&#x27;grill me&#x27;/&#x27;拷问我&#x27;/&#x27;面试我的方案&#x27;/&#x27;压力测试这个方案&#x27;)；或 Plan 模式启动时由 opencode.jsonc agent.plan/build.prompt 内联的 Grill-Me Protocol 自动启用。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①收到方案后，每次回答后输出 [GRILL] 简短致谢 → 同一消息内紧接一次 question 工具调用(一次只问一个问题，2-4 个可选答案)；②能靠探索代码库/文件自行回答的分支就先自行探索而非问用户；③沿设计树走遍所有分支直至无决策依赖；④收敛时输出 [GRILL] Decision tree resolved. + 一句话总结 + 决策编号列表。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 opencode 原生 question 工具；指令源 skill/grill-me/SKILL.md；已内联于 opencode.jsonc agent.plan.prompt 与 agent.build.prompt；与 GATE 门控(Plan 收敛写 GATE+COMPLEXITY)与 Reflection 的 Layer A(GRILL 决策列表)协作。</p></div>
   </div>
 
 

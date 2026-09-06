@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 0816-plugin-dag 的 L2 与动态 DAG 两个 cycle 反思合并提炼（pending.json.bak-20260817-final 证据：cycle-20260817-plugin-dag-l2 产出 sk-20260817-interactive-dag-viz（interactive-dag-visualization，含环修复方法论/DATA 注入/disabled 标注），cycle-20260817-plugin-dag-dyn-github 产出 sk-20260817-cytoscape-dyn-dag（cytoscape-dynamic-dag，源码级动态图批量插入/染色/幂等）；最终 2026-08-17 23:00 合并为 cytoscape-dag-visualization）。源任务：0816-plugin-dag L2（134 节点/434 边/17 层/29 组，组级+下钻交互总览）+ 动态 DAG 批量插入（215 插件/1130 模块/1073 边/171 页）。方法论核心：数据注入零风险（按行替换 const DATA 而非 __DATA__ 占位符）、样式标注语义化（node[kind=disabled]）、环修复方法论、批量插入幂等、渲染必须视觉验证（VLM+headless 双轨）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>cytoscape.js 交互 DAG 可视化构建的标准方法论：单页交互总览（组级+下钻）+ 批量 HTML 页源码级动态 DAG；当前 0817-opencode-dag 三图交互交付（104 节点/154 边/38 组）即其应用；DAG 交付链的渲染层标准。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：cytoscape、交互式DAG、DAG总览、下钻、DATA注入、disabled标注、环修复、动态DAG、模块依赖图、批量插入；构建组级+下钻交互 DAG 总览或批量动态 DAG 时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 场景A 单页总览：数据合并与环修复 → DATA 注入（按行替换）→ 两级视图（组级+下钻）→ 样式标注（disabled 红色）→ 视觉验证（headless+VLM）<br>· 场景B 批量插入：试点先行（4 核心 3 轮迭代）→ 全量解析（Windows 路径统一）→ 幂等批量插入（gen-html 干净页+apply 单次插入）→ 质量门控 → 上传/交付<br>· 关键坑：cytoscape 缺 dagre 布局扩展→节点 0 渲染（vendor 补 cytoscape-dagre 4.0.0）；data(cls) 直接存颜色值；rankDir 按节点数（≥12 LR 横排）</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游接 multi-window-dag-delivery（消费其 DAG JSON 节点/边/组/seam/disabled）；下游接 dag-tutorial-authoring（教程交互图）；共享 _shared/dag-core-methods.md（环修复/DATA 注入/双轨视觉验证）；drawio-worker 绘制静态图</p></div>
-  </div>
-
 
   
 

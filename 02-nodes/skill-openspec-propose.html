@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。0803 解析报告识别其本质是封装 continue+ff 的一步式入口：创建 change 并一键生成全部工件（proposal/specs/design/tasks）。引入动机：让&quot;明确知道要做什么&quot;的场景不必逐步交互，直接产出 spec-driven 四工件，交给 apply-change 实施。对应 OpenSpec 工件 DAG 的快速入口设计。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前用于本地装配层改造（如 openspec 系列技能自身维护、DAG 交付物生成）等明确变更的提案创建；与 apply-change 配对构成&quot;提案→实施&quot;主链路。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>用户明确知道要做什么、需要创建变更提案时；description 触发词&quot;变更提案&quot;&quot;propose&quot;；或显式 /openspec-propose &lt;变更名&gt;。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 从用户描述派生 kebab-case 变更名（无输入则开放式提问）<br>· 创建 change 目录，按 spec-driven 默认 schema 生成 proposal/specs/design/tasks 四工件（依赖序循环）<br>· 完成后提示接续 /openspec-apply-change 实施</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 openspec-explore；下游交给 openspec-apply-change；被 superpowers-openspec-superpowers-workflow 编排器作为工件生成步骤引用</p></div>
-  </div>
-
 
   
 

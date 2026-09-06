@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>tool-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>read.ts VLM 首选 GLM-4V</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>read.ts VLM 降级 DeepSeek 视觉</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>早期用 Bun + TypeScript 重写 opencode 内置 read 工具（tools/read.ts）；0802 盘点：核心增强——图片自动分析（9 种格式调 GLM-4V 描述）、降级处理、目录列表（readdirSync）、文本分段（offset/limit）；同时指出 GLM API Key 硬编码安全问题（Line 15）；0803 编码安全修复时确认此为 custom read 工具（非内置）；0807 VLM 图片识别修复：付费 glm-4.6v 优先 + 429 降级免费 glm-4.6v-flash + Key 改环境变量（process.env.ZHIPU_API_KEY 优先 + 硬编码兜底）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>保留图片自动分析能力（IMAGE_EXTS 9 种格式）→ GLM-4V 描述；GLM_MODELS = [&#x27;glm-4.6v&#x27;, &#x27;glm-4.6v-flash&#x27;] 付费优先降级链；Key 环境变量化；与 vision-interceptor 构成双保险视觉链路（0807 报告定位）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) execute：existsSync → statSync 判断目录/文件；2) 目录 → readdirSync 列条目；3) 图片（extname 命中 IMAGE_EXTS）→ describeImage：Bun.file 读二进制 → Buffer base64 → data URL → tryVLM 循环 GLM_MODELS（付费 429 降级免费，非 429 直接报错）→ 包装为&#x27;[图片分析: 文件名]&#x27;+描述；4) 文本文件 → Bun.file.text() + offset/limit 分段（默认 2000 行）带行号输出。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>读本地图片文件（VLM 描述）、读大文件分段（&gt;2000 行）、列目录条目。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>plugin-vision-interceptor（双通道视觉链路，read 通道结果不写入插件 processedImages 缓存）、GLM API（智谱视觉模型）。</p></div>
-  </div>
-
 
   
 

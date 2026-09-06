@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>session-memory · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>session-memory <span class="tag">装配层</span></h1>
+  <div class="sub">mech-session-memory · mechanism · AQ-自进化机制 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>compaction 5 段模板(当前状态/关键文件/已做决策/待解决问题/经验教训)+L1剪枝/L2压缩/L3兜底</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='config-main.html'>main</a></td><td>mechanism</td><td><small>compaction 压缩配置</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>mechanism</td><td><small>压缩模板源</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0902 后新增：为应对会话上下文膨胀触发 compaction，建立阶梯式压缩决策树(L1 剪枝/L2 结构化压缩/L3 兜底摘要)，避免上下文爆仓与不必要的 compaction 触发。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前压缩模板 5 段(当前状态/关键文件/已做决策/待解决问题/经验教训)，分别服务于恢复会话定位卡点、避免重复探索、不重问已决策项、知道待修问题、不踩两次坑；compaction 后保留 tail_turns=4(preserve_recent_tokens=16384)；模板不重复记录已截断的工具输出；模板语言与会话语言一致。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>compaction 触发时；L1 剪枝(标记/截断超大工具输出)仍不足时进入 L2 结构化压缩。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①L1 剪枝：截断超大工具输出仅留关键部分+位置标记；②仍不足→L2 按 5 段模板输出结构化记忆；③L2 也不足→L3 通用全量摘要兜底；④compaction 后保留 tail_turns=4；⑤不重复记录已裁剪输出，模板语言跟随会话语言。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Session Memory 结构化压缩模板』与 MEMORY.md cycle_0818_v4；配置体现于 opencode.jsonc compaction(auto/prune/tail_turns=4/preserve_recent_tokens=16384/reserved=10000)；与输出控制(mech-output L1 剪枝)和编码纪律(mech-coding-discipline)协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

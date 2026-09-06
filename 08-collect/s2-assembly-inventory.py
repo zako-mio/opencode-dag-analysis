@@ -64,7 +64,7 @@ if mcp_block:
 # ---- 3. instructions（读目录真实文件）----
 INSTR_DIR = "/home/zako-mio/.config/opencode/instructions"
 for fn in sorted(os.listdir(INSTR_DIR)):
-    if fn.endswith(".bak"): continue
+    if fn.endswith(".bak") or ".bak-" in fn: continue
     comp = {
         "id": "instr-"+fn.replace(".md",""), "name": fn.replace(".md",""),
         "kind": "instruction", "group": "AG-instructions",

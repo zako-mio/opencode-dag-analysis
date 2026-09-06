@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>vision 模型依赖官方 DeepSeek</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>hook-mount</td><td><small>vision-worker 路由规则</small></td></tr><tr><td><a href='instr-agent-protocol.html'>agent-protocol</a></td><td>route</td><td><small>MCP 路由 vision</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>原先 pdf-worker/drawio-worker 曾绑定 vision-exp 模型以看图，0826 解绑改走外部 VLM/read.ts；但通用图片理解仍缺一个专职视觉执行者，故 0822 独立抽象出带 DeepSeek 视觉模型的子Agent。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需要图片理解/截图分析/UI对照还原能力，且主Agent已换用 vision-exp 具备看图，委派链路上需要一个明确可路由的视觉执行角色。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>被 agent-protocol 的 MCP 路由规则触发：通用图片理解/截图分析/UI还原 → 委派 vision-worker 子Agent（DeepSeek 视觉模型）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>直接以图片作为输入理解内容、分析截图、做 UI 还原。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 pdf-worker(文本/OCR链路)、drawio-worker(图表导出) 分工；供 agent-protocol 路由；依赖 deepseek 官方 provider 的 deepseek-v4-flash-vision-exp 模型。</p></div>
-  </div>
-
 
   
 

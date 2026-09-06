@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>早期引入：semanticworkbenchteam.mcp-server-vscode v0.0.9，经 vscode-mcp-launcher.ps1 启动（轮询 VSCode MCP 端口 6010，就绪时自动桥接 stdio↔SSE，实现&#x27;无感知接入&#x27;）；0801 P1-2 固化 MCP 工具集：审计发现实际仅 6 个工具（非原预估 72 个），总计 ~692 tokens——收益从&#x27;大幅削减数千 token&#x27;降为&#x27;节省 ~692 tokens&#x27;；0802-vscode-mcp-server-tools-audit 全量审计（正则扫描 dist/extension.js：.tool( 出现 6 次）：code_checker/focus_editor/list|start|restart|stop_debug_session → 处置为禁用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=false（0802 审计后禁用）；description 注明&#x27;【已禁用】仅 6 个工具(~692 tokens) 极少使用&#x27;并附审计报告路径；功能缺口：无文件读写/终端/全局搜索通用工具（README 声称的 search_symbol 未打包进 v0.0.9）；permission 层 vscode-mcp-server_* 全局 deny。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>经 powershell -ExecutionPolicy Bypass -File vscode-mcp-launcher.ps1 启动（本地 MCP）；6 个工具 schema ~2,766 字符 ≈ ~692 tokens；launcher 轮询 6010 端口等待 VSCode 就绪后桥接。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）原本用于：code_checker 读诊断、focus_editor 定位文件、4 个调试会话管理（start/restart/stop/list_debug_session）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>无（已禁用 + 全局 deny）；曾与 VSCode 编辑器联动。</p></div>
-  </div>
-
 
   
 

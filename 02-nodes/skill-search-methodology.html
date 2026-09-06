@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>search-methodology · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>search-methodology <span class="tag">装配层</span></h1>
+  <div class="sub">skill-search-methodology · skill · A6j-联网搜索 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>联网搜索方法论。需求工程层的搜索执行引擎——发现层三层(LLM初发现/信息源信用地图/外部搜索降级)+Query转译(实体消歧/学名+科名/排除运算符)+时效分流(稳定知识LLM/实时信息外部搜索)。触发:任何需要外部事实核查、多源交叉验证、实体消歧、搜索执行或证据包构建的查询。</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-search-worker.html'>search-worker</a></td><td>skill-mandate</td><td><small>search-methodology 强制加载</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-tavily-api.html'>ext-tavily-api</a></td><td>external</td><td><small>搜索方法论依赖 Tavily 后端</small></td></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>外部搜索降级链 agent-browser</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0905 联网搜索能力架构缺口清单——「无搜索方法论 Skill」，方法论此前散落 MEMORY 跨会话不稳。复用 anysearch Skill 编码范式 + goose frontmatter 懒加载，将搜索 SOP 沉淀为可加载的细粒度 skill。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需要一套结构化的搜索执行引擎（决策树路由 + 发现层三层 + Query 转译 + 证据包契约），把「搜索」从主Agent 的临时行为升级为可复用、可内化、可自扩展的能力。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>search-worker 或主Agent 加载（Skills to Load 中指定）。前端 name/description 常驻，全量内容按需注入；命中 Trigger 条件（依赖外部事实/需交叉验证/实体歧义/时效超截止/用户要求搜索）即触发。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①决策树路由判定 Path1/Path2/HYBRID/Path3；②发现层：LLM初发现（仅稳定知识）→ 信息源信用地图（渐进披露 domains/&lt;域&gt;.md）→ 外部搜索降级链（Tavily 首筛→必应/DDG/Wiki 零成本→agent-browser 动态兜底，带 Tavily 预算状态机与降级策略）；③Query 转译（实体消歧：中文词→拉丁学名+科名+排除运算符）；④回源与交叉验证（curl→agent-browser→API，≥2 独立源）；⑤输出证据包契约并按 validate_evpack.py 自检提交。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>由 search-worker 作为执行载体；受 search-behavior instruction 约束（信源分级/实证规则）；Path3 时联动 login-auth-channel skill（登录态）；依赖 source_credibility_map.md + domains/*.md（信源导航）、validate_evpack.py（证据包校验）、Tavily API + agent-browser + browser-harness（获取后端）、opencode.env（key 注入）、代理纪律。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

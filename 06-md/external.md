@@ -1,4 +1,4 @@
-# external 节点（9）
+# external 节点（10）
 
 ## ext-amap-api — 高德地图 API
 - 组: X-外部服务 | Layer 0
@@ -56,9 +56,9 @@
 
 ## ext-opencode-go — OpenCode Go 套餐
 - 组: X-外部服务 | Layer 0
-- 作用: OpenAI 兼容协议（@ai-sdk/openai-compatible），baseURL=opencode.ai/zen/go/v1。订阅套餐 $10/月
-- 提供: deepseek-v4-flash(go) / glm-5.2 / kimi-k2.7-code / qwen3.7-plus 模型
-- **为什么需要**: 覆盖高性价比编码模型（Flash 包月 3x 额度）
+- 作用: OpenAI 兼容协议（@ai-sdk/openai-compatible），baseURL=opencode.ai/zen/go/v1。订阅套餐 $10/月($60 额度)，DeepSeek Flash 包月 3x
+- 提供: deepseek-v4-flash(go) / glm-5.2 / kimi-k2.7-code / qwen3.7-plus / muse-spark-1.3-contributor / hy4-preview / omen-alpha(stealth) 模型
+- **为什么需要**: 覆盖高性价比编码模型（Flash 包月 3x 额度）+ v1.18.29 新增 Muse Spark 1.3/Hy4/Omen Alpha
 - **当前状态**: blacklist deepseek-v4-pro（仅官方直连）
 - **怎么接入**: env OPENCODE_GO_API_KEY
 - **装配层调用**: 
@@ -79,4 +79,13 @@
 - **为什么需要**: pdf-worker 子Agent 依赖
 - **当前状态**: 启用 mcp-pdf-reader
 - **怎么接入**: npx @sylphx/pdf-reader-mcp
+- **装配层调用**: 
+
+## ext-tavily-api — Tavily Search API
+- 组: X-外部服务 | Layer 0
+- 作用: 外部搜索 API（web search，1 credit/次），search-methodology/skill 的发现层外部搜索降级链首选
+- 提供: 外部事实搜索/网页检索
+- **为什么需要**: search-methodology skill 依赖外部搜索后端做发现层；search-worker 子Agent 证据包构建
+- **当前状态**: 0905 联网搜索能力架构新增；search-methodology/skill 依赖
+- **怎么接入**: env TAVILY_API_KEY → api.tavily.com/search
 - **装配层调用**: 

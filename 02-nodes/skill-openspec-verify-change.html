@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。归档前的可选校验步骤：验证实现是否匹配 spec/design/tasks，从完整性/正确性/一致性三维度生成 CRITICAL/WARNING/SUGGESTION 报告。引入动机：OpenSpec 的&quot;先规格后实现&quot;需要回环验证，防止实现漂移；0805-Reflection系统设计文档将其列为&quot;已有类似 Reflection 机制&quot;之一（Plan 验证信号）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>归档前的质量闸门：验证实现与工件一致后才允许归档；当前 DAG 交付与装配层改造中的规格实现均以此为一致性校验参照。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>实现完成后、归档前可选调用（description 触发词&quot;验证&quot;&quot;校验&quot;）；或显式 /openspec-verify-change。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择有 tasks 工件的变更（未完成任务标 In Progress）<br>· 解析 status 与 schema，比对 tasks/spec/design 与实现<br>· 输出三维验证报告（CRITICAL/WARNING/SUGGESTION）与修复建议</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 apply-change；下游衔接 archive-change/sync-specs；被 Reflection 系统作为验证信号参照</p></div>
-  </div>
-
 
   
 

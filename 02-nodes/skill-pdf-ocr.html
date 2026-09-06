@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>PDF 提取</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>从 @sylphx/pdf-reader-mcp 分离的轻量路由包装（87 行），引入动机：pdf-reader MCP 的 read_pdf 对扫描件/图片型 PDF 返回空文本层，需要 OCR 降级链路。0807-VLM图片识别修复前 read 工具读图片不可靠，PDF 无文本层时需 pdf_evidence 的 ocr_pages/extract_regions/analyze_regions/render_page 四操作。0802 盘点定位为仅在 PDF 无文本层时触发 OCR 的专用 skill。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>扫描件/图片型 PDF/含水印印章文档的持续需求（简历评审、offer 拒绝决策、证件扫描件等）。pdf-worker 子Agent（Flash + pdf-reader MCP 最小权限）专职 PDF 提取/OCR/文档分析，主Agent MCP 路由将 PDF/OCR 任务固定委派给它。0815 桥接后降权（disable-model-invocation），仅手势 /pdf-ocr 触发。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>满足任一条件加载：1) read_pdf 返回空文本层（扫描件）；2) 用户明确要求 OCR/扫描件识别；3) PDF 含印章、手写、水印等需图像识别元素（SKILL.md 触发条件）。指令：/pdf-ocr {路径} [--lang zh+en]、/pdf-ocr-table、/pdf-ocr-check。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 先 read_pdf（include_text_layer: true）检查文本层；2) 部分页面空则仅 OCR 空页面，全空则全量 OCR（ocr_pages，languages zh/en，scale 2，max_pages 20）；3) 表格提取：analyze_regions 定位边界框后 extract_regions 提取；4) 极简用法 read_pdf include_ocr_text_layer=true 自动选参。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 pdf-reader MCP（@sylphx/pdf-reader-mcp，pdf_evidence 工具）、pdf-worker 子Agent（L3 最小权限仅放行 pdf-reader_*）、vision-interceptor/GLM-4V（图片辅助校验）协作。</p></div>
-  </div>
-
 
   
 

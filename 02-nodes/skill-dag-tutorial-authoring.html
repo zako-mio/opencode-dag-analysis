@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260817-github-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-dag-tutorial，category=coding，创建时间 2026-08-17，verdict&quot;调研驱动编写、可读性规律编码为门控、DAG 边方向=学习顺序写进 schema、VLM 双轨验证抓脚本盲区…提炼 1 个 Skill(dag-tutorial-authoring) + 2 条 Memory&quot;）。源任务 0817-github-dag：GitHub 新手全功能 DAG 教程（35 节点/41 边/7 组/9 层，零基础读者），4 路并行调研（官方 A/B + 英文 C + 中文 D）交叉验证驱动编写，把&quot;好教程&quot;可读性规律（心智模型字段/无孤立节点/术语统一/场景链/新手走查）编码为可校验门控，节点页 8 区块模板（why/intro/scenario/web/cli/terms/summary/official_links）。实战事故：DAG 边方向写反导致拓扑分层颠倒（Layer0 出现 20 个高级节点），教训是边方向=学习顺序必须写进 schema。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>面向零基础读者的概念/技能 DAG 教程编写标准方法论：调研先行→可读性规律编码为门控→统一 schema 并行写节点→双轨验证→新手走查→用户反馈闭环；当前知识 DAG 类交付（如 GitHub/Git 教程）复用；&quot;双轨交付一致性三原则&quot;（人类入口 .html/.md 仅 AI 镜像）亦由本 skill 固化为门控。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：DAG教程、教程编写、学习路径、knowledge DAG、可读性门控、调研驱动编写、新手教程；编写面向初学者的概念/技能 DAG 教程时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 调研先行（4 路并行：官方 A/B+英文 C+中文 D 交叉验证）→ 先写分析报告（5 段+方法论映射）再驱动节点内容<br>· 可读性规律编码为门控（五要素）→ 统一 schema（8 区块模板+字段长度约束）交 3 路 general 并行写节点 → DAG 边方向=学习顺序写进 schema 注释<br>· 双轨视觉验证（门控脚本结构检查+headless 截图+VLM 抓视觉盲区）→ 新手走查（零基础视角 N 页五要素全齐）→ 用户反馈修复后同步 README+quality-gate</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>4 路调研子Agent（代理 127.0.0.1:7890+谷歌）+ 3 路 general 并行写节点；上游接 multi-window-dag-delivery（先分析再成教程）与 cytoscape-dag-visualization（交互总览）；共享 _shared/dag-core-methods.md</p></div>
-  </div>
-
 
   
 

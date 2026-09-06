@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>浏览器自动化</small></td></tr><tr><td><a href='mech-browser-tabs.html'>browser-tabs</a></td><td>mechanism</td><td><small>标签管理</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 browser-use/browser-harness 仓库，本地改造为 Windows 适配 + 脚本路径绑定 + chrome-debug.ps1（一键启动 9222 端口远程调试 Chrome）。引入动机：为 Agent 提供统一浏览器交互入口（自动化/爬取/测试/站点应用），解决招聘投递（网申表单填写）、网页数据采集等需要真实浏览器操作的需求。0804-recruit优化实证：京东校招投递靠 browser-harness CDP 完成（投递跟踪表 row 774 写入成功），并沉淀 6 条环境限制实测教训（无 sleep/JS 需 IIFE/SPA 需轮询等）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>recruit-assist 投递核心依赖（browser-harness CDP 自动化投递，exec-recruit preset 追加），0811 深圳大数据研究院调研用浏览器自动化登录知乎/脉脉采集员工评价，0813-Agent评测知识体系三重验证门控含浏览器渲染验证，create-web preset 前端设计实测渲染。0817-opencode-dag 复用 MEMORY 经验（js() 陷阱：复杂箭头函数 heredoc 转义易错，改用简单表达式+分块抓取，最终用 chrome headless --dump-dom 更可靠）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>SKILL.md description：Always use browser-use for any web interaction: automation, scraping, testing, or site/app work——任何网页交互/自动化/爬取/测试/站点应用工作。skill/browser-harness 目录为 skills.paths 单独注册路径（0802 起双路径之一）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 前置：chrome-debug.ps1 启动 Chrome 远程调试（检查 9222 端口，无则独立 profile 启动）；2) PowerShell @&quot;...&quot;@ heredoc 写 Python 代码后管道发给 browser-harness.exe（helpers 预导入，首次导航 new_tab(url)）；3) js() 需 return/print，复杂操作分块抓取；4) 连接失败用 --doctor 诊断，daemon 挂了重跑 chrome-debug 脚本，runtime 目录残留则删除重建。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（投递核心依赖）、frontend-design（create-web preset 渲染实测）、create-web preset、Chrome（ext-chrome 外部）、browser-harness daemon（BU_CDP_URL localhost:9222）、VLM 图片校验协作。</p></div>
-  </div>
-
 
   
 

@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='mech-parallel.html'>parallel</a></td><td>mechanism</td><td><small>并行</small></td></tr><tr><td><a href='mech-fault.html'>fault</a></td><td>mechanism</td><td><small>容错</small></td></tr><tr><td><a href='mech-proxy.html'>proxy</a></td><td>mechanism</td><td><small>子Agent联网</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 新增：general/explore Agent 配置 Flash（L44-49），&#x27;通用/探索子Agent 路由&#x27;；0802 盘点：无 MCP 工具，省 token（&#x27;其他任务 → 委派 general/explore 子Agent（无MCP工具，省token）&#x27;）；0803 起成为通用执行主力；0813 记录多路并行领域分片检索模式（3 路并行 general 子Agent 按领域分片联网检索，聚合成本低覆盖全）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>Flash 模型；无 description/无专用 permission（继承全局 deny + external_directory 白名单）；无 MCP 工具省 token——是 MCP 精兵策略下&#x27;通用任务不给专用工具&#x27;的直接体现。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) 通用执行能力（无专用工具，靠内置 glob/grep/read/bash）；2) 多路并行领域分片联网检索（编码/通用/工具链 3 路并行，代理 127.0.0.1:7890，允许 Google→arXiv 自适应降级）；3) 异构数据归一化产出（统一 schema ≤2 次重试）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>通用任务：文档撰写、数据分析、联网调研、报告生成；MCP 路由规则中&#x27;其他任务&#x27;的默认接收方。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>plan/build（委派）、explore（互补：explore 纯探索、general 通用执行）、browser-harness skill（联网）。</p></div>
-  </div>
-
 
   
 

@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。agent 驱动的 delta→主 spec 同步操作（不归档）：读 delta specs 直接编辑主 specs，允许智能合并（如加场景不复制整个需求）。引入动机：Delta Spec 机制的中间态——归档前需要把增量合并进主 spec，但合并要&quot;智能&quot;而非机械覆盖，故做成独立 agent 驱动 skill。仅被 archive-change 或显式召唤时使用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>归档流程内部依赖（archive-change 调用）；需要独立合并 delta 不归档时显式使用；是主 spec 知识库保持新鲜的机制。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>仅被 archive-change 内部调用或用户显式召唤（description 明确&quot;仅被 archive-change 或显式召唤时使用&quot;）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择有 delta spec 的变更（specs/ 目录）<br>· 解析 status 的 planningHome.root（store 感知主 spec 路径）<br>· 按 existingOutputPaths 唯一定位 delta，对 ADDED/MODIFIED/REMOVED/RENAMED 段智能合并进主 spec，窄化同步范围（显式名单）</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>被 archive-change/bulk-archive-change 内部调用；与 openspec-update-change 互补（update 管工件，sync 管 spec）</p></div>
-  </div>
-
 
   
 

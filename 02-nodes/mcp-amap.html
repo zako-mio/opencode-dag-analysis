@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-amap-api.html'>ext-amap-api</a></td><td>external</td><td><small>地图 MCP</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>高德官方 MCP 改造引入：经 amap-mcp-wrapper.ps1 启动（环境变量注入 + npx 包装）；与 amap-jsapi-skill/amap-lbs-skill/amap-budget-control 三 skill 构成渐进式消耗模型（先免费网页链接→再计次 API→最后 JSAPI 文档）；0801 P1-2 固化时已列&#x27;✅ 已禁用&#x27;；0802 盘点精兵策略裁撤：12 个工具 ~2000 tokens 很少使用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=false；description&#x27;【已禁用】12 个工具 ~2000 tokens 极低频&#x27;（0813 精简 description 省 token）；三个 amap skill 也转为 _SKILL.md 存档（0815 map 标注&#x27;存档&#x27;，_SKILL.md 前缀不被 glob 加载）；高德能力低频需求与 token 成本不成比例。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>经 amap-mcp-wrapper.ps1（环境变量注入 + npx 启动）拉起；12 个工具（POI 搜索/路径规划/周边查询等）每次加载 ~2000 tokens schema。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）原本用于地图搜索、路径规划、周边查询、热力图等地理场景。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>无（禁用）；曾与 amap-jsapi-skill/amap-lbs-skill/amap-budget-control 三 skill 协作（免费链接优先→结构化数据转交 budget-control）。</p></div>
-  </div>
-
 
   
 

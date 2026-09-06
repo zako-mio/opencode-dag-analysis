@@ -52,25 +52,12 @@
   <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <p class="empty">无内部依赖（或为叶子/外部）</p>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>downloads 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>downloads 作为 agent 指令</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>自动化导出/爬取文件无默认落盘路径时易散落，需统一默认下载目录约定。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当用户未指定路径且文件非项目本地文件时，强制保存到 D:\Opencode_Download，避免污染工作目录。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>被 agent-protocol 的「文件下载规则」段引用，导出/下载场景生效。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>界定 D:\Opencode_Download 适用与不适用的判断条件。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>经 agent-protocol 引用，与 Mission 留档规则、工作目录规则协作划分落盘位置。</p></div>
-  </div>
-
 
   
 

@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。FF = fast-forward，一键生成所有 OpenSpec 工件跳过逐步交互。0803 解析报告识别其机制：按 requires 依赖边传递闭包（applyRequires 可达集）确定必建工件集合，循环创建。引入动机：为有经验用户或简单变更提供快速通道，避免逐个确认的低效。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>简单变更或用户有经验时的默认快速路径；本地 DAG 化任务中作为快速建模入口，减少交互轮次。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>用户要求快速生成全部 OpenSpec 工件（&quot;快速通道&quot;&quot;ff&quot;）；或显式 /openspec-ff-change；有经验用户处理简单变更时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 派生变更名（无输入则询问要构建什么）<br>· openspec new change 创建脚手架，解析 status 的 applyRequires 与 artifacts requires 边<br>· 按依赖序循环对每个 ready 工件获取 instructions 并生成，todo 列表跟踪进度，处理 skip_specs/可选 design 条件跳过</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 propose 等价入口（两者都封装全生成）；下游交给 apply-change 实施</p></div>
-  </div>
-
 
   
 

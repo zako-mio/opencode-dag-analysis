@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>开源 headroom（chopratejas/headroom 63.9k⭐）CLI 的 MCP 服务器引入；0802 盘点：启用 3 个之一（3 工具 compress/retrieve/stats，懒调用策略 &lt;500 字符不压缩）；0805 遭 Stop-Process -Force 误杀 python 进程 → server unavailable（果非因）；0812 修复：诊断发现&#x27;proxy 缺失&#x27;是表象（源码证明 3 工具走本地 store 无需 proxy），真根因是误杀；headroom-mcp-launcher.ps1 v3 纯 stdio 转发（不启动后台进程，规避管道句柄继承导致 EOF 挂起）→ 修复成功；但量化评估：3 工具定义 ~279 tokens/请求、会话级 ~8370 tokens（30 轮），历史真实收益仅 ~357 tokens（$0.001）→ 回本条件每 ~3 轮压一次 800+ tokens 实际触发率极低 → 亏损 → 用户决策禁用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=false（2026-08-12 量化亏损：工具开销 &gt; 收益）；CLI 仍可用（headroom proxy/audit-reads/savings）；恢复路径：切 Claude Code/Codex 走 proxy 时改回 true（wrapper v3 或手动 headroom proxy）；0813 skill 更新：headroom SKILL.md 补 frontmatter（原先缺失导致未注册）+ 标注&#x27;MCP 禁用但 CLI 可用&#x27;；auto-mode.md 移除 6 处 headroom MCP 引用改通用截断做法。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>经 headroom-mcp-launcher.ps1 v3 纯 stdio 转发（&amp; headroom mcp serve --proxy-url 127.0.0.1:8787，无后台进程无等待）；3 工具：headroom_compress（压缩，阈值 512 字节、无损 15% 门槛、有损多省 5%）/ headroom_retrieve（还原）/ headroom_stats（统计）；压缩路由 router:smart_crusher 自适应（表格/配置/日志类高冗余内容）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）DeepSeek 直连工作流下亏损；未来切 Claude Code/Codex 走 ANTHROPIC_BASE_URL 全链路代理时启用。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>无（禁用）；headroom skill（frontmatter 补全后注册，文档化 CLI 用法）、auto-mode.md（已移除 MCP 引用）。</p></div>
-  </div>
-
 
   
 

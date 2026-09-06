@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>与主 drawio 同一实例（同 index.js），但注入环境变量 DRAWIO_BASE_URL=http://localhost:8080/ 走本地服务；0801 P1-2 固化 MCP 工具集时已列为&#x27;✅ 已禁用&#x27;；0802 盘点禁用原因：离线兜底，与主 drawio 指向同一本地版，工具重复。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=false；description&#x27;【禁用·离线兜底】断网时启用，与主 drawio 同一实例&#x27;（0813 description 统一为【禁用·离线兜底】格式）；定位为断网/离线场景的启用开关；0812 headroom 报告亦提及同思路兜底（&#x27;断网/离线场景可启用 drawio-local 同思路的 headroom 兜底&#x27;）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>同一 node index.js 实例，但通过 environment.DRAWIO_BASE_URL 注入本地 8080 服务地址（主 drawio 走默认在线 draw.io 服务）；断网时本地服务可继续导出。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>（禁用中）断网/离线时手动启用作为兜底（与主 drawio 不共存）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>mcp-drawio（同 index.js 双配置）、agent-drawio-worker（使用方）。</p></div>
-  </div>
-
 
   
 

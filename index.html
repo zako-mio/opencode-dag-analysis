@@ -30,23 +30,23 @@
 <body>
 <div class="wrap">
   <h1>opencode DAG 依赖分析</h1>
-  <div class="sub">三图渐进式：官方原版 → 对比 → 改造版双层。数据源：官方 v1.18.25 源码 + 本机 ~/.config/opencode 装配层</div>
+  <div class="sub">三图渐进式：官方原版 → 对比 → 改造版双层。数据源：官方 v1.18.29 源码 + 本机 ~/.config/opencode 装配层</div>
 
   <div class="cards">
     <a class="card" href="04-interactive/view-official.html">
       <span class="tag">图1 · 基线</span>
       <h2>官方原版包级 DAG</h2>
-      <div class="meta">节点 36 · 边 68 · 层 6 · 组 19<br>36 workspace 包依赖关系（workspace:* + import），未改造基线</div>
+      <div class="meta">节点 36 · 边 68 · 层 0 · 组 19<br>36 workspace 包依赖关系（workspace:* + import），未改造基线</div>
     </a>
     <a class="card" href="04-interactive/view-diff.html">
       <span class="tag yellow">图2 · 对比</span>
       <h2>官方 + 改造对比 DAG</h2>
-      <div class="meta">节点 45 · 边 68 · 层 6 · 组 20<br>黄边=被改造引用的包，绿=外部服务，附差异清单表</div>
+      <div class="meta">节点 46 · 边 68 · 层 6 · 组 20<br>黄边=被改造引用的包，绿=外部服务，附差异清单表</div>
     </a>
     <a class="card" href="04-interactive/view-modified.html">
       <span class="tag green">图3 · 改造版</span>
       <h2>改造版双层 DAG</h2>
-      <div class="meta">节点 114 · 边 167 · 层 8 · 组 39<br>包级 + 装配层（skills/agents/mcp/tools/commands/机制）+ 外部服务</div>
+      <div class="meta">节点 119 · 边 183 · 层 8 · 组 40<br>包级 + 装配层（skills/agents/mcp/tools/commands/机制）+ 外部服务</div>
     </a>
   </div>
 
@@ -54,10 +54,10 @@
     <h3>快速入口</h3>
     <div class="links">
       <a href="04-interactive/view-official.html">图1 官方 DAG<small>36 包 · 68 边 · 19 组</small></a>
-      <a href="04-interactive/view-diff.html">图2 对比 DAG<small>45 节点 · 68 边</small></a>
-      <a href="04-interactive/view-modified.html">图3 改造双层 DAG<small>114 节点 · 39 组</small></a>
-      <a href="03-groups/index.html">组目录<small>39 组索引</small></a>
-      <a href="02-nodes/index.html">节点页索引<small>36 包 + 69 装配 + 9 外部</small></a>
+      <a href="04-interactive/view-diff.html">图2 对比 DAG<small>46 节点 · 68 边</small></a>
+      <a href="04-interactive/view-modified.html">图3 改造双层 DAG<small>119 节点 · 183 边 · 40 组</small></a>
+      <a href="03-groups/index.html">组目录<small>40 组索引</small></a>
+      <a href="02-nodes/index.html">节点页索引<small>36 包 + 73 装配 + 10 外部</small></a>
       <a href="06-md/00-index.md">MD 镜像（AI 检索）<small>全节点文本</small></a>
       <a href="01-dag-data/official-dag.json">官方 DAG JSON<small>数据</small></a>
       <a href="01-dag-data/diff-dag.json">对比 DAG JSON<small>数据</small></a>

@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入（obra/superpowers 3 Bundles 之一），type: orchestrator 编排器工作流。引入动机：完整交付流程编排——Superpowers 探索到 OpenSpec 锁定到 TDD 实施到验证到归档，全程门控。0803-OpenSpec_Superpower解析确认其 activation.mode: explicit-only（显式命名才激活，AI 不应该背着我做事安全需求）、standalone: false（依赖 superpowers-feature-workflow）。安装时明确不装 openspec-superpowers（与 openspec-propose + superpowers-feature 重复）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>复杂功能交付的全流程编排器：路由控制者，防止误路由到 OpenSpec proposal skill（Guardrails 明确：用户点名本 workflow 时不先路由到 openspec-propose）。0815 桥接后收入 openspec-plan preset 并降权（disable-model-invocation），与 13 个降权 openspec skill 配套。本 0817-opencode-dag 项目的 DAG 展开（proposal-specs-design-tasks）即受此流程启发。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>显式 opt-in：用户点名 $superpowers-openspec-superpowers-workflow 或仓库策略强制时触发；一旦产出 tasks.md 且用户确认/继续，流程保持激活（即使不重复点名）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>25 步状态机：1) 探索上下文；2) 一次一问澄清；3) 2-3 方案推荐等待批准；4) 设计写 docs/superpowers/specs/；5) 确认设计；6) 派生 kebab-case OpenSpec change 名；7) openspec status --change 检查工件顺序；8) 每工件前 openspec instructions &lt;artifact&gt;；9) 按依赖序完成 proposal-design-specs-tasks；10) 检查 status 直到齐备；11) 停止 OpenSpec apply 执行；12) 汇总任务；13-16) 确认任务清单/继续开发（continue-dev 主续接命令）；17-21) 实施计划/TDD/验证/continue-review；22-25) 对齐后归档（continue-archive），更新记忆。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>编排 superpowers-feature-workflow（实施）+ openspec 全家（propose/apply/archive-change 等工件）+ openspec-plan preset（dsh 侧）+ .superpowers-memory/ 记忆。</p></div>
-  </div>
-
 
   
 

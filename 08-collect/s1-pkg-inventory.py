@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""S1: 从 v1.18.25 源码提取包级清单与 workspace 依赖边（修复norm）"""
+"""S1: 从 v1.18.29 源码提取包级清单与 workspace 依赖边（修复norm）"""
 import json, os, re, sys
 sys.stdout.reconfigure(encoding="utf-8")
 
-SRC = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/opencode-src-v1.18.25"
+SRC = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/opencode-src-v1.18.29"
 OUT = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/08-collect"
 
 pkgs = {}

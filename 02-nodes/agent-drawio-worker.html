@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='skill-drawio-reference.html'>drawio-reference</a></td><td>skill-mandate</td><td><small>drawio-reference 强制加载</small></td></tr><tr><td><a href='mech-subagent-rules.html'>subagent-rules</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 新增：drawio-worker 配置 Flash 模型；0803 Drawio工具链优化关键转折：曾给 drawio-worker 新增 agent.prompt 字段（强制导出+防越界+VLM 校验规则），但源码级逆向确认 agent.prompt 位于系统提示词位置 0，新增后缓存前缀从 2 变 3，drawio-worker 无法复用其他子Agent 缓存——用户判定&#x27;这个代价不值得&#x27;→ 回退 prompt 字段；per-agent 行为约束改为经 drawio-reference skill + 主Agent 的 Skills to Load 传递；MCP 路由规则从&#x27;必要时加载&#x27;改为&#x27;必须包含 drawio-reference&#x27;（禁止弱化表述）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>固定 Flash（图表生成无需 Pro 推理）；permission 仅放行 drawio_*（L3 最小权限）；刻意不设 agent.prompt 字段避免缓存前缀碎片化；委派刚性约束：prompt 必须精确写入&#x27;drawio-reference: 图表规范与导出验证&#x27;，违者导致不可靠 CLI 导出产生截断 PNG。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) 经 drawio MCP（本地精简版 v1.5.0，8 工具含 drawio_export）创建图表（流程图/架构图/UML/思维导图/组织图）；2) 导出验证链（drawio-reference 第五章）：保存→导出→VLM 校验→越界检查；3) 导出走 Puppeteer lightbox 模式（?lightbox=1 + deviceScaleFactor + waitForFunction），规避 draw.io CLI --scale 4 只渲染顶部 25% 的 bug。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>流程图/架构图/对比图/UML/思维导图等可视化图表生成与 4x PNG 导出（如 0803 架构对比图 10280×5760）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>mcp-drawio（工具源）、drawio-reference skill（998 行参考文档+导出验证规范）、plan/build（委派+刚性约束）、VLM 校验（图表内容验证）。</p></div>
-  </div>
-
 
   
 

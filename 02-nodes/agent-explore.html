@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='mech-parallel.html'>parallel</a></td><td>mechanism</td><td><small>并行</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 新增：general/explore Agent（Flash），探索/搜索子Agent 路由；0802 盘点：无 MCP 的探索/搜索子Agent；0803 起大量并行探索委派（0803 对比报告 3 个 explore 并行、0808 MCP 四件套 4 个并行、0817 DAG 3 路并行）；0814 口径冲突裁决（MEMORY：并行 explore 产出包数 237/219 不一致时由主Agent 终裁不重跑）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>Flash 模型；无 description/无专用 permission（纯只读定位：glob/grep/read）；是并行调研的主力，支撑大规模源码解析方法论（主Agent 只调度/聚合/裁决，explore 并行解析，三源交叉验证）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) 快速只读探索代码库/知识库（glob/grep/read，offset/limit 分段）；2) 并行产出数据（3-4 路按语义域分片）；3) 统一 schema 归一化（≤2 次重试）；4) 口径冲突时由主Agent 终裁（不重跑）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>代码库探索、目录统计（如飞书迁移 6.62GB 分析）、SHA256 哈希计算、信息收集、源码语义分析（35 包全量 implementation/provides/depends_on）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>plan/build（委派）、large-scale-source-parse skill（方法论）、general（互补）。</p></div>
-  </div>
-
 
   
 

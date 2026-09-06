@@ -55,7 +55,7 @@ node_ids={n["id"] for n in mod["nodes"]}
 html_files=set(os.listdir(nodes_dir))
 missing_pages=[nid for nid in node_ids if nid+".html" not in html_files]
 stale=[f for f in html_files if f.endswith(".html") and f[:-5] not in node_ids and f!="index.html"]
-check("节点页全覆盖(114)", len(missing_pages)==0, f"缺 {len(missing_pages)}")
+check("节点页全覆盖(119)", len(missing_pages)==0, f"缺 {len(missing_pages)}")
 check("无陈旧节点页", len(stale)==0, f"陈旧 {len(stale)}")
 check("节点索引存在", "index.html" in html_files)
 
@@ -78,8 +78,8 @@ for view in ["view-official.html","view-diff.html","view-modified.html"]:
         if m:
             try:
                 data=json.loads(m.group(1))
-                # 对 view-modified 应匹配 114 节点
-                expected = 114 if view=="view-modified.html" else (36 if view=="view-official.html" else 45)
+                # 对 view-modified 应匹配 119 节点
+                expected = 119 if view=="view-modified.html" else (36 if view=="view-official.html" else 46)
                 check(f"交互图 DATA 节点数: {view}", len(data["nodes"])==expected, f"{len(data['nodes'])} vs {expected}")
             except Exception as e:
                 check(f"交互图 DATA 解析: {view}", False, str(e))

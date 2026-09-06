@@ -46,13 +46,13 @@
   <div class="sub">mech-memory-gate · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>MEMORY.md 严禁直接修改，走 pending→reflection-worker→/reflection 确认→带[src:]写入。</p>
+  <p>MEMORY.md 严禁直接修改，走 pending→reflection-worker→/reflection 确认→带[src:]写入</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='instr-memory.html'>memory</a></td><td>mechanism</td><td><small>守护</small></td></tr><tr><td><a href='command-reflection.html'>reflection</a></td><td>mechanism</td><td><small>审阅</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='config-main.html'>main</a></td><td>mechanism</td><td><small>守护（MEMORY 硬门禁指向 config）</small></td></tr><tr><td><a href='command-reflection.html'>reflection</a></td><td>mechanism</td><td><small>审阅</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-19 根因修复引入，0817 版本缺失。动机：此前存在直接 edit/write MEMORY.md 导致记忆条目失序、来源不明的隐患。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>杜绝任何绕过通道，所有记忆写入必须经 pending→reflection-worker→/reflection 逐条确认；且每个 § 段必须带 [src: &lt;cycle_id&gt;] 签名。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-19 根因修复：此前直接改 MEMORY.md 导致内容漂移/无溯源，故设硬门禁禁止绕过反射链路直接写入，保证每条记忆带来源签名可回溯。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>确保记忆写入仅经五步链路(①封装 4 层输入→②追加 pending.json status=waiting→③reflection-worker 处理→④用户 /reflection 逐条 yes/edit 确认→⑤确认后才写入)，写入的每个 § 段必须带 [src: &lt;cycle_id&gt;] 签名，无签名禁止写入，唯一例外是 /reflection 命令本身。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>任何试图写入 MEMORY.md 的行为（除 /reflection 审阅执行者外）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>①封装 4 层→②pending.json(waiting)→③reflection-worker 处理→④用户 /reflection yes/edit 确认→⑤确认后才写入并可带 [src:] 签名。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>instr-memory（MEMORY.md）；command-reflection；agent-reflection-worker；instr-auto-mode。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任何试图写入 MEMORY.md 的编辑/写操作会被拦截；唯一合法触发是 /reflection 用户确认；另子 Agent 若产出记忆条目写入 memory_pending/ 待审。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①记忆产出方(主 Agent 封装 4 层或子 Agent 交 memory_pending/)不直接碰 MEMORY.md；②reflection-worker 分析并入 pending.json results(status=done)；③用户 /reflection 三池扫描+统一分析/逐条确认；④确认 yes/edit→主 Agent 写 MEMORY.md(§ 分段，带 [src: cycle_id])；⑤写后校验脚本按 § 切分每段首行为 [src:...]；⑥备份→原子写回→JSON 校验，容量&gt;5000 走分层精简。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>目标文件 MEMORY.md(§-分段格式)；由 opencode.jsonc agent.plan/build.prompt 内 Memo 硬门禁段与 auto-mode.md『Universal SubAgent Rules』身份约束共同强制；依赖 Reflection 链路；子 Agent 记忆写入 ~/opencode/archive/Reflection/memory_pending/。</p></div>
   </div>
 
 

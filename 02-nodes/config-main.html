@@ -55,22 +55,9 @@
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>config-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-opencode-go.html'>ext-opencode-go</a></td><td>external</td><td><small>provider Go 套餐</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>provider DeepSeek 官方</small></td></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>provider 智谱 GLM</small></td></tr><tr><td><a href='mech-variant.html'>variant</a></td><td>mechanism</td><td><small>配置变体</small></td></tr><tr><td><a href='mech-mission-archive.html'>mission-archive</a></td><td>mechanism</td><td><small>路径</small></td></tr><tr><td><a href='mech-proxy.html'>proxy</a></td><td>mechanism</td><td><small>联网</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>config-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-opencode-go.html'>ext-opencode-go</a></td><td>external</td><td><small>provider Go 套餐</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>provider DeepSeek 官方</small></td></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>provider 智谱 GLM</small></td></tr><tr><td><a href='mech-variant.html'>variant</a></td><td>mechanism</td><td><small>配置变体</small></td></tr><tr><td><a href='mech-memory-gate.html'>memory-gate</a></td><td>mechanism</td><td><small>守护（MEMORY 硬门禁指向 config）</small></td></tr><tr><td><a href='mech-mission-archive.html'>mission-archive</a></td><td>mechanism</td><td><small>路径</small></td></tr><tr><td><a href='mech-proxy.html'>proxy</a></td><td>mechanism</td><td><small>联网</small></td></tr><tr><td><a href='mech-session-memory.html'>session-memory</a></td><td>mechanism</td><td><small>compaction 压缩配置</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>opencode v1.18.14→v1.18.25 配置装配层自进化，新增 OpenCode Go 订阅套餐、智谱 GLM 官方、DeepSeek 官方三套 provider，并抽象出视觉子Agent。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>用 Go 订阅的包月额度覆盖高性价比编码；用 DeepSeek 官方直连兜底 Pro 与视觉；用智谱官方补 GLM-5.3/GLM-4.6v 双通道，形成多 provider 冗余与视觉出口。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>作为 opencode 全局配置启动加载，决定顶层默认模型/small_model/compaction/agent/instruction/provider/mcp 全栈装配。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>维护 plan/build(daily变体)、pdf/drawio/vision/reflection 子Agent 权限与模型、provider 模型清单与成本、compaction 参数、权限白名单、MCP 开关。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>provider 段经 @ai-sdk/* 连接外部 API；agent 段配置子Agent 供 agent-protocol 路由；instructions 段挂载 auto-mode.md 与 MEMORY.md；mcp 段启用 pdf-reader/drawio。</p></div>
-  </div>
-
 
   
 

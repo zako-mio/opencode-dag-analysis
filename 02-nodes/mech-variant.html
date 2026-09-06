@@ -46,7 +46,7 @@
   <div class="sub">mech-variant · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>Plan 阶段输出[COMPLEXITY]/Build 继承推理深度；Ctrl+T 运行时切换 daily/deep。</p>
+  <p>Plan 阶段输出[COMPLEXITY]/Build 继承推理深度；Ctrl+T 运行时切换 daily/deep</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 配置已为各模型定义 daily/deep variants。动机：同一模型按任务复杂度分配推理预算。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>提供运行时切换（Ctrl+T）与跨阶段继承：Plan 收敛摘要携带 [COMPLEXITY: X/20]，Build 阶段检测到即用匹配推理深度。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为在一次会话内按任务轻重动态调整推理强度，用 daily/deep 双 variant 映射不同 max_tokens 与 reasoning_effort，避免固定深度对简单任务浪费、对复杂任务截断。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>提供运行时切换(Ctrl+T 循环)免改文件重启，并新增 [COMPLEXITY: X/20] 继承规则：Plan 收敛摘要打标记，Build 启动检测到即用匹配推理深度不重评，保证 DAG 上下游(Plan→Build)推理一致，成本可控且质量稳定。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>会话中需升降推理强度时按 Ctrl+T；或 Build 检测到上一条 plan 含 [COMPLEXITY] 标记。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>查阅 variant 列表切换；或改 opencode.jsonc agent.variant；Plan 输出 [COMPLEXITY]，Build 启动时匹配。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>config-main（provider variants + agent.variant）；instr-auto-mode；agent-plan、agent-build。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>运行时按 Ctrl+T 循环切换(daily↔deep)；或 tui.json 绑定 variant_list 键位；或编辑 opencode.jsonc agent.plan/build.variant 手动切换；或 Build 启动检测到前置 plan 消息含 [COMPLEXITY] 标记时自动继承。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①GATE 门控评分定启动 variant(≤12 Daily/≥13 Deep)；②运行时按 Ctrl+T 免重启切换；③Plan 收敛写 [COMPLEXITY: X/20]；④Build 检测标记→用匹配深度→否则按 auto-mode 正常评估；⑤不改 opencode.jsonc agent.plan/build variant 配置。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>配置源 opencode.jsonc provider(variants 映射 daily/deep 的 max_tokens/reasoning_effort)与 compaction 段；承接 GATE 门控(mech-gate)；变体定义在 opencode.jsonc agent.plan/build.variant；与 mech-cache 协作(固定前缀稳定)。</p></div>
   </div>
 
 

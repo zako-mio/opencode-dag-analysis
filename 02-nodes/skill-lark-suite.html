@@ -46,7 +46,7 @@
   <div class="sub">skill-lark-suite · skill · A6f-办公集成 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>飞书/Lark 全功能操作入口。通过 lark-cli 命令操作飞书资源，覆盖日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、会议纪要、考勤、审批、OKR、白板、笔记、思维笔记、事件订阅、应用开发等全部业务域。触发关键词：飞书、lark、lark-cli、feishu、消息、发消息、群聊、日程、日历、meeting、</p>
+  <p>飞书/Lark 全功能操作入口。通过 lark-cli 操作日历、消息、文档、云盘、多维表格、任务、会议、通讯录、审批、知识库等全部业务域。触发：飞书、lark、lark-cli、feishu、文档、日历、会议、表格、多维表格、任务、审批、知识库。</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-lark-api.html'>ext-lark-api</a></td><td>external</td><td><small>lark-cli 调用飞书</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>改造盘点（2026-08-02）标注为开源+改造，上游 yjwong/lark-cli（53 星，Go，MIT），lark-cli v1.0.76 已本地安装。SKILL.md 为路由包装层（意图路由映射表指向 23 个域文件），引入动机是让 Agent 能通过 CLI 操作飞书全部业务域（日历/消息/文档/云盘/多维表格等），解决简历求职流程中飞书表格同步（网申进度表）与日常办公文档操作需求。0802 盘点发现 23 个域文件中 20 个为占位，修复为 Fallback 策略首位加 lark-cli skills read 动态加载（v1.0.76 自带 27 个官方内置 skill）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>recruit-assist 的飞书网申进度表同步（sync_feishu.py 增量上传/全量下载）依赖 lark-cli 认证与调用规范（前置 Step 0 shared.md）。exec-recruit preset 将 lark-suite 列为 4 个降权 skill 之一，用户手势 /lark-suite 唯一入口。日常飞书文档/表格/日历/消息操作持续需要。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：飞书、lark、lark-cli、feishu、消息/发消息、群聊、日程、日历、文档、表格、电子表格、sheet、多维表格、base、任务、云盘、上传/下载文件、知识库、会议、审批、OKR、邮件等 20+ 域（SKILL.md description）。用户手势 /lark-suite。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 强制 Step 0：先 Read references/shared.md（认证状态检查/登录/身份选择 --as user|bot/JSON 输出合约/安全规则/高风险白名单）；2) 按意图路由映射表匹配关键词，Read 对应 references/&lt;domain&gt;.md 或走 lark-cli skills read lark-&lt;domain&gt; Fallback；3) Windows 下必须 cmd /c &#x27;lark-cli &lt;domain&gt; +&lt;shortcut&gt; [flags]&#x27; 调用，解析 JSON 输出。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（飞书同步前置）、resume-builder/soe-resume（exec-recruit preset 手势组）、lark-cli CLI + 飞书开放平台（external）、create-doc preset（文档创作领域 skill 之一）协作。</p></div>
-  </div>
-
 
   
 

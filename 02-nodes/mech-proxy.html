@@ -46,7 +46,7 @@
   <div class="sub">mech-proxy · mechanism · AQ-自进化机制 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>默认直连；境外被墙站点 proxy_on 或 curl -x 172.29.0.1:7890；模型API勿设代理。</p>
+  <p>默认直连；境外被墙站点 proxy_on 或 curl -x 172.29.0.1:7890；模型API勿设代理</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>WSL2 代理网关 172.29.0.1:7890。0813 时子Agent 联网给代理；0822 策略改为默认直连。动机：区分国内直连与境外被墙访问。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>模型 API 链不读代理 env 必须直连；境外被墙站点需显式 curl -x；国内源全直连。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>WSL2 内访问宿主机代理网关 172.29.0.1:7890(宿主机 XQNetwork 监听 0.0.0.0:7890，HTTP+SOCKS5 混合端口)，用于访问境外被墙站点。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>2026-08-22 更新为默认直连：.bashrc 不再自动 export 全局代理 env，仅访问境外被墙站点时手动 proxy_on 开启/proxy_off 关闭；国内流量与模型 API 全部直连；模型 API 调用链(Node fetch/undici)与 webfetch 工具不读代理 env，必须直连；curl/CLI 继承 shell env 默认直连，需境外时 curl -x http://172.29.0.1:7890；git 已配定向代理指向 172.29.0.1:7890。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>按访问目标分域：模型 API/国内源直连；境外被墙站点用 -x 代理；git 固定定向代理。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>默认直连（proxy_off 无全局 env）；境外需求手动 curl -x 或依赖 git 定向代理；proxy_on 后 no_proxy 保国内直连。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>config-main；instr-auto-mode；agent-general/agent-explore；git 全局代理。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>默认直连；仅当访问境外被墙站点(Google/X 等)时手动 proxy_on 或显式 curl -x/git 定向代理。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①默认 Shell 无代理 env→国内直连；②访问境外被墙内容→proxy_on 或 curl -x http://172.29.0.1:7890 &lt;url&gt;、git、browser-harness；③模型 API(api.deepseek.com/opencode.ai)必须直连禁止设代理；④webfetch 访问境内直接成功，境外会超时需 curl -x；⑤proxy_off 关闭，no_proxy 保证国内流量仍直连；⑥子 Agent 优先国内源直连，境外显式加 curl -x。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『联网代理纪律（WSL2 环境）』；MEMORY.md cycle_legacy_path/cycle_20260822_network 指针；与 Agent 委派(子 Agent 联网)及浏览器(agent-browser/browser-harness)协作。</p></div>
   </div>
 
 

@@ -1,4 +1,4 @@
-# skill 节点（31）
+# skill 节点（33）
 
 ## skill-agency-agents — agency-agents
 - 组: A6a-角色调度 | Layer 1
@@ -82,13 +82,23 @@
 
 ## skill-lark-suite — lark-suite
 - 组: A6f-办公集成 | Layer 1
-- 作用: 飞书/Lark 全功能操作入口。通过 lark-cli 命令操作飞书资源，覆盖日历、消息、文档、云盘、多维表格、电子表格、幻灯片、任务、邮件、通讯录、知识库、视频会议、会议纪要、考勤、审批、OKR、白板、笔记、思维笔记、事件订阅、应用开发等全部业务域。触发关键词：飞书、lark、lark-cli、feishu、消息、发消息、群聊、日程、日历、meeting、
+- 作用: 飞书/Lark 全功能操作入口。通过 lark-cli 操作日历、消息、文档、云盘、多维表格、任务、会议、通讯录、审批、知识库等全部业务域。触发：飞书、lark、lark-cli、feishu、文档、日历、会议、表格、多维表格、任务、审批、知识库。
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 
 - **怎么用（触发）**: 
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
+
+## skill-login-auth-channel — login-auth-channel
+- 组: A6j-联网搜索 | Layer 1
+- 作用: 登录态渠道交互式登录 SOP。命中需登录平台（知乎/闲鱼/淘宝/京东/小红书/拼多多/微博）且需登录态拿完整数据时，指导主Agent执行人机交互式登录（可见窗口暂停扫码）+多后端容错降级（agent-browser→Cookie-Editor→MCP/CLI），与子Agent按need_login契约协作。触发：登录态、需要登录才能看、扫码、交互式登录、选品
+- 提供: 
+- **为什么存在（历史）**: 0906 登录态渠道扩张方案 + 实装内化收尾。0905 架构曾将「社交平台 Cookie 依赖」列为过度工程规避（FactReach 23 渠道只取机制），但用户明确决策：登录态在选品/评价场景是刚需（知乎全文评价/淘宝销量/京东评价/小红书笔记/拼多多详情），须构建而非规避。
+- **为什么存在（当前）**: 需求驱动：需在登录态下才能拿到完整数据（知乎/闲鱼/淘宝/京东/小红书/拼多多等 8 渠道），平台风控各异（小红书 x-s/x-t、拼多多 anti_content 强签名），需一套「真能登录并抓取」且能抗风控、有序降级的机制。
+- **怎么用（触发）**: 命中 search-methodology 决策树 Path3（电商/选品/评价/口碑意图）且主Agent 判定需要登录态后加载。适用于「登录态/需要登录才能看/扫码/交互式登录/选品评价口碑」场景。
+- **怎么用（工作流）**: ①主Agent 命中 Path3 → 先查免登录 API（如 B站 bili-cli/搜索 API，零成本零账号风险，优先采用）→ 有则用免登录；②需登录态 → 三合一检测登录态（URL 跳转 + 页面元素 + 接口探针）；③已登录 → 委派子Agent 已登录态纯抓取，若报风控(403/频控/IP at risk)按多后端降级链降级（不重试同一后端）；④未登录 → 主Agent 开可见窗口 --headed 暂停请用户扫码 → 用户完成 → --restore 持久化登录态（AES-256-GCM 加密落盘）→ 重委派子Agent 纯抓取；⑤降级链走完仍失败 → 返回 {blocked:true, reason} 明确标注不编造。
+- **怎么用（协作）**: 路由判定由 search-methodology 决策树 Path3 承担；平台数据/合规矩阵以 source_credibility_map.md 六「需登录域」区块为单一权威源；agent-browser 通用命令（--restore/--headed/auth vault）由 browser-harness skill 承担；登录触发由主Agent、抓取由 search-worker 子Agent，按 need_login 契约（{need_login, platform, reason}）协作；依赖 opencode.env（AGENT_BROWSER_ENCRYPTION_KEY）。
 
 ## skill-multi-window-dag-delivery — multi-window-dag-delivery
 - 组: A6c-DAG方法 | Layer 0
@@ -101,8 +111,8 @@
 - **怎么用（协作）**: 
 
 ## skill-opencode-config — opencode-config
-- 组: A6b-配置知识 | Layer 4
-- 作用: OpenCode 配置（opencode.jsonc）分级知识库。覆盖官方 Schema v2 全部字段、本项目实际配置的本地化说明、操作指南、安全规则和排障手册。LLM 通过三阶自检路由按需加载子文件。当用户需要查看、修改、编写、验证 opencode 配置时使用。触发关键词：opencode配置、opencode参数、opencode.jsonc、con
+- 组: A6a-配置知识 | Layer 4
+- 作用: OpenCode 配置（opencode.jsonc）深度中文参考。覆盖官方 Schema 全量字段的本地化说明（agent/provider/mcp/permission/skills/compaction 等）、实际配置实况、安全修改操作指南、排障与恢复手册。当用户需要查看、修改、编写、验证 opencode 配置时**必须主动使用**此技能。触发关键词
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 
@@ -269,6 +279,16 @@
 - **怎么用（触发）**: 
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
+
+## skill-search-methodology — search-methodology
+- 组: A6j-联网搜索 | Layer 1
+- 作用: 联网搜索方法论。需求工程层的搜索执行引擎——发现层三层(LLM初发现/信息源信用地图/外部搜索降级)+Query转译(实体消歧/学名+科名/排除运算符)+时效分流(稳定知识LLM/实时信息外部搜索)。触发:任何需要外部事实核查、多源交叉验证、实体消歧、搜索执行或证据包构建的查询。
+- 提供: 
+- **为什么存在（历史）**: 0905 联网搜索能力架构缺口清单——「无搜索方法论 Skill」，方法论此前散落 MEMORY 跨会话不稳。复用 anysearch Skill 编码范式 + goose frontmatter 懒加载，将搜索 SOP 沉淀为可加载的细粒度 skill。
+- **为什么存在（当前）**: 需求驱动：需要一套结构化的搜索执行引擎（决策树路由 + 发现层三层 + Query 转译 + 证据包契约），把「搜索」从主Agent 的临时行为升级为可复用、可内化、可自扩展的能力。
+- **怎么用（触发）**: search-worker 或主Agent 加载（Skills to Load 中指定）。前端 name/description 常驻，全量内容按需注入；命中 Trigger 条件（依赖外部事实/需交叉验证/实体歧义/时效超截止/用户要求搜索）即触发。
+- **怎么用（工作流）**: ①决策树路由判定 Path1/Path2/HYBRID/Path3；②发现层：LLM初发现（仅稳定知识）→ 信息源信用地图（渐进披露 domains/<域>.md）→ 外部搜索降级链（Tavily 首筛→必应/DDG/Wiki 零成本→agent-browser 动态兜底，带 Tavily 预算状态机与降级策略）；③Query 转译（实体消歧：中文词→拉丁学名+科名+排除运算符）；④回源与交叉验证（curl→agent-browser→API，≥2 独立源）；⑤输出证据包契约并按 validate_evpack.py 自检提交。
+- **怎么用（协作）**: 由 search-worker 作为执行载体；受 search-behavior instruction 约束（信源分级/实证规则）；Path3 时联动 login-auth-channel skill（登录态）；依赖 source_credibility_map.md + domains/*.md（信源导航）、validate_evpack.py（证据包校验）、Tavily API + agent-browser + browser-harness（获取后端）、opencode.env（key 注入）、代理纪律。
 
 ## skill-soe-resume — soe-resume
 - 组: A6i-简历求职 | Layer 0

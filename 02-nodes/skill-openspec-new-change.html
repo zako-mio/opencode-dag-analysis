@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。与 propose 互补：propose 一键全生成，new-change 是实验性 artifact-driven 逐工件交互式创建——只创建变更目录并展示首个工件模板后停止，等待用户逐级确认。引入动机：为&quot;复杂或需精细控制的场景&quot;提供比 propose 更细粒度的路径，防止一次生成导致方向偏差。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>复杂变更需要逐步确认每个工件时使用；本地改造强调 Grill-Me 逐项决策，new-change 与之同构（一步一确认），适合精细控制场景。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>用户要求逐步创建新变更、需要精细控制时；description 触发词&quot;逐步创建&quot;&quot;细粒度&quot;；或显式 /openspec-new-change。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 询问要构建什么，派生 kebab-case 变更名<br>· 选择 workflow schema（默认 spec-driven，用户点名时用 openspec schemas 选择）<br>· 创建变更脚手架后展示第一个工件模板即停止，等待用户方向后再继续（防越步守门）</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 openspec-continue-change 衔接（后续工件逐个续做）；被 superpowers-openspec-superpowers-workflow 作为细粒度模式引用</p></div>
-  </div>
-
 
   
 

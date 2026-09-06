@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>skill-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-output.html'>output</a></td><td>mechanism</td><td><small>压缩</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 chopratejas/headroom（63.9k 星，Apache 2.0），上游为 MCP 服务器（无独立 skill 文件），本地编写 SKILL.md 使用规则。引入动机：opencode 缺少原生上下文压缩（dsh cache-performance skill 明确记载 opencode 因缺原生压缩才引入 headroom），需要压缩超大工具输出/长文件减少 token 消耗。0803-opencode-vs-claude 对比改进报告提出阶梯式压缩（L1 headroom_compress 到 L2 结构化模板到 L3 兜底摘要），headroom 为 L1。2026-08-12 发现 MCP 无法使用，0812-headroom修复报告根因：8/5 Stop-Process -Force 误杀 headroom python 进程 + 重连失败；同日量化亏损评估（工具定义约 279 tokens/请求大于历史收益 0.001 美元）导致 0812/0813 决策禁用 MCP，CLI 仍可用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>CLI 版持续可用：headroom proxy / audit-reads / savings / inspect / memory 用于手动压缩超大输出、审计 Read-tool 流量、查看节省统计。0815 桥接确认不迁移（dsh 有原生 compaction-basic + tool-result-pruner，headroom 为已解决项）；MEMORY.md 2026-08-12 记录 MCP 禁用但 CLI 仍可用。切 Claude Code/Codex 走 proxy 时可将 enabled 改回 true。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：headroom、上下文压缩、压缩大输出、audit-reads、savings（SKILL.md description）。使用时机：读取 500+ 行文件后、工具输出 2000+ 字符、大 JSON payload 前、爬取网页 3000+ 字符、任务完成后 savings 看节省。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) headroom audit-reads 审计 Read-tool 流量找压缩机会；2) 大文件/大输出按阈值评估压缩（headroom inspect 对比原始 vs 压缩内容，验证不丢关键信息）；3) 需要全链路代理时手动 headroom proxy（8787 端口）；4) headroom savings 查看持久化压缩节省统计；5) 小内容 500 字符内不压缩（懒调用）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 auto-mode.md（Output Discipline 压缩大输出规则）、compaction 阶梯（L1 剪枝）、MEMORY.md（Compaction 阶梯式 L1/L2/L3 约定）、headroom-mcp-launcher.ps1（MCP 路径纯 stdio 转发）协作。</p></div>
-  </div>
-
 
   
 

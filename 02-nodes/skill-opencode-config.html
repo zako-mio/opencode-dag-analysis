@@ -43,10 +43,10 @@
     <a href="index.html">节点索引</a>
   </div>
   <h1>opencode-config <span class="tag">装配层</span></h1>
-  <div class="sub">skill-opencode-config · skill · A6b-配置知识 · Layer 4</div>
+  <div class="sub">skill-opencode-config · skill · A6a-配置知识 · Layer 4</div>
 
   <h2>① 作用</h2>
-  <p>OpenCode 配置（opencode.jsonc）分级知识库。覆盖官方 Schema v2 全部字段、本项目实际配置的本地化说明、操作指南、安全规则和排障手册。LLM 通过三阶自检路由按需加载子文件。当用户需要查看、修改、编写、验证 opencode 配置时使用。触发关键词：opencode配置、opencode参数、opencode.jsonc、con</p>
+  <p>OpenCode 配置（opencode.jsonc）深度中文参考。覆盖官方 Schema 全量字段的本地化说明（agent/provider/mcp/permission/skills/compaction 等）、实际配置实况、安全修改操作指南、排障与恢复手册。当用户需要查看、修改、编写、验证 opencode 配置时**必须主动使用**此技能。触发关键词</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>skill-dep</td><td><small>装配层→官方包</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注文档改编，上游 opencode.ai/config.json Schema v2。0803-opencode-config-skill重写/01-信息收集：用户发现原 SKILL.md 不完善（646 行单文件基于旧 Schema、无分层路由、与实际配置脱节——示例还用 @ai-sdk/openai-compatible 实际已迁 deepseek、max_tokens 4096 与实际 8192 不一致、缺本地化标注），要求重写为多文件分级知识库（ref/ 官方 Schema 参考 + local/ 本项目本地化 + ops/ 操作指南 + troubleshooting/ 排障），基于官方文档+源码+实际配置三元验证，建立维护策略。后续 0805-opencode-config过时修正（SHA256 C6A1 到 FC85，Skill 14 到 30）与 0813-opencode-config-skill更新（对标 1.18.16，覆盖 0802-0812 六次配置变更，headroom MCP 禁用同步）持续维护。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>任何查看/修改/编写/验证 opencode.jsonc 的操作入口：三阶自检路由按需加载子文件（不一次加载全部）。0802 缓存优化/P0、0803 编码安全纵深防御、0805 Reflection、0807 原生命令、0813 配置更新等所有配置改造任务均在本 skill 指导下进行。opencode.jsonc 每次变更后需按 edit-guide 同步 SKILL.md 哈希表（SHA256 01E07...，对标 1.18.16）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：opencode配置、opencode参数、opencode.jsonc、config schema、permission配置、provider配置、mcp配置、opencode设置、opencode文档、配置参考（SKILL.md description）。用户需要查看/修改/编写/验证 opencode 配置时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 三阶自检路由矩阵定位需求（改 Schema 参数到 ref/；查本项目实际配置到 local/；操作步骤到 ops/；故障到 troubleshooting/）；2) 修改 opencode.jsonc 前先备份（.bak-日期）；3) 修改后 JSON 验证 + 重算 SHA256 + 同步 SKILL.md 子文件哈希表 + 零旧值残留检查（MEMORY.md 0813 安全链）；4) 按 ops/security.md 编码安全规则（edit 优先，禁 python -c 管道）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 opencode.jsonc 配置本体、auto-mode.md（配置同步安全链）、MEMORY.md（0813 修改安全链记录）、opencode 官方文档（Schema v2）、D:\Opencode_Download\Opencode-全量备份（备份链）协作。</p></div>
-  </div>
-
 
   
 

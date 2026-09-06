@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>search-behavior · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>search-behavior <span class="tag">装配层</span></h1>
+  <div class="sub">instr-search-behavior · instruction · AG4-指令 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>---</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>search-behavior 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>search-behavior 作为 agent 指令</small></td></tr><tr><td><a href='agent-search-worker.html'>search-worker</a></td><td>route</td><td><small>搜索行为路由 search-worker</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0905 联网搜索能力架构缺口清单——「无行为层强制（先搜后答）」，行为准则缺失导致搜索能力成孤儿。复用 FactReach 受管标记块范式（BEGIN/END）+ goose 懒加载（frontmatter name+description），编码为全局强制 instruction。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：为所有 Agent 提供外部信息实证的最低行为红线——凡结论依赖外部事实必须先搜索并打开来源验证；搜索页/摘要仅作线索，须回源原始页面；重要结论 ≥2 独立源交叉验证；区分已验证事实/推断/不确定信息。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>作为全局 instruction 加入 opencode.jsonc instructions 数组（与 auto-mode.md、MEMORY.md 并列），所有 Agent 会话前缀加载。在需要外部事实/时效/多源核查的查询时（Trigger：任何涉及外部事实/时效/多源核查的结论）触发生效。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①query 依赖外部事实 → 先搜索并打开来源验证，不得只凭模型记忆；②搜索结果/摘要仅作发现线索，回源原始页面核对来源链接/发布时间/数据日期；③重要/争议/易变结论用 ≥2 个独立来源交叉验证，做不到标「单一来源/未验证」；④按信源优先级（官方一手 &gt; 权威二手 &gt; 社区讨论）分级；⑤输出区分已验证事实/基于证据推断/尚不确定，链接放在对应结论附近；⑥访问失败直接说明限制，不补写看似合理但未经实证的结论；⑦时效分流：稳定知识用 LLM 初发现，实时信息必须走外部搜索。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>作为行为层地基，与 search-methodology skill（执行细节）、search-worker（委派执行）、MEMORY.md 记忆、auto-mode.md（缓存前缀协议）共同注入 system prompt。BEGIN/END 受管标记块保证对 prefix-cache 最小冲击，不污染 auto-mode.md（缓存字节稳定）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-S1b: v1.18.25 官方包内部模块级 import 解析
-输出: 08-collect/internal-v1.18.25.json
+S1b: v1.18.29 官方包内部模块级 import 解析
+输出: 08-collect/internal-v1.18.29.json
 """
 import json, os, sys, re
 sys.stdout.reconfigure(encoding="utf-8")
 
-SRC = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/opencode-src-v1.18.25"
+SRC = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/opencode-src-v1.18.29"
 BASE = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag"
 CKPT = os.path.join(BASE, "08-collect")
 
@@ -90,7 +90,7 @@ for p in packages:
     result[pid] = {"package": pid, "src": p["path"], "modules": modules, "edges": edges,
                    "module_count": len(modules), "edge_count": len(edges)}
 
-with open(os.path.join(CKPT, "internal-v1.18.25.json"), "w", encoding="utf-8") as f:
+with open(os.path.join(CKPT, "internal-v1.18.29.json"), "w", encoding="utf-8") as f:
     json.dump(result, f, ensure_ascii=False, indent=2)
 
 print(f"packages with internals: {len(result)}")

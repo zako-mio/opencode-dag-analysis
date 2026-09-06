@@ -46,7 +46,7 @@
   <div class="sub">mech-coding-discipline · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>验证与证据/从磁盘读不依赖对话记忆/路径本地化/元数据不入输出。</p>
+  <p>验证与证据/从磁盘读不依赖对话记忆/路径本地化/元数据不入输出</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 auto-mode 已含。动机：约束所有 Agent 形成「先验证再报告」的可靠工程习惯。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>强制完成前跑测试/lint/构建并展示输出；写新工件前 read 其所有 requires 依赖；路径本地化。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为建立跨 Skill/Workflow 边界的通用编码准则，覆盖所有 Agent，防止依赖对话记忆的旧结果和跨机器绝对路径假设。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前准则：验证与证据(不报告成功除非有新鲜验证证据，完成前跑测试→lint→报告)；从磁盘读取不依赖对话记忆(创建/修改文件前重新读依赖文件)；路径本地化(文件路径保持仓库本地化，子 Agent 返回绝对路径主 Agent 转相对路径)；元数据不入输出(context/rules/project_context 是约束不可复入产出文件)。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>任何完成声明前；创建/修改文件前；DAG 工件生成前。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>不报告成功除非有新鲜验证证据；磁盘重读依赖文件；路径仓库本地化；schemas 中 context/rules 为理解约束。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；各子Agent；instr-auto-mode；DAG 生成脚本。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任何 Agent 实施代码/生成 DAG 工件时持续生效：声明完成前、创建/修改文件前必须磁盘重读。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①完成声明前运行验证(测试通过→lint 通过→报告结果)并展示输出；②创建/修改文件前从磁盘重新读依赖文件；③DAG 工件生成写新工件前 read 所有 requires 依赖；④文件路径用相对路径或 repoRoot 拼接；⑤不以 context/rules 等约束字段入产出文件。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Universal Coding Discipline』；与子 Agent 规则(mech-subagent-rules)、编码安全(mech-coding-safety)协作；影响 DAG 生成流程(proposal/specs/design/tasks requires 依赖读取)。</p></div>
   </div>
 
 

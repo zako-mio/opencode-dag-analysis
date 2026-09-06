@@ -46,7 +46,7 @@
   <div class="sub">mech-output · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>分段读取/压缩大输出/只读优先，控制 token 规模。</p>
+  <p>分段读取/压缩大输出/只读优先，控制 token 规模</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0812 headroom MCP 量化亏损被禁用，0817 auto-mode 已含。动机：工具返回过大时全量灌入会撑爆上下文。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>大文件分段读取、超长输出截断保留位置标记、优先 glob/grep 而非全量 read。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为控 token 消耗与上下文占用，避免单次全量返回大文件/大输出撑爆上下文流，建立输出规模控制纪律。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前要求：文件&gt;2000 行用 offset/limit 分段读；grep 命中&gt;50 条用更精确正则缩小；工具返回&gt;3000 字符优先截断关键部分(headroom MCP 已禁用 2026-08-12)；同路径有 read+glob 时优先 glob，内容搜索优先 grep。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>文件&gt;2000 行、工具返回&gt;3000 字符、或同路径可选 read/glob 时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>offset/limit 分段读；截断关键部分并留位置标记；优先 glob；内容搜索用 grep。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；skill-headroom（CLI）；instr-auto-mode；mcp-headroom（已禁用）。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>读文件/工具返回/内容搜索时持续生效：大文件分段、大输出压缩、双路径选 lean 者。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①大文件分段读取(&gt;2000 行用 offset/limit，先头尾中间按需)；②超大工具输出截断关键部分并留位置标记；③grep 命中&gt;50 时缩范围；④只读优先：同路径 read/glob 选 glob，内容搜索优先 grep 再按需 read；⑤仅在确认需要时才全量展示。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Output Discipline』；与 mech-parallel(只读优先)和 mech-session-memory(L1 剪枝裁剪超大工具输出)协作。</p></div>
   </div>
 
 

@@ -46,7 +46,7 @@
   <div class="sub">mech-gate · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>MANDATORY GATE CHECK：范围/深度/操作/风险四维自评(1-5)输出总分→Daily/Deep。</p>
+  <p>MANDATORY GATE CHECK：范围/深度/操作/风险四维自评(1-5)输出总分→Daily/Deep</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 auto-mode 已含。动机：为推理深度与 token 预算做成本控制基准。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>作为主Agent 每次操作的强制第一行输出，硬性不可跳过；是 Daily/Deep 决策与 Variant 继承的量化入口。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为解决任务复杂度与推理深度不匹配导致的长任务输出截断/多轮重试成本失控，引入强制自评门控：任务开始前先量化影响范围/逻辑深度/操作数量/风险以决定用哪档推理。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>作为主 Agent(plan/build)的第一条强制输出，用 4 维各 1-5 分(影响范围/逻辑深度/操作数量/风险精度)求总分定 Variant(≤12→Daily，≥13→Deep)，评分保守宁高估，边界值 12→Daily、13→Deep，为成本与质量作显式权衡。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>主Agent（plan/build）收到任何任务时，第一条助手消息必须先输出；子Agent 不输出。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>4 维自评（范围/深度/操作/风险各1-5）→总分→对照决策边界→输出 [GATE] 格式。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；instr-auto-mode；skill-grill-me。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>主 Agent 收到任务后、任何操作之前，第一条助手消息必须以 [GATE] 范围=X 深度=X 操作=X 风险=X → 总分=XX → Daily|Deep 开头；子 Agent 为纯执行者不输出 GATE。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①按 4 维自评表逐一打分并求和；②查决策边界表定 Variant 与 max_tokens/reasoning_effort；③输出 GATE 行后继续任务；④Plan 收敛时把 GATE 自评+COMPLEXITY+决策列表封装进 Reflection Layer A；⑤Build 若检测到 [COMPLEXITY] 标记则继承推理深度不重评。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 /home/zako-mio/.config/opencode/instructions/auto-mode.md『MANDATORY GATE CHECK』；承接 Variant 控制(mech-variant)与 Reflection Layer A；写入 pending.json；与 Agent 委派协议的&#x27;No Self-Assessment&#x27;(子 Agent 不重复 GATE)协作。</p></div>
   </div>
 
 

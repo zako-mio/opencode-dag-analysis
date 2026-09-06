@@ -46,7 +46,7 @@
   <div class="sub">mech-coding-safety · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>优先 edit(UTF-8安全)；禁用 python -c 内联管道；独立.py 文件；修改中文JSON后验证。</p>
+  <p>优先 edit(UTF-8安全)；禁用 python -c 内联管道；独立.py 文件；修改中文JSON后验证</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0803 编码安全纵深防御项目，0817 已具。动机：bash 内联 python -c 会截断中文 UTF-8。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>确立 edit 工具为第一优先级，禁止降级为 bash 写文件或内联管道。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为防中文 UTF-8 多字节序列被 PowerShell 转义链截断(python -c 经转义会截断中文)，建立文件修改的编码安全优先级。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前规则：优先 edit 工具(全程 UTF-8 安全)；edit 不可用→切 Build 模式修改，绝不降级为 bash 写文件；严禁 bash+Python 内联管道(python -c)；必须脚本写文件时写独立 .py 再执行；改含中文 JSON 后必须 json.load 验证；另有 replaceAll 误伤逐 Agent 复核+旧值零残留检查。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>任何修改/写入文件（尤其含中文 JSON）的操作。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>优先 edit；edit 不可用先切 Build 模式；禁 python -c 管道改用独立 .py；改含中文 JSON 后 json.load 验证。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-build、agent-plan；read/edit 工具；instr-auto-mode。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任何修改文件/写文件/脚本写文件的场景持续生效。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①优先 edit(UTF-8 安全)；②edit 不可用→切 Build 模式再改，不用 bash 写；③严禁 python -c + bash 内联管道；④必须脚本写→写独立 .py 再 python 执行；⑤改含中文 JSON 后 json.load 验证；⑥全局替换(replaceAll)后做旧值零残留检查；⑦Python 输出中文优先 sys.stdout.reconfigure(encoding=&#x27;utf-8&#x27;)。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Universal Coding Discipline』与 opencode.jsonc agent.plan/build.prompt 内『编码安全规则』；MEMORY.md cycle_legacy_coding 记忆；与 Mission 留档路径/Reflection 写入协作。</p></div>
   </div>
 
 

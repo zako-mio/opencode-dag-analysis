@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-plugin.html'>plugin</a></td><td>mcp-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>drawio MCP</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>jgraph/drawio-mcp v1.5.0 本地精简版（node D:\Opencode\drawio-mcp-minimal\package\src\index.js）；0802 盘点：启用 3 个之一（~8 工具）；0803 Drawio工具链优化：新增 drawio_export 工具（第 8 个）——因 draw.io CLI --scale 4 渲染 bug（只渲染顶部 25%），3 次迭代找到 Puppeteer lightbox 模式（?lightbox=1 + deviceScaleFactor + waitForFunction）→ 10280×5760 PNG 成功；同时把 tool description 中的参考文档抽离为 drawio-reference skill（998 行）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=true；description&#x27;【启用】draw.io 图表创建（本地精简版 v1.5.0）。仅 drawio-worker 子Agent 使用&#x27;；全局 permission drawio_* deny + drawio-worker L3 allow 构成三层纵深；是图表能力的事实标准（导出验证链经 drawio-reference 第五章）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) node 启动本地 index.js（8 工具：create/export 等）；2) drawio_export 走 Puppeteer lightbox 模式 + deviceScaleFactor=scale + waitForFunction 确认渲染（规避 CLI bug）；3) Chromium 用系统 Chrome（下载失败兜底）；4) 导出后 VLM 校验三栏完整/中文可读/无截断（高峰期 429 降级为 PNG 结构校验）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>图表创建与 4x PNG 导出——仅经 drawio-worker 子Agent 使用（流程图/架构图/UML/思维导图）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-drawio-worker（唯一使用方）、drawio-reference skill（XML/Mermaid 参考+导出验证）、mcp-drawio-local（同实例离线兜底）、VLM（内容校验）。</p></div>
-  </div>
-
 
   
 

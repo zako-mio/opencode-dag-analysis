@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>由 cycle-20260816-plugin-dag 反思提炼（pending.json.bak-20260817-final 证据：sk-20260817-multi-window-dag，category=coding，创建时间 2026-08-17，verdict&quot;多层窗口接力 DAG 方法论…提炼 1 个 Skill(multi-window-dag-delivery) + 3 条 Memory&quot;）。源任务 0816-plugin-dag：DeepSeek Harness 插件级 DAG 依赖链分析，76 核心插件+36 seam+194 边+8 拓扑层+24 组，与 L2/L3 窗口共同构成 219/219 包闭环。方法论核心：大型 DAG 分析拆窗口接力（核心集→web-app→其余），每窗口独立执行+落盘 PLAN-layerN.md 接力文件，下一窗口继承数据源+接力文件，PACKAGE-MAP 覆盖度终核，三硬依据（E1 编译/E2 运行时/E3 组合）+ 源码行引用。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>大型源码/插件库（数百包）DAG 依赖链分析的标准方法论：单窗口无法完成时拆窗口接力，每窗口可独立执行、交付物同目录累计、门控逐层升级；是多窗口 DAG 交付（HTML/MD/drawio/交互图多形态）的分析层标准。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付；大型源码库 DAG 分析需要拆窗口接力时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 窗口划分（核心集 base bundle → web-app → 其余），每窗口执行边界明确（完整执行+制定下一层计划）<br>· 每窗口内部：N 路并行 explore 采集（三硬依据+文件:行号）→ build-dag.py 层次遍历（BFS）拓扑分层+无环校验 → DATA 注入交互总览 → gen-html/gen-md/drawio 批量 → quality-gate 门控<br>· 窗口末尾落盘 PLAN-layerN.md 接力文件（数据接口+坑经验）→ 下一窗口继承 → PACKAGE-MAP 覆盖度终核（缺包=0 多包=0）+ 交付物逐项核对</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>委派 N 路 explore 子Agent 并行采集；下游接 cytoscape-dag-visualization（渲染其 DAG JSON）；与 dag-tutorial-authoring（内容层）、large-scale-source-parse（通用基础）互补；drawio-worker 绘制静态图</p></div>
-  </div>
-
 
   
 

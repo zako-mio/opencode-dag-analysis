@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>draw.io 导出</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-01 system-prompt-optimization 任务引入：drawio MCP（@drawio/mcp v1.5.0）的 open_drawio_xml / open_drawio_mermaid 工具描述内嵌完整 XML 参考（约 33,000 chars）和 Mermaid 参考（约 12,000 chars），导致每个子Agent 固定 System Prompt 达 18K-20K tokens，其中 MCP 工具定义占 50-60%（12K-14K tokens）。方案为 Fork drawio MCP 到 D:\Opencode\drawio-mcp-minimal，将工具描述替换为 5 行摘要 + skill(&#x27;drawio-reference&#x27;) 引用，参考文档独立为懒加载 skill（47,794 bytes）。2026-08-03 Drawio工具链优化：新增第五章导出与验证（强制导出规范 + VLM 校验规则），并定为 drawio-worker 子Agent 强制加载项。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>主Agent 委派 drawio-worker 生成复杂图表（嵌套容器/泳道/自定义样式/15+ 节点）时仍必须精确写入本 skill（刚性约束），防止子Agent 用不可靠 CLI 导出产生截断 PNG。0816-plugin-dag / 0817-opencode-dag / 0817-github-dag 等 DAG 项目均靠 drawio-worker + drawio-reference 批量产出架构图（0817 三次任务合计 135+ 张 drawio）。简单流程图不加载，避免 token 浪费。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>drawio-worker 子Agent 被委派生成复杂图表时强制加载（skill(&#x27;drawio-reference&#x27;)）；或生成含嵌套容器、跨功能泳道、自定义样式、多节点(15+)的复杂图表时由主Agent 路由触发。简单流程图/线框图/ER 图不触发（SKILL.md &#x27;何时加载&#x27; 节）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 简单图表直接调 drawio_open_drawio_xml / drawio_open_drawio_mermaid（不加载）；2) 需要领域图标先 drawio_search_shapes 取 style 字符串；3) 复杂图表先加载本 skill 按参考生成 XML（刚性网格布局，不做坐标数学，ELK 自动路由）；4) 生成后强制 drawio_export 导出 PNG（scale=2~4）+ VLM 校验无截断。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 drawio-worker 子Agent（强制加载项）、drawio MCP（本地精简版 D:\Opencode\drawio-mcp-minimal）协作；由 plan/build 主Agent 按 MCP 路由规则委派。VLM（GLM-4V describe_image）负责导出图片校验。</p></div>
-  </div>
-
 
   
 

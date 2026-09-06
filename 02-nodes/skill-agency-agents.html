@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='mech-agents-protocol.html'>agents-protocol</a></td><td>mechanism</td><td><small>角色匹配</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 盘点标注开源+改造，上游 agency-agents 仓库（msitarzewski/agency-agents，260+ Agent 角色文件、16 部门），本地改造为 search-agents.ps1 集成 + SKILL.md 改写为 opencode 路由模式。引入动机：DeepSeek 纯文本模型缺乏专业领域角色 prompt，复杂/专业任务（工程/设计/安全/测试/GIS/游戏等）需要专家角色系统提示词提升输出质量。0808-MCP四件套源码深挖任务实证使用：加载 agency-agents 后用 agent-index.json 检索，命中 Codebase Onboarding Engineer 角色。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>专业任务委派前的角色路由入口：判断任务是否需要专家角色、搜索匹配、加载角色 prompt 作为 System Prompt。高频使用（0815 决策清单 item13 agent-role-library 标注高频使用（专业任务委派专家角色），流程顺）。与 plan/build 主Agent 的 Agent 调度协议（search-agents.ps1 搜索角色）互补。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：工程师、前端、后端、架构、测试、安全、设计、UX、营销、SEO、数据、数据库、DevOps、CI/CD、移动端、游戏、GIS、地图、财务、法务、HR、客服、产品经理、项目管理、写代码、重构、优化性能、部署、安全审计、渗透测试、agent、agency、切换到XX模式；复杂/专业任务时激活，简单查询不触发。命令：/agency-search &lt;query&gt;、/agency-rebuild。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 触发判断（软件开发/系统设计/专业领域/专业方法论/用户请求切角色则加载）；2) powershell search-agents.ps1 -Query &#x27;&lt;任务描述&gt;&#x27; -Top 5 搜索匹配；3) 解析 JSON 以表格呈现 1-5 供用户选择；4) 用户选择后读取 agency-agents/&lt;RelativePath&gt; 角色文件，作为 System Prompt 指导执行。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 plan/build 主Agent（Agent 调度协议中的 search-agents.ps1 角色搜索）、delegation-subagent（dsh 侧 agent-role-library 对应物，角色 prompt 注入 subagent persona）、search-agents.ps1 + agent-index.json 协作。</p></div>
-  </div>
-
 
   
 

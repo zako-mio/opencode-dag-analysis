@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入（0804-Superpower安装/安装报告.md）：用户需求为本地 OpenCode 安装 Superpower skill，用于提高编程和源码解析的流程规范性。来源 obra/superpowers 仓库（shallow clone 解析后安装 3 Bundles 之一）。选择理由：不依赖 OpenSpec CLI 的轻量级规范编程工作流（需求澄清到方案设计到 TDD 实现到验证）。安装时明确不安装冗余组件：openspec-superpowers/openspec-feature 与已有 skill 重叠，.superpowers-memory/ 模板与 MEMORY.md + headroom 重叠。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>显式 opt-in 的规范开发流程：当用户要求纪律化功能交付（且不想要 OpenSpec 工件生成）时提供 10 步工作流 + 4 条 Guardrails。0815 桥接时记忆载体从 .superpowers-memory/ 改为 dsh 原生 .agents/notes（避免第二套记忆体系）。适合中小型功能开发的质量门控。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>显式 opt-in：仅当用户明确要求、点名 $superpowers-feature-workflow 或仓库策略强制时使用；不默认启用（SKILL.md）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 探索项目上下文（.superpowers-memory/ 存在则读 PROJECT_CONTEXT/CURRENT_STATE/journal）；2) 一次一问澄清需求；3) 给 2-3 方案并推荐一个；4) 设计写入 docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md；5) 用户确认设计；6) 实施计划写 docs/superpowers/plans/；7) 非平凡任务用 repo-local worktree；8) TDD 实现（红灯到最小代码到绿灯）；9) 新鲜验证后才声称完成；10) 更新记忆文件。Guardrails：设计批准前不写生产代码、新行为不跳失败测试、无新鲜命令输出不声称完成。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 superpowers-learning-workflow（记忆沉淀）、superpowers-openspec-superpowers-workflow（编排依赖：组合工作流 standalone:false 依赖本 skill）、.superpowers-memory/（opencode 侧）/ .agents/notes（dsh 侧）协作。</p></div>
-  </div>
-
 
   
 

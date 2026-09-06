@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。编辑/协调已有 OpenSpec 工件并保持一致性，处理手动修改后的重新同步，不创建缺失工件。引入动机：OpenSpec 工件是文件系统状态（状态=文件系统内容，0803 解析），用户可能手动改工件导致漂移，需要协调工具保持 proposal/specs/design/tasks 间一致。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>工件被手动修改或需求变更需要跨工件协调时；本地改造中 SKILL.md/规格文档被人工编辑后的一致性校验，与&quot;修改安全链&quot;理念一致。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>编辑/协调已有 OpenSpec 工件时（description 触发词&quot;编辑&quot;&quot;协调&quot;&quot;重新同步&quot;）；或显式 /openspec-update-change。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择变更（按最近修改推荐）<br>· 一致性审查（矛盾/缺口/重复）或按请求定向修改<br>· 跨工件双向协调（任意方向），逐工件确认后写入；不创建缺失工件（缺失时指向 continue-change）</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 continue-change 区分（update 不新建工件）；上游衔接手动编辑场景；被 apply/archive 作为一致性保障</p></div>
-  </div>
-
 
   
 

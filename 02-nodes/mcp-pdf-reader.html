@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-schema.html'>schema</a></td><td>mcp-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-sylphx-pdf.html'>ext-sylphx-pdf</a></td><td>external</td><td><small>PDF MCP 服务</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>早期引入：npx @sylphx/pdf-reader-mcp@latest（社区 MCP）；0801 P1-2 固化 MCP 工具集时保留启用（~4 工具）；0802 盘点：启用 3 个 MCP 之一（~10 工具，后实际 4 工具）；0803 编码安全修复时删除 glm-vision 等 MCP，pdf-reader 作为核心保留；pdf-ocr skill 从 @sylphx/pdf-reader-mcp 分离（轻量路由包装 87 行，仅无文本层时触发 OCR）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>enabled=true；description&#x27;【启用】PDF 文本提取。仅 pdf-worker 子Agent 使用（4 工具）&#x27;；全局 permission pdf-reader_* deny + pdf-worker L3 allow 构成三层纵深（只有 pdf-worker 能调）；MCP 路由规则保证 PDF 任务固定委派 pdf-worker。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>npx -y @sylphx/pdf-reader-mcp@latest 本地 MCP；4 工具（read_pdf 文本提取等）；与 pdf-ocr skill 协作：先 read_pdf 检查文本层，无文本层时才触发 OCR 路由。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>PDF 文本提取、OCR、文档分析——仅经 pdf-worker 子Agent 间接使用（主Agent/其他子Agent 被全局 deny）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-pdf-worker（唯一使用方）、pdf-ocr skill（OCR 兜底）、plan/build（路由决策）。</p></div>
-  </div>
-
 
   
 

@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 Superpower 安装引入：随 OpenSpec 14 Skills 一同从 Fission-AI/OpenSpec 仓库复制（0803-OpenSpec_Superpower解析/source/openspec/skills/release-openspec/ 为源）。上游定位：OpenSpec 自身发布管理 skill，仅 OpenSpec 维护者使用。安装时即作为 16 个新增 SKILL.md 之一，description 为 YAML 多行格式（安装时需精确匹配 &gt;- 段落字符串）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>本机作为 OpenSpec 维护者的发布操作入口（Fission-AI/OpenSpec 仓库维护场景）；0815 桥接后降权（disable-model-invocation，item28 决策），仅维护者在 openspec-plan preset 内显式召唤。以可恢复状态机运行发布工作流（每次检查 GitHub 实时状态，只做下一步安全动作），不假设前次调用完成。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>仅 OpenSpec 维护者使用（SKILL.md description）；用户请求 release / prepare a release / continue / resume 时触发；请求 status/readiness/advice 时默认只读审计。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) 发布审计：gh repo view 验证仓库、要求 gh/git/pnpm 认证、git fetch origin main；2) 找最新稳定 release（gh release list --exclude-drafts --exclude-pre-releases）；3) 区分两类 PR（Changeset PR 人工添加 .changeset/*.md；Version Packages PR 自动化 changeset-release/main）；4) 脏 checkout 时用临时 worktree 做发布提交；5) 永不批准自己的 PR（人工审查是刻意门）；6) merge-queue 进队不等于合并，等 GitHub 报 mergedAt 且 main 上有该 commit；7) 暂停时报告 URL/状态/所需人工动作。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 gh/git/pnpm CLI、GitHub（Fission-AI/OpenSpec）、Changesets action（Version Packages PR）、openspec 系列 skill（openspec-plan preset 内降权成员）协作。</p></div>
-  </div>
-
 
   
 

@@ -55,22 +55,9 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-vision-worker.html'>vision-worker</a></td><td>hook-mount</td><td><small>vision-worker 路由规则</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>auto-mode.md 作为 agent 指令</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-cache.html'>cache</a></td><td>mechanism</td><td><small>共享前缀</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-cache.html'>cache</a></td><td>mechanism</td><td><small>共享前缀</small></td></tr><tr><td><a href='mech-session-memory.html'>session-memory</a></td><td>mechanism</td><td><small>压缩模板源</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 输入缓存优化核心产物：扩充 auto-mode.md（620→2000+ chars，共享前缀 3x 增长）；实测确认 auto-mode.md 是 DeepSeek prefix-cache 共享前缀（两不同 role 子Agent 请求命中率 53.3%）→ 确立&#x27;静态协议前缀，字节稳定性承诺&#x27;；0803 改进落地：Return Format 升级 8 字段（去 next_step）+ 通信规范 6 条 + Session Memory 结构化压缩模板（Claude Code 对比 P0 差距，5 阶压缩→3 层阶梯 L1 剪枝/L2 结构化/L3 兜底）；0803 Drawio 缓存修正：per-agent 行为约束禁止经 agent.prompt 注入（位置 0 破坏前缀）→ 统一写入对应 skill 经 Skills to Load 传递；0813 skill 更新：移除 6 处 headroom MCP 引用（改为通用截断做法，因 headroom 已禁用）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>所有 Agent（主+子）的共享前缀协议（cache-stable，不可修改前缀字节否则缓存全毁）；GATE 强制门控（4 维度自评 1-5 分 → 总分 Daily≤12/Deep≥13 → variant 决策边界）；Universal SubAgent Rules（身份约束/工具使用/错误处理/结构化 JSON 通信）；Cache Awareness（静态前缀+动态末尾，缓存命中降本 98-99%）；Parallel &amp; Batching（并行发出/合并批次/MCP 发现缓存）；Output Discipline（分段读取/压缩大输出/只读优先）；Fault Tolerance（3 级自愈）；Session Memory 压缩模板（5 段）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>经 config.instructions 数组第 1 位加载（~/.config/opencode/instructions/auto-mode.md，动态 MEMORY.md 放其后保护缓存断点）；作为 system prompt 前缀注入所有 Agent；指令按主题分段（GATE 门控→决策边界→变体运行时控制→子Agent 规则→编码准则→缓存感知→并行批处理→输出纪律→故障自愈→压缩模板）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>每个会话每次 LLM 请求都加载（共享前缀锚点）；Plan 阶段 GATE 门控触发；子Agent 委派协议；Compaction 触发时输出结构化记忆。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>config-main（instructions 引用）、instr-memory（动态内容置后）、agent-plan/build prompt（互补：prompt 内嵌委派细节，auto-mode 管通用协议）、skill 体系（per-agent 约束经 skill 传递）。</p></div>
-  </div>
-
 
   
 

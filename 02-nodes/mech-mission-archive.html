@@ -46,7 +46,7 @@
   <div class="sub">mech-mission-archive · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>任务完成 5 段报告模板 + 询问用户留档 + 路径门控正则校验。</p>
+  <p>任务完成 5 段报告模板 + 询问用户留档 + 路径门控正则校验</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0802 Mission留档系统创立，0817 已具。0819 增强为双版本留档。动机：把每次任务产出与复盘报告按规范路径持久化。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>半自动触发（question 询问是否留档），报告强制 5 段，三重门控确保留档规范。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为让每次任务产出可复盘可追溯，约定任务完成报告必须含 5 段(当时情况/制定计划/执行情况/完成情况/反思分析建议)，并保存到标准化留档目录。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前双版本留档(AI 友好 report.md + 可读 report.html)，HTML 走质量门控(UTF-8 无替换字符/div 开闭平衡/5 段完整)；三重门控(完整性/询问 question/路径正则)；依赖渲染正确性的交付物(动态 DAG/tap id/组框布局)须用 headless Chromium 实际渲染验证。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>任务完成后（含留档询问确认）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>question 询问「是否留档」→验证路径正则→保存 5 段报告→用户确认。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；question 工具；config-main；MEMORY legacy_archive §。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任务完成后触发，必须用 question 工具询问用户「是否留档？」(半自动)。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①任务完成后用 question 询问是否留档；②用户确认→按 5 段模板撰写报告；③门控：完整性(5 段齐全)/询问(不得跳过)/路径(校验正则)；④双版本留存：report.md + report.html，HTML 跑质量门控脚本；⑤非项目本地文件存 ~/opencode/archive/Mission-file/{YYYY-MM}/{MMDD-任务名}/，项目文件存工作目录；⑥留档结束后 Build 末尾封装 4 层数据写 pending.json。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>参考 opencode.jsonc agent.plan/build.prompt 内『Mission留档规则』与 instructions/agent-protocol.md；存档目录 /home/zako-mio/opencode/archive/Mission-file/；与 Reflection 的 Layer D(留档产出)协作。</p></div>
   </div>
 
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>login-auth-channel · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>login-auth-channel <span class="tag">装配层</span></h1>
+  <div class="sub">skill-login-auth-channel · skill · A6j-联网搜索 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>登录态渠道交互式登录 SOP。命中需登录平台（知乎/闲鱼/淘宝/京东/小红书/拼多多/微博）且需登录态拿完整数据时，指导主Agent执行人机交互式登录（可见窗口暂停扫码）+多后端容错降级（agent-browser→Cookie-Editor→MCP/CLI），与子Agent按need_login契约协作。触发：登录态、需要登录才能看、扫码、交互式登录、选品</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-chrome.html'>ext-chrome</a></td><td>external</td><td><small>登录态渠道浏览器自动化</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0906 登录态渠道扩张方案 + 实装内化收尾。0905 架构曾将「社交平台 Cookie 依赖」列为过度工程规避（FactReach 23 渠道只取机制），但用户明确决策：登录态在选品/评价场景是刚需（知乎全文评价/淘宝销量/京东评价/小红书笔记/拼多多详情），须构建而非规避。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需在登录态下才能拿到完整数据（知乎/闲鱼/淘宝/京东/小红书/拼多多等 8 渠道），平台风控各异（小红书 x-s/x-t、拼多多 anti_content 强签名），需一套「真能登录并抓取」且能抗风控、有序降级的机制。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>命中 search-methodology 决策树 Path3（电商/选品/评价/口碑意图）且主Agent 判定需要登录态后加载。适用于「登录态/需要登录才能看/扫码/交互式登录/选品评价口碑」场景。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①主Agent 命中 Path3 → 先查免登录 API（如 B站 bili-cli/搜索 API，零成本零账号风险，优先采用）→ 有则用免登录；②需登录态 → 三合一检测登录态（URL 跳转 + 页面元素 + 接口探针）；③已登录 → 委派子Agent 已登录态纯抓取，若报风控(403/频控/IP at risk)按多后端降级链降级（不重试同一后端）；④未登录 → 主Agent 开可见窗口 --headed 暂停请用户扫码 → 用户完成 → --restore 持久化登录态（AES-256-GCM 加密落盘）→ 重委派子Agent 纯抓取；⑤降级链走完仍失败 → 返回 {blocked:true, reason} 明确标注不编造。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>路由判定由 search-methodology 决策树 Path3 承担；平台数据/合规矩阵以 source_credibility_map.md 六「需登录域」区块为单一权威源；agent-browser 通用命令（--restore/--headed/auth vault）由 browser-harness skill 承担；登录触发由主Agent、抓取由 search-worker 子Agent，按 need_login 契约（{need_login, platform, reason}）协作；依赖 opencode.env（AGENT_BROWSER_ENCRYPTION_KEY）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

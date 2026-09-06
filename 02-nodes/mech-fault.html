@@ -46,7 +46,7 @@
   <div class="sub">mech-fault · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>工具失败重试3次→换方案→记录；MCP 断开降级内置工具；JSON 解析失败正则提取。</p>
+  <p>工具失败重试3次→换方案→记录；MCP 断开降级内置工具；JSON 解析失败正则提取</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 auto-mode 已含。动机：子Agent 与工具调用易失败，需设定明确重试上限。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>为所有 Agent 提供可预测的失败处理阶梯：工具失败 3 次内自尝试至上报。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为应对工具调用失败/MCP 连接断开/JSON 解析失败等运行时故障，建立分级自愈策略，避免无限重试浪费 API 调用与上下文。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前三级自修复与降级：工具调用第1次失败检查参数重试、第2次换替代方案、第3次记录 errors[] 上报；MCP 连接断开等待 3 秒重连、仍失败跳过用内置工具降级；JSON 解析失败用正则提取最外层 {...}；超时先延长后拆分。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>工具调用失败、MCP 断连、子Agent 返回非 JSON、bash/网络超时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>工具：重试→换替代方案→记录 errors[] 上报；MCP：等 3 秒重连→降级内置工具；JSON：提取最外层 {...}→失败入 errors；超时：延长 timeout→拆分命令。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；各子Agent；instr-auto-mode。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>工具调用返回错误、MCP 连接断开、子 Agent 返回非 JSON、bash/网络超时四类故障时触发。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①工具失败：格式化重试→换工具/路径/参数→记录 errors[] 上报；②MCP 断开：等 3 秒重连→仍失败跳过降级为内置工具；③JSON 解析：提取最外层 {...}→失败规 errors[]；④超时：先 timeout 延长→失败拆分命令/缓存结果；⑤子 Agent 多次失败后清晰记入 errors 上报，不陷入重试循环。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Fault Tolerance』；与 SubAgent Rules(&#x27;自修复失败 3 次记 errors 上报&#x27;)和 Agent Protocol 的失败模式自查协作；影响返回 JSON 结构(status/errors 字段)。</p></div>
   </div>
 
 

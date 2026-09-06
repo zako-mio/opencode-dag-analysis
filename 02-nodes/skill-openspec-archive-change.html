@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-04 随 Superpower 安装引入（OpenSpec 上游，author openspec）。实现完成并验证通过后归档：将 delta spec 合并到主 spec 并移动到 archive。引入动机：OpenSpec 的 Delta Spec 机制——变更中的 spec 是增量（ADDED/MODIFIED/REMOVED/RENAMED），归档时才合并到主 spec，保证并发变更与审视回滚能力（0803 解析报告）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>每个 OpenSpec 变更生命周期的收尾；归档时智能合并 delta 到主 spec（agent 驱动读 delta 编辑主 spec）；本地长期维护的规格知识库依赖此增量合并。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>变更实现完成并验证通过后（description 触发词&quot;归档&quot;&quot;合并 delta&quot;）；或显式 /openspec-archive-change。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>· 选择变更，加载归档指令上下文（instructions archive）<br>· 检查工件与任务完成度（未完成警告/冲突处理）<br>· delta spec 合并到主 spec（调用 sync-specs 逻辑）并移动变更到 archive</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>上游衔接 verify-change；内部调用 sync-specs；被 superpowers 编排器作为归档收尾步骤</p></div>
-  </div>
-
 
   
 

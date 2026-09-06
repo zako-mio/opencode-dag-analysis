@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 S4b-v2: 生成节点详情页（五段：作用/依赖/被依赖/改造原因/内部结构）
-数据源: 01-dag-data/modified-dag.json + 08-collect/internal-v1.18.25.json
+数据源: 01-dag-data/modified-dag.json + 08-collect/internal-v1.18.29.json
 输出: 02-nodes/{id}.html + 02-nodes/index.html
 改造点: 数据源路径 v2；内部结构 DAG 换 new internal；索引副标题改为 36/69/9
 """
@@ -22,7 +22,7 @@ with open(os.path.join(DATA, "diff-dag.json"), encoding="utf-8") as f:
     diff = json.load(f)
 with open(os.path.join(DATA, "official-dag.json"), encoding="utf-8") as f:
     official = json.load(f)
-with open(os.path.join(COLLECT, "internal-v1.18.25.json"), encoding="utf-8") as f:
+with open(os.path.join(COLLECT, "internal-v1.18.29.json"), encoding="utf-8") as f:
     internals = json.load(f)
 with open(os.path.join(DATA, "diff-list.json"), encoding="utf-8") as f:
     diff_list = json.load(f)

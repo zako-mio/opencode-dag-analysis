@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='skill-pdf-ocr.html'>pdf-ocr</a></td><td>skill-mandate</td><td><small>pdf-ocr OCR 支持</small></td></tr><tr><td><a href='mech-subagent-rules.html'>subagent-rules</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0801 P0 新增：pdf-worker 配置 Flash 模型（L27），子Agent 路由到 Flash；0802 盘点：4 个自定义 subagent 之一，permission 仅放行 pdf-reader_* 工具；MCP 路由规则确立：PDF 读取/OCR/文档分析 → 委派 pdf-worker（必要时加载 pdf-ocr skill）；0813 skill 更新：修正 replaceAll 误加的&#x27;0806 临时降级&#x27;注释（子Agent 固定 Flash）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>固定 Flash（PDF 提取无需 Pro 推理）；mode=subagent + hidden=true；L3 最小权限注入（仅 pdf-reader_* allow），与全局 deny 构成三层纵深防御；描述明确&#x27;Use for any task involving PDF files&#x27;。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) 经 pdf-reader MCP 的 4 工具（read_pdf 等）提取文本；2) 无文本层时触发 pdf-ocr skill 路由（OCR）；3) 返回结构化 JSON（status/summary/data/files_created 等 8 字段）；4) MCP 路由规则保证 PDF 任务始终走此 worker（避免重新加载 pdf-ocr skill，省 token）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>任何含 PDF 的任务：简历解析、财报读取、论文提取、OCR 扫描件。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>mcp-pdf-reader（唯一工具源）、pdf-ocr skill（OCR 兜底）、plan/build（MCP 路由规则委派）。</p></div>
-  </div>
-
 
   
 

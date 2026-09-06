@@ -46,13 +46,13 @@
   <div class="sub">mech-subagent-rules · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>子Agent 身份约束/工具使用/错误处理/通信规范(JSON)+结构化返回。</p>
+  <p>子Agent 身份约束/工具使用/错误处理/通信规范(JSON)+结构化返回</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-pdf-worker.html'>pdf-worker</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr><tr><td><a href='agent-search-worker.html'>search-worker</a></td><td>mechanism</td><td><small>子Agent规范</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <p class="empty">无下游依赖</p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 auto-mode 已含。动机：统一所有 task() 子Agent 的身份约束与返回契约。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>子Agent 纯执行不委派/不调用 search；禁止改 MEMORY.md；以固定结构化 JSON 返回。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为统一所有 task() 创建的子 Agent 行为，消除身份冲突(子 Agent 不再收调度者角色指令)，并规范输出为可聚合的结构化 JSON。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前约束：子 Agent 仅执行分配任务不委派/不调度/不调用其他 Agent，不使用 search-agents 等搜索机制，严禁直接改 MEMORY.md 或 pending.json 之外记忆文件(记忆条目写 memory_pending/ 待审)；所有输出必须返回结构化 JSON；工具使用优先已加载专用工具、结果超长截断、读优先于写；错误处理自修复 3 次后记 errors 上报；通信用 JSON，summary≤200 字。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>主Agent 通过 task() 创建任何子Agent 时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>身份约束→结构化 JSON 返回→读优先于写→3 次自修复上限后记录 errors[] 上报。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-* 子Agent；agent-plan、agent-build；instr-auto-mode；skill-agency-agents。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>任何通过 task() 创建的子 Agent(plan/build/pdf-worker/drawio-worker/vision-worker/general/explore/reflection-worker/search-worker)被委派时作为共享前缀规则生效。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①身份约束：执行者身份不委派不搜 Agent，记忆产出入 memory_pending/；②工具：优先专用工具/结果超长截断/读优先于写；③错误：自修复失败 3 次记 errors 上报不无限重试；④通信：输出结构化 JSON，summary≤200 字，files_created/modified 绝对路径，data 仅核心结果，decisions/warnings/errors 分级。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/auto-mode.md『Universal SubAgent Rules』；子 Agent 定义于 opencode.jsonc agent；与故障自愈(mech-fault)、输出控制(mech-output)、编码纪律(mech-coding-discipline)、MEMORY 硬门禁(mech-memory-gate)共同作用于子 Agent。</p></div>
   </div>
 
 

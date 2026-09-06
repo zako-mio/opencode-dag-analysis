@@ -58,19 +58,6 @@
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>command-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-reflection-check.html'>reflection-check</a></td><td>mechanism</td><td><small>驱动</small></td></tr><tr><td><a href='mech-memory-gate.html'>memory-gate</a></td><td>mechanism</td><td><small>审阅</small></td></tr></table>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0805 Reflection 系统设计时定为&#x27;确认命令&#x27;（35 项决策 #20-21：/reflection 统一命令 + 交互式对话逐条确认），但当时仅是提示词级约定（&#x27;仿真命令&#x27;——agent-protocol.md/opencode.jsonc prompt/MEMORY.md 中有章节，opencode 本身未注册斜杠命令，全局 command/ 目录不存在）；0807 用户指出&#x27;opencode 并没有 /reflection 指令，这不符合我的预设&#x27;→ 经 Grill-Me 收敛 5 项决策创建原生命令 ~/.config/opencode/command/reflection.md（2700 字节）：命令体自包含（完整审阅步骤不依赖提示词）、agent 固定 build（写权限齐全）、统一触发（$ARGUMENTS 区分子动作 memory|skill|status|browse）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>命令体自包含（不依赖其他文档）；frontmatter description + agent: build；三处预设文档同步&#x27;已注册为原生命令&#x27;（agent-protocol.md / opencode.jsonc plan+build prompt / MEMORY.md）；opencode.jsonc 无 command 键（Markdown 命令不支持 variant 字段，command.variant 仅 JSON 命令支持——0813 确认 B4 不改）。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>1) 读 pending.json 确认合法；2) 按 $ARGUMENTS 子动作过滤（all/memory/skill/status/browse，未知参数提示）；3) 逐条用 question 工具 yes/no/edit 确认（一次一条不批量跳过）；4) yes：Memory 写 MEMORY.md（§-分段追加）/ Skill 写 Reflection/skills/{category}/{name}/SKILL.md（含 frontmatter）；edit：用户修改后按修改内容写入；5) 清理队列更新 meta 计数（waiting/processing/done），原子写回（先备份 pending.json.bak-YYYYMMDD）；6) 容量门控：MEMORY.md 超 3500 字符提示手动整理。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>用户输入 /reflection 或 /reflection memory|skill|status|browse；存在 status=done 的 cycle 待审阅（reflection-worker 产出后）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-build（命令宿主）、reflection-worker（产出 memory_entries/skill_proposals）、agent-reflection skill（架构）、MEMORY.md（写入目标）、pending.json（队列状态机）。</p></div>
-  </div>
-
 
   
 

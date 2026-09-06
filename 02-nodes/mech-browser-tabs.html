@@ -46,7 +46,7 @@
   <div class="sub">mech-browser-tabs · mechanism · AQ-自进化机制 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>new_tab 后关闭标签页；任务完成询问是否关闭；批量爬取不逐页关闭。</p>
+  <p>new_tab 后关闭标签页；任务完成询问是否关闭；批量爬取不逐页关闭</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -60,15 +60,15 @@
   
   <h2>⑤ 为什么存在（why）</h2>
   <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>0817 s2 完全缺失。属 0817 后新增，随 WSL2 浏览器自动化落地。动机：browser-harness 多次爬取会堆积大量标签页。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>控制 browser-harness 会话的标签页生命周期：单次 new_tab 后即关；任务全完必须询问是否关页；批量中途不逐页关。</p></div>
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>为管理 browser-harness(browser-use)进行网页交互时 Chrome 标签页的生命周期，避免标签页堆积占用资源。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前原则：用完即关(new_tab 打开并提取后关闭标签页)；批量关闭提示(整个任务浏览器读取全部完成后必须用 question 询问关闭所有标签页保留第一个)；批量爬取中途不逐页关闭(影响速度)；WSL2 浏览器自动化统一 agent-browser，browser-harness 降为 Windows 备选。</p></div>
   </div>
 
   <h2>⑥ 怎么用（how）</h2>
   <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>使用 browser-harness 进行爬取/自动化任务时。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>每次 new_tab() 完成后用 close-chrome-tabs.ps1 -KeepFirst 关闭；全部完成后 question 询问；批量中途不逐页关闭。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>agent-plan、agent-build；skill-browser-harness；powershell close-chrome-tabs.ps1。</p></div>
+    <div class="how-item"><span class="how-label">触发方式</span><p>使用 browser-harness/browser-use 进行网页交互(new_tab 打开页面、批量爬取、访问多个详情页)时触发。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①每次 new_tab() 完成数据提取后关闭该标签页(跑 close-chrome-tabs.ps1 -KeepFirst)；②所有浏览器读取全部完成后用 question 询问用户「是否关闭所有标签页？」；③批量爬取中途不逐页关，等整个任务阶段完成后统一关闭；④标签页参数(-All/-KeepFirst/-KeepUrlPattern/无参列出)。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>指令源 instructions/browser-management.md 与 opencode.jsonc agent.plan/build.prompt 内『浏览器标签页管理』；依赖脚本 close-chrome-tabs.ps1；WSL2 用 agent-browser、Windows 备选 browser-harness(skill/browser-harness)；与代理纪律(mech-proxy)、浏览器自动化 skill 协作。</p></div>
   </div>
 
 

@@ -58,19 +58,6 @@
   <p class="empty">无下游依赖</p>
 
   
-  <h2>⑤ 为什么存在（why）</h2>
-  <div class="why-block">
-    <div class="why-item"><span class="why-label">历史引入动机</span><p>2026-08-05 frontend-skill-fusion 任务引入：用户想安装 GitHub 上的前端设计 Skill，5 子Agent 并行分析 5 个候选（modern-frontend-skill / taste-skill / Anthropic frontend-design / impeccable / UI-UX-Pro-Max）对 DeepSeek 纯文本模型的适配度，最终选定 Anthropic frontend-design + UI-UX-Pro-Max 融合。融合目标是解决 DeepSeek 无视觉能力导致前端设计缺乏数据支撑的问题，设计为双引擎：数据引擎（192 色板/74 字体/84 风格数据库 search.py）给 Top K 候选 + 设计主管创意裁决。用户 4 条冲突裁定：不禁用色板/硬性禁 Inter 字体/动效 cap Subtle/数据给候选主管裁决。2026-08-15 桥接时吸收 ux-ui-agent-skills 精华（WCAG 无障碍/design-tokens/反 slop 规则）。</p></div>
-    <div class="why-item"><span class="why-label">当前需求驱动</span><p>所有前端/网页/UI 设计任务的持续入口：新建页面/组件、UI 重构、设计审查、配色/字体选型、landing page、设计系统。0816 起 create-web preset（前端设计特化）将 frontend-design + browser-harness 作为核心领域技能。mission-archiving 的 HTML 版 5 段报告输出规范也由 frontend-design 支撑设计能力。</p></div>
-  </div>
-
-  <h2>⑥ 怎么用（how）</h2>
-  <div class="how-block">
-    <div class="how-item"><span class="how-label">触发方式</span><p>触发关键词：网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、前端开发、landing page、设计系统；新建页面/组件、UI 重构、设计审查、配色/字体选型时（SKILL.md description）。</p></div>
-    <div class="how-item"><span class="how-label">工作流/用法</span><p>1) Phase 1 数据驱动：python search.py &#x27;&lt;产品&gt; &lt;行业&gt; &lt;风格&gt;&#x27; --design-system -p 项目名，得到 3-5 个候选设计系统（可用 --domain/--stack 精化，0 结果时放宽关键词或降级内置优先级表）；2) Phase 2 设计主管裁决：挑候选/定制/超越，构建 token 系统（4-6 命名 hex + 2+ 字体角色 + ASCII wireframe + 签名元素），双轮审查（简报比对 + 唯一性测试）后确认编码；3) 交付前按 references/pro-rules.md 清单核对（图标/对比度/安全区域）。</p></div>
-    <div class="how-item"><span class="how-label">协作关系</span><p>与 browser-harness（create-web preset 组合，浏览器实测渲染）、mission-archiving（HTML 版报告设计支撑）、create-web 特化 agent 协作。参考文件 design-philosophy/quick-reference/pro-rules 按需加载。</p></div>
-  </div>
-
 
   
 
