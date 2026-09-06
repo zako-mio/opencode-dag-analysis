@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>opencode DAG 更新执行报告 (0906)</title>
+<style>
+:root{--bg:#0f1117;--panel:#161a22;--border:#2a2f3a;--text:#e6e8ee;--dim:#9aa3b2;--accent:#4f8cff;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Segoe UI,system-ui,sans-serif;padding:40px 20px;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+h2{font-size:20px;margin:24px 0 8px;color:var(--accent)}
+h3{font-size:16px;margin:14px 0 6px;color:#b48ae0}
+p{color:var(--text);margin:6px 0}
+li{margin:4px 0 4px 24px;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+td,border{border:1px solid var(--border);padding:6px 10px;font-size:13px}
+th{background:var(--panel);color:var(--dim);font-weight:600;padding:6px 10px;border:1px solid var(--border);text-align:left}
+.sub{color:var(--dim);font-size:13px;margin-bottom:24px}
+</style></head><body><div class="wrap">
+<h1>0906-opencode-dag 执行报告（v1.18.29 + 联网搜索组件）</h1>
+<p class='sub'>留档时间：2026-09-06 ｜ 交付路径：`/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag`</p>
+<p class='sub'>0902 版执行报告见 `history/README-0902.md`，本文为 v1.18.29 升级版</p>
+<h2>一、当时情况</h2>
+<p>0902 版（v1.18.25）交付后，opencode 继续自进化，本次升级要求两点：</p>
+<ol>
+<li>**官方源码版本更新**：v1.18.25 → v1.18.29（官方 CLI 已到 1.18.29，git tag 已发布）</li>
+<li>**装配层新增联网搜索能力**：0905/0906 落地了「联网搜索能力架构」，新增 4 组件（search-worker 子Agent / search-methodology skill / login-auth-channel skill / search-behavior instruction），外部服务新增 Tavily Search API</li>
+<li>**上传 GitHub**：本地领先 origin/main 1 commit（0902 报告未推）</li>
+</li>
+<h2>二、制定计划</h2>
+<p>Grill-Me 协议收敛 **10 项决策**：</p>
+<ol>
+<li>**官方基线**：官方源码 v1.18.25 → **v1.18.29 全量重建**（重跑包级采集 + 内部模块 import）</li>
+<li>**装配层全量建模 + 新增组件**：69 → 73 组件（新增 search-worker / search-methodology / login-auth-channel / search-behavior；移除 instr-memory）</li>
+<li>**机制节点重扫**：16 → **17 个**（新增 Session Memory 结构化压缩）</li>
+<li>**外部服务保留 10 节点 + 核对状态**：新增 Tavily Search API；OpenCode Go 套餐补 Muse Spark 1.3/Hy4/Omen Alpha 模型</li>
+<li>**升级现有仓库 + 推送上传**（0902-opencode-dag 仓库原地升级）</li>
+<li>**内部模块全量重跑**：33 包 / 2251 模块 / 6079 边（v1.18.29）</li>
+<li>**新增/演化组件 why/how 深挖**：search-worker 等 4 新组件 + 机制重扫 + 官方包版本变化</li>
+<li>**25 项 quality-gate + headless + VLM 三图验证**</li>
+<li>**沿用现有 worktree**：checkout v1.18.29 tag（remote=anomalyco/opencode），目录重命名 v1.18.29</li>
+<li>**自动 commit + push**（origin/main = zako-mio/opencode-dag-analysis）</li>
+</li>
+<h2>三、执行情况</h2>
+<p>**S0 备份**：0902-opencode-dag 完整备份到 `0902-opencode-dag.bak-20260906`（161M）。</p>
+<p>**S1 官方源码 v1.18.29**：现有 worktree checkout v1.18.29 tag（已从 remote 拉取），目录重命名 `opencode-src-v1.18.25` → `opencode-src-v1.18.29`，统一更新脚本路径引用。</p>
+<p>**S2 包级 + 内部模块采集**：v1.18.29 源码解析出 36 包 / 58 条 workspace 边（v1.18.25 为 68 边，版本间依赖变化）；内部模块 33 包 / 2251 模块 / 6079 边（opencode 主包 362 模块 / 1504 边）。</p>
+<p>**S3 装配层采集**：修复 `s2-assembly-inventory.py` 的 `.bak-` 过滤 bug；采出 55 组件（33 skills + 9 agents + 6 mcp + 5 instr + 1 tool + 1 command）；合并机制 + config 得 **73 组件**。</p>
+<p>**S4 机制节点重扫**：委派 explore 子Agent 重扫 17 个机制（含新增 Session Memory），落盘 stage-03-mechanisms.json。</p>
+<p>**S5 新增组件深挖**：委派 explore 子Agent 深挖 4 个新组件 why/how；委派 explore 深挖官方包 v1.18.25→v1.18.29 版本变化（77 commits，Claude 5.1+ thinking 容错 / Azure 简化 / Console 迁移 / Go 新模型）。</p>
+<p>**S6 建模三图**：更新 build-dag.py（新增组件边、外部服务、机制边、layer_type 修复、diff 图去悬空、official stats 补充）；产出 official/diff/modified-dag.json。</p>
+<p>**S7 生成全交付**：节点页 119 / 交互三图 / 组页 40 / MD 11 / diff 表；drawio-worker 重新生成三主图（含 `drawio-reference` 刚性约束）。</p>
+<p>**S8 门控 + 验证**：quality-gate **25/25 ALL PASS**；headless Chromium 三图 zcount 36/46/119 全匹配；VLM 验证中文完整无截断。</p>
+<p>**S9 CRLF 统一**：.gitattributes eol=lf，.gitignore 更新（opencode-src-v1.18.* 通配、internal json 通配）。</p>
+<p>**S10 git commit + push**。</p>
+<h2>四、完成情况</h2>
+<table>
+<tr><td>交付</td><td>状态</td></tr>
+<tr><td>图1 官方包级 DAG</td><td>✅ 36 包 / 68 边 / 6 层 / 19 组（v1.18.29 源码）</td></tr>
+<tr><td>图2 对比 DAG</td><td>✅ 46 节点 / 68 边（7 包被改造引用 + 10 外部）</td></tr>
+<tr><td>图3 改造双层 DAG</td><td>✅ 119 节点 / 183 边 / 8 层 / 40 组（36 包 + 73 装配 + 10 外部，含 17 mechanism）</td></tr>
+<tr><td>119 节点页（七段全覆盖）</td><td>✅ 全部生成（36 包 / 73 装配 / 10 外部）</td></tr>
+<tr><td>内部模块解析</td><td>✅ 33 包 / 2251 模块 / 6079 边（v1.18.29）</td></tr>
+<tr><td>装配层重建</td><td>✅ 73 组件（33 skills + 9 agents + 6 mcp + 5 instr + 1 tool + 1 cmd + 1 config + 17 mechanisms）</td></tr>
+<tr><td>自进化机制</td><td>✅ 17 个 mechanism（新增 Session Memory 结构化压缩）</td></tr>
+<tr><td>联网搜索组件入图</td><td>✅ search-worker / search-methodology / login-auth-channel / search-behavior</td></tr>
+<tr><td>外部服务</td><td>✅ 10 个（新增 Tavily Search API，OpenCode Go 补新模型）</td></tr>
+<tr><td>组目录 / diff 表 / MD 镜像</td><td>✅ 41 组 / 80 差异项 / 11 MD</td></tr>
+<tr><td>drawio 静态图</td><td>✅ 3 主图（v1.18.29，119 节点）/ 7 关键装配</td></tr>
+<tr><td>质量门控</td><td>✅ 25/25 ALL PASS</td></tr>
+<tr><td>headless + VLM</td><td>✅ 三图 zcount 36/46/119 全匹配，中文完整无截断</td></tr>
+</table>
+<p>**关键发现**：</p>
+<ol>
+<li>联网搜索能力落地：0905 架构后 4 组件入图，装配层从"自进化"扩展为"联网能力增强"</li>
+<li>改造仍浅：仅 7 官方包被装配层直接引用</li>
+<li>v1.18.29 官方演进：Claude 5.1+ thinking 容错、Azure 插件简化、Console 工作区迁移、Go 套餐新模型</li>
+</li>
+<h2>五、反思/分析/建议</h2>
+<ol>
+<li>**diff 图悬空边需前置规避**：本次 diff 图因加入 asm_to_pkg 边导致 34 条悬空（装配节点不在 diff 节点集）。**教训：diff 图只画官方包边，装配层引用作染色标记而非边**（0902 已验证此设计）。已在 build-dag.py 中修正。</li>
+<li>**layer_type 字段缺失隐患**：官方包节点与外部节点未设 layer_type，导致 modified stats 统计 pkg/ext 为 0。本次补全，质量门控能发现此类问题。</li>
+<li>**采集脚本 .bak 过滤 bug**：`.bak-20260817` 结尾的文件未被 `.bak` 结尾过滤捕获，导致 instr-task-delegation 误入。改为 `".bak" in fn or startswith(".bak-")` 更稳。</li>
+<li>**worktree 目录重命名需同步脚本**：重命名 src 目录后，所有 Python 脚本与 .gitignore 中的路径引用需一并更新，否则采集指向旧路径。</li>
+<li>**未来改进**：①assembly/ 7 关键装配图仍含 instr-memory 旧节点引用，可更新 ②could 用自动化脚本从 modified-dag 深挖机制→装配调用链边 ③drawio 三主图已更新，但关键装配详图可补充新组件。</li>
+</li>
+<hr>
+<p>*留档时间：2026-09-06 · 交付路径：/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag*</p>
+</div></body></html>
