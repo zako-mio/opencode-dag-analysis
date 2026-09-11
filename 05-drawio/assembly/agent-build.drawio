@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="d-agent-build" name="agent-build">
-    <mxGraphModel dx="800" dy="600" page="1" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="800" dy="600" page="1" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1100" pageHeight="970" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -25,8 +25,11 @@
         <mxCell id="u6" value="agent-reflection-worker" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="40" y="640" width="160" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="u7" value="question 工具" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+        <mxCell id="u8" value="agent-architect-worker" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="40" y="760" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="u7" value="question 工具" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="880" width="160" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="d1" value="instr-auto-mode" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Microsoft YaHei;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="760" y="160" width="160" height="60" as="geometry"/>
@@ -53,6 +56,9 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e7" edge="1" parent="1" source="u7" target="c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="u8" target="c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic;">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e8" edge="1" parent="1" source="c" target="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;">

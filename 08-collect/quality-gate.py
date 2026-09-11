@@ -55,7 +55,7 @@ node_ids={n["id"] for n in mod["nodes"]}
 html_files=set(os.listdir(nodes_dir))
 missing_pages=[nid for nid in node_ids if nid+".html" not in html_files]
 stale=[f for f in html_files if f.endswith(".html") and f[:-5] not in node_ids and f!="index.html"]
-check("节点页全覆盖(119)", len(missing_pages)==0, f"缺 {len(missing_pages)}")
+check("节点页全覆盖(129)", len(missing_pages)==0, f"缺 {len(missing_pages)}")
 check("无陈旧节点页", len(stale)==0, f"陈旧 {len(stale)}")
 check("节点索引存在", "index.html" in html_files)
 
@@ -78,8 +78,8 @@ for view in ["view-official.html","view-diff.html","view-modified.html"]:
         if m:
             try:
                 data=json.loads(m.group(1))
-                # 对 view-modified 应匹配 119 节点
-                expected = 119 if view=="view-modified.html" else (36 if view=="view-official.html" else 46)
+                # 对 view-modified 应匹配 129 节点
+                expected = 129 if view=="view-modified.html" else (36 if view=="view-official.html" else 46)
                 check(f"交互图 DATA 节点数: {view}", len(data["nodes"])==expected, f"{len(data['nodes'])} vs {expected}")
             except Exception as e:
                 check(f"交互图 DATA 解析: {view}", False, str(e))
@@ -129,6 +129,13 @@ check("HTML 断链 0", len(broken)==0, f"{len(broken)} 断链")
 print("=== 8. 统计一致性 ===")
 check("modified stats.nodes", mod["stats"]["nodes"]==len(mod["nodes"]), f"{mod['stats']['nodes']} vs {len(mod['nodes'])}")
 check("modified stats.edges", mod["stats"]["edges"]==len(mod["edges"]), f"{mod['stats']['edges']} vs {len(mod['edges'])}")
+off=dags["official-dag.json"]; dif=dags["diff-dag.json"]
+check("三图节点数(36/46/129)", (len(off["nodes"]),len(dif["nodes"]),len(mod["nodes"]))==(36,46,129),
+      f"{len(off['nodes'])}/{len(dif['nodes'])}/{len(mod['nodes'])}")
+check("装配节点 83", mod["stats"].get("asm_nodes")==83, str(mod["stats"].get("asm_nodes")))
+check("外部节点 10", mod["stats"].get("ext_nodes")==10, str(mod["stats"].get("ext_nodes")))
+check("机制节点 18", mod["stats"].get("mech_nodes")==18, str(mod["stats"].get("mech_nodes")))
+check("组数 43", mod["stats"].get("groups")==43, str(mod["stats"].get("groups")))
 
 # 9. 七段完整性（抽 key 类型）
 print("=== 9. node 关键字段完整性 ===")
@@ -141,4 +148,9 @@ check("包/机制节点 why 字段完整", len(missing_field)==0, f"缺 {len(mis
 
 # 汇总
 fail=sum(1 for _,c,_ in results if not c)
-print(f"\n===== 门控结果: {len(results)-fail}/{len(results)} ALL PASS =====" if fail==0 else f"\n===== {fail} 项 FAIL =====")
+if fail==0:
+    print(f"\n===== 门控结果: {len(results)}/{len(results)} ALL PASS =====")
+    sys.exit(0)
+else:
+    print(f"\n===== {fail} 项 FAIL =====")
+    sys.exit(1)

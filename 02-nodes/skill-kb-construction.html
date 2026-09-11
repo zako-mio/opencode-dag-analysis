@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kb-construction · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>kb-construction <span class="tag">装配层</span></h1>
+  <div class="sub">skill-kb-construction · skill · A6q-知识库构建 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>知识库构建全流程主入口。五类分流（内容交付/检索问答/上下文注入/语料资产/数据分析），覆盖建库+扩展+维护全生命周期。触发关键词：建知识库、知识库构建、知识库扩展、知识库维护、知识库升级、建库、知识图谱、RAG建库、知识库迭代、级联更新、知识库门控。</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 0807/0813/0820/0822/0825/0902/0907/0908 多轮建库与评测实战，0911 收敛为统一主入口——把散落的建库经验（内容交付/检索问答/上下文注入/语料资产/数据分析）整合为五类分流 + 公共主干 + 分层门控。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需要一条不默认 RAG 的统一建库路径——先按消费方分流五类谱系，再走共享主干（契约→采集→加工→交付→门控）；契约先行（P0 落盘 contract.md 后才并行生产），门控分层 L1-L7，回放四硬指标。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>触发词（建知识库/知识库构建/知识库扩展/知识库维护/知识库升级/建库/知识图谱/RAG建库/知识库迭代/级联更新/知识库门控）；适用从零建库、既有库增量扩展、多形态知识交付、语料沉淀、数据驱动决策交付。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①五类分流判定（Q1 消费方：内容交付/检索问答/上下文注入/数据分析；Q2 是否语料资产；Q3 是否增量级联）；②公共主干 P0 契约→P1 采集→P2 加工→P3 交付→P4 门控；③按类型走各自流水线；④门控 L1-L7 按规模按需启用（生成时自验证/全量审计/结构/视觉/渲染/覆盖度/信源，skipped≠PASS）；⑤级联 12 项 + 回放四硬指标（覆盖度≥90%、门控全过、信源可溯源≥95%、人工抽查无重大语义错误）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 dag-tutorial-authoring、multi-window-dag-delivery、cytoscape-dag-visualization、search-methodology、drawio-worker、pdf-worker、vision-worker、opencode-config 按任务特征路由协作；依赖 scripts/kb_gate.py 分层门控；依赖 config-main。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

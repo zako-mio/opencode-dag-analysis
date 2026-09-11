@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""合并装配层清单为 s2-all-components.json（55 装配 + 17 机制 + 1 config = 73）"""
+"""合并装配层清单为 s2-all-components.json（64 装配 + 1 config + 18 机制 = 83）"""
 import json, sys
 sys.stdout.reconfigure(encoding="utf-8")
 BASE = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/08-collect"
@@ -13,7 +13,7 @@ components = []
 for c in inv:
     components.append(dict(c))
 
-# 2. 机制节点（17 个，从 mechanisms.json 提取 name）
+# 2. 机制节点（18 个，从 mechanisms.json 提取 name）
 MECH_META = {
     "mech-grill-me": ("Grill-Me 协议", "opencode.jsonc plan/build prompt", "Plan 阶段逐分支追问收敛方案，问一答一（question 工具），含 Drift 护栏与收敛审计"),
     "mech-agents-protocol": ("Agent 委派协议", "opencode.jsonc plan/build prompt", "主Agent 任务调度者→拆解→search-agents 匹配→委派子Agent→聚合；含 MCP 路由规则"),
@@ -32,6 +32,7 @@ MECH_META = {
     "mech-subagent-rules": ("Universal SubAgent Rules", "instructions/auto-mode.md", "子Agent 身份约束/工具使用/错误处理/通信规范(JSON)+结构化返回"),
     "mech-coding-discipline": ("Universal Coding Discipline", "instructions/auto-mode.md", "验证与证据/从磁盘读不依赖对话记忆/路径本地化/元数据不入输出"),
     "mech-session-memory": ("Session Memory 结构化压缩", "instructions/auto-mode.md", "compaction 5 段模板(当前状态/关键文件/已做决策/待解决问题/经验教训)+L1剪枝/L2压缩/L3兜底"),
+    "mech-architecture": ("架构判断机制", "architecture-behavior.md + /arch + gate_architecture.py", "架构三层栈：skill-architecture-judgment + agent-architect-worker + 行为层强制 + /arch 命令 + gate 门控；ADR/权衡矩阵经 gate_architecture.py PASS 方可交付"),
 }
 for mid, m in mech.items():
     name, source, desc = MECH_META.get(mid, (m.get("name", mid), "auto-mode.md", ""))

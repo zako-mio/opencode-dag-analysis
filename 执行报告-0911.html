@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>opencode DAG 更新执行报告 (0911 · v1.18.30)</title>
+<style>
+:root{--bg:#0f1117;--panel:#161a22;--border:#2a2f3a;--text:#e6e8ee;--dim:#9aa3b2;--accent:#4f8cff;--ok:#3fb950;--warn:#d29922;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;padding:40px 20px;line-height:1.75}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+h2{font-size:20px;margin:28px 0 10px;color:var(--accent)}
+h3{font-size:16px;margin:16px 0 6px;color:#b48ae0}
+p{margin:6px 0}
+ul,ol{margin:6px 0 6px 24px}
+li{margin:4px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th{background:var(--panel);color:var(--dim);font-weight:600;padding:7px 10px;border:1px solid var(--border);text-align:left;font-size:13px}
+td{padding:7px 10px;border:1px solid var(--border);font-size:13px;vertical-align:top}
+.sub{color:var(--dim);font-size:13px;margin-bottom:6px}
+.meta{color:var(--dim);font-size:12px;margin-top:28px;border-top:1px solid var(--border);padding-top:10px}
+.ok{color:var(--ok);font-weight:600}
+.warn{color:var(--warn);font-weight:600}
+code{background:#20242e;border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:12.5px}
+.figs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.figs figure{flex:1 1 280px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px}
+.figs img{width:100%;border-radius:4px;display:block}
+.figs figcaption{color:var(--dim);font-size:12px;text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>0911-opencode-dag 执行报告（v1.18.30 + 装配层全量重建）</h1>
+<p class="sub">留档时间：2026-09-11 ｜ 交付路径：<code>0902-opencode-dag/</code>（仓库相对路径，无本机绝对路径）</p>
+<p class="sub">上一版执行报告见 <code>执行报告-0906.md</code>；更新盘点见 <code>07-checkpoint/0911-update-inventory.md</code></p>
+
+<h2>一、当时情况</h2>
+<p>0906 版（v1.18.29 + 联网搜索组件）交付后，出现两条需要处理的变化：</p>
+<ol>
+<li><strong>官方发布 v1.18.30</strong>：官方仓库 tag 已到 v1.18.30，需点检本机 DAG 是否随之变化；</li>
+<li><strong>本机装配层持续自进化</strong>：0906 后新增架构判断相关能力（<code>architecture-judgment</code> skill、<code>architect-worker</code> 子Agent、<code>architecture-behavior</code> instruction、<code>/arch</code> command 与 <code>gate_architecture.py</code>），并新增 8 个 skill；同时 <code>tool-read</code> 退役、<code>instr-agent-protocol</code> 并入 auto-mode。</li>
+</ol>
+<p>基线（0906 版）为：官方 v1.18.29 包级 36 包 / 68 边；装配层 73 组件（33 skills + 9 agents + 6 mcp + 5 instr + 1 tool + 1 command + 1 config + 17 mechanisms）；三图计数 36 / 46 / 119。</p>
+<p>本次任务范围切分为「官方点检 + 装配层重建 + 门控/渲染验证 + README/报告」，只读约束：<code>~/.config/opencode/**</code> 只读，不改动 <code>01-dag-data</code> 的三图数据。</p>
+
+<h2>二、制定计划</h2>
+<p>依据盘点文档，按 T1–T5 五步收敛：</p>
+<table>
+<tr><th>步骤</th><th>任务</th><th>要点</th></tr>
+<tr><td>T1</td><td>门控脚本期望值更新</td><td><code>08-collect/quality-gate.py</code> 旧期望 119 → 129，补 36/46/129、组 43、装配 83、外部 10、机制 18；headless 脚本期望 119 → 129、截图前缀 v11829 → v11830</td></tr>
+<tr><td>T2</td><td>运行门控与渲染验证</td><td>quality-gate 至 PASS；headless 三视图 zcount = 36 / 46 / 129，截图落 <code>07-checkpoint/screenshots/</code></td></tr>
+<tr><td>T3</td><td>陈旧值零残留核查</td><td><code>grep</code> 巡检 <code>v1.18.29</code> / <code>119 节点</code> / <code>69 装配</code> / <code>tool-read</code>，除已声明基线标注与历史目录外应为零</td></tr>
+<tr><td>T4</td><td>README 更新</td><td>版本基线 v1.18.25 → v1.18.30；计数 129 / 43 / 83 / 18；说明本轮变化</td></tr>
+<tr><td>T5</td><td>报告双版本</td><td><code>执行报告-0911.md</code> + 自包含 <code>执行报告-0911.html</code>，五段式</td></tr>
+</table>
+<p>关键决策：官方 v1.18.30 的包级结构与 workspace 依赖边经点检确认未变，官方三图不重算，仅版本标注更新；内部结构模块 DAG 沿用 v1.18.29 基线并显式标注。</p>
+
+<h2>三、执行情况</h2>
+
+<h3>3.1 官方 v1.18.30 点检结论</h3>
+<ul>
+<li><strong>包数 36 → 36（不变）</strong>：<code>packages/</code> 下 <code>package.json</code> 计数不变，workspace 依赖线 0 条增删。</li>
+<li><strong>仅版本标注更新</strong>：28 个包自身 <code>version</code> 1.18.29 → 1.18.30；<code>packages/opencode/package.json</code> 是唯一非版本实质 diff（<code>@ai-sdk/azure</code> 3.0.88→3.0.93、<code>@ai-sdk/openai</code> 3.0.84→3.0.88、<code>gitlab-ai-provider</code> 6.13.0→6.15.0，均为外部 npm 依赖），另新增 <code>patches/@ai-sdk%2Fopenai@3.0.88.patch</code>（Bedrock-DeepSeek id 修复）。</li>
+<li>结论：官方侧改动落在外部依赖版本号、文档、console i18n 与包内实现，<strong>不触及包间 import/依赖图</strong>；官方三图沿用包级结构，仅把 <code>title</code> / <code>version_note</code> 与 <code>version_delta</code> 文案升级到 v1.18.30。</li>
+</ul>
+
+<h3>3.2 装配层差异（73 → 83，+12 新增 / −2 退役）</h3>
+<table>
+<tr><th>类别</th><th>0906 版</th><th>0911 版</th><th>变化</th></tr>
+<tr><td>skills</td><td>33</td><td>41</td><td>+8</td></tr>
+<tr><td>agents</td><td>9</td><td>10</td><td>+1（architect-worker）</td></tr>
+<tr><td>mcp</td><td>6</td><td>6</td><td>0</td></tr>
+<tr><td>instructions</td><td>5</td><td>5</td><td>0（−agent-protocol / +architecture-behavior）</td></tr>
+<tr><td>tools</td><td>1</td><td>0</td><td>−1（tool-read 退役）</td></tr>
+<tr><td>commands</td><td>1</td><td>2</td><td>+1（/arch）</td></tr>
+<tr><td>config</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>mechanisms</td><td>17</td><td>18</td><td>+1（架构三层栈）</td></tr>
+<tr><td><strong>合计</strong></td><td><strong>73</strong></td><td><strong>83</strong></td><td><strong>+10</strong></td></tr>
+</table>
+<ul>
+<li><strong>新增 12</strong>：8 skill（architecture-judgment / github-bulk-upload / job-listing-filter / kb-construction / opencode-capability-extension / restricted-corpus-acquisition / resumable-content-pipeline / single-source-docs-pipeline）+ <code>agent-architect-worker</code> + <code>instr-architecture-behavior</code> + <code>command-arch</code> + <code>mech-architecture</code>。</li>
+<li><strong>退役 2</strong>：<code>tool-read</code>（改模型原生多模态）、<code>instr-agent-protocol</code>（主体并入 <code>instructions/auto-mode.md</code>）。</li>
+<li>外部服务维持 10 个，未新增强制后端。</li>
+<li>新增机制 <code>mech-architecture</code>：由 <code>skill-architecture-judgment</code> + <code>agent-architect-worker</code> + <code>instr-architecture-behavior</code> + <code>command-arch</code> + <code>gate_architecture.py</code> 五元构成，触发点见 <code>instructions/architecture-behavior.md</code>。</li>
+</ul>
+
+<h3>3.3 三图与配套产物</h3>
+<table>
+<tr><th>图</th><th>计数</th></tr>
+<tr><td>图1 官方包级 official</td><td>36 节点 / 68 边 / 6 层 / 19 组</td></tr>
+<tr><td>图2 对比 diff</td><td>46 节点 / 68 边 / 6 层 / 20 组（7 包被引用 + 10 外部）</td></tr>
+<tr><td>图3 改造双层 modified</td><td>129 节点 / 190 边 / 8 层 / 43 组（36 包 + 83 装配 + 10 外部，含 18 机制）</td></tr>
+</table>
+<p>配套：节点页 129 + index；组页 43 + index；交互三图（view-official/diff/modified）+ 根入口；diff 表 90 项；MD 镜像 10 个；drawio 主图 3 张 + 关键装配 7 张（均已移除 tool-read、新增 mech-architecture）。陈旧产物 <code>tool-read</code> / <code>instr-agent-protocol</code> 已清理。</p>
+
+<h3>3.4 门控与渲染结果</h3>
+<ul>
+<li><code>08-collect/quality-gate.py</code>：<span class="ok">30/30 ALL PASS</span>（含三图节点数 36/46/129、装配 83、外部 10、机制 18、组 43、HTML 断链 0、无陈旧节点页、交互图 DATA 一致、无 U+FFFD 替换字符）。</li>
+<li>headless Chromium 三视图：<code>zcount</code> = <strong>36 / 46 / 129</strong> 全匹配；节点页七段 h2 校验通过。</li>
+<li>截图落盘 <code>07-checkpoint/screenshots/final-v11830-{official,diff,modified}.png</code>（各约 260–280 KB）。</li>
+<li>交付物 UTF-8 无替换字符；<code>README.md</code> 与报告为 UTF-8 无 emoji。</li>
+</ul>
+<div class="figs">
+<figure><img src="07-checkpoint/screenshots/final-v11830-official.png" alt="official 视图截图（zcount=36）"><figcaption>图1 official · zcount=36</figcaption></figure>
+<figure><img src="07-checkpoint/screenshots/final-v11830-diff.png" alt="diff 视图截图（zcount=46）"><figcaption>图2 diff · zcount=46</figcaption></figure>
+<figure><img src="07-checkpoint/screenshots/final-v11830-modified.png" alt="modified 视图截图（zcount=129）"><figcaption>图3 modified · zcount=129</figcaption></figure>
+</div>
+
+<h2>四、完成情况</h2>
+<table>
+<tr><th>交付</th><th>状态</th></tr>
+<tr><td>T1 门控脚本期望值更新</td><td><span class="ok">完成</span>（quality-gate 119→129 并补计数；headless 119→129、前缀 v11830）</td></tr>
+<tr><td>T2 门控与渲染验证</td><td><span class="ok">完成</span>（quality-gate 30/30 PASS；zcount 36/46/129 全匹配）</td></tr>
+<tr><td>T3 陈旧值零残留</td><td><span class="ok">完成</span>（<code>119 节点</code> / <code>69 装配</code> / 陈旧 <code>tool-read</code> 产物零残留；<code>v1.18.29</code> 命中全部为已声明基线标注或版本迁移叙述）</td></tr>
+<tr><td>T4 README 更新</td><td><span class="ok">完成</span>（v1.18.30；129 / 43 / 83 / 18）</td></tr>
+<tr><td>T5 报告双版本</td><td><span class="ok">完成</span>（本文件 + <code>执行报告-0911.md</code>）</td></tr>
+<tr><td>三图计数</td><td>official 36/68/19；diff 46/68/20；modified 129/190/43</td></tr>
+<tr><td>装配层重建</td><td>83 组件（41 skills + 10 agents + 6 mcp + 5 instr + 0 tool + 2 cmd + 1 config + 18 mechanisms）</td></tr>
+<tr><td>官方点检</td><td>36 包不变、仅版本标注（外部 SDK 升号 / Bedrock-DeepSeek 补丁）</td></tr>
+<tr><td>外部服务</td><td>10 个（维持不变）</td></tr>
+</table>
+<h3>风险与遗留</h3>
+<ol>
+<li><strong>内部结构沿用 v1.18.29 基线</strong>：官方 v1.18.30 未重算内部模块 import，节点页内部结构 DAG 与 <code>08-collect/internal-v1.18.29.json</code> 均为 v1.18.29 基线，已在节点页与 README 显式标注「v1.18.30 结构未变」。若后续版本涉及跨模块 import 变化，须重跑 <code>s1-parse-internal.py</code>。</li>
+<li><strong>08-collect 中间数据旧版本串</strong>：<code>stage-00-version-baseline.json</code> 顶层 <code>version</code> 仍为 <code>v1.18.29</code> 且 <code>source_dir</code> 指向 <code>opencode-src-v1.18.29</code>；<code>s1-pkg-inventory.py</code> / <code>s1-parse-internal.py</code> 的 <code>SRC</code> 仍指向 v1.18.29 worktree。当前因结构未变而结果正确，但版本串与实际基线标注存在漂移，建议下轮统一为 v1.18.30 并复核。</li>
+<li><strong>drawio MCP 超时</strong>：drawio MCP 在导出环节出现超时，主图重绘改由 <code>drawio-worker</code>（强制加载 <code>drawio-reference</code>）链路完成；后续 drawio 导出建议加超时重试与 PNG 尺寸校验。</li>
+<li><strong>source worktree 未改名</strong>：<code>opencode-src-v1.18.29/</code> 目录名保留（仅按 tag 取用），与版本标注 v1.18.30 不同名，引用脚本与 <code>.gitignore</code> 通配需注意。</li>
+</ol>
+
+<h2>五、反思/分析/建议</h2>
+<ol>
+<li><strong>官方点检先于重建，避免无效重算</strong>：本次先用 <code>git ls-remote</code> / <code>git diff --stat</code> 证实「36 包不变、仅版本标注」，从而只改标注、不重算包级图，节省大量成本。建议：每次版本升级先做包级结构与依赖线的作用域判定，再决定重算范围。</li>
+<li><strong>门控期望值须与产物同源</strong>：<code>quality-gate.py</code> 硬编码 119 与 headless 硬编码 119 是本次唯一 FAIL 的来源，说明期望值应尽量从 <code>modified-dag.json.stats</code> 动态取，减少手改遗漏。建议：后续把节点/组/装配/外部/机制计数改为从 stats 读取。</li>
+<li><strong>基线标注要显式且可机检</strong>：内部结构沿用旧基线时，在节点页副标题与 README 写明「内部结构基线 v1.18.29，v1.18.30 结构未变」，使 T3 的 grep 命中可被归类为「已声明基线」而非残留。建议：把该标注字符串固化为生成脚本参数，避免人工漏标。</li>
+<li><strong>中间数据版本串治理</strong>：<code>stage-00-version-baseline.json</code> 与采集脚本的版本串是本轮最易漂移处，属「数据与标注分叉」。建议：以单一真相源（一个 version 常量）派生所有脚本路径与输出文件名，配合一次引用普查。</li>
+<li><strong>drawio 链路的超时韧性</strong>：drawio MCP 超时不影响最终交付，但暴露单点脆弱。建议：为导出步骤加超时重试 + 导出后 PNG bbox/尺寸双重校验。</li>
+</ol>
+
+<div class="meta">留档时间：2026-09-11 · 交付路径：<code>0902-opencode-dag/</code>（仓库相对路径，无本机绝对路径）</div>
+</div>
+</body>
+</html>

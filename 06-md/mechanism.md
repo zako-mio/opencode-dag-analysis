@@ -1,4 +1,4 @@
-# mechanism 节点（17）
+# mechanism 节点（18）
 
 ## mech-agents-protocol — agents-protocol
 - 组: AQ-自进化机制 | Layer 0
@@ -9,6 +9,16 @@
 - **怎么用（触发）**: 收到请求先分类判断：是否需要≥2 个工具/联网/多步推理→ YES 则第一条工具调用必须是 search-agents。
 - **怎么用（工作流）**: ①search-agents -Query 关键词 -Top 5 搜角色(只看 JSON 元数据)或自写 2-3 句角色提示词；②拆解任务：独立→并行 Task，有依赖→串行接力(data 传递)，耦合→单 Agent；③组装子 Agent prompt(SUBAGENT 身份+Role Activation+Skills to Load+Task+No Self-Assessment+Return Format)，drawio-worker 须精确写 drawio-reference；④聚合：success→summary|partial→+errors|failed→询问用户；⑤超 3 分钟没发 task→默念失败模式自查(执行者/例外滥用/假并行)。
 - **怎么用（协作）**: 依赖 skill/agency-agents/search-agents.py 与 agent-index.json；主 Agent prompt 来自 opencode.jsonc agent.plan/build.prompt 内 Agent Protocol 与 instructions/agent-protocol.md；子 Agent 角色定义在 opencode.jsonc agent(plan/build/pdf-worker/drawio-worker/vision-worker/general/explore/reflection-worker/search-worker)；opencode.jsonc plan.permission 限制 bash 默认 deny。
+
+## mech-architecture — architecture
+- 组: AQ-自进化机制 | Layer 0
+- 作用: 架构三层栈：skill-architecture-judgment + agent-architect-worker + 行为层强制 + /arch 命令 + gate 门控；ADR/权衡矩阵经 gate_architecture.py PASS 方可交付
+- 提供: 
+- **为什么存在（历史）**: 源自 0910-软件工程架构方法论知识图谱（167 节点/360 边/18 组/11 域/三层）交付与 0911 opencode 架构能力扩展实战：把「架构判断力」从速查+路径路由升级为 opencode 可执行的架构能力三层栈（能力 Skill + 可见子Agent + 行为层），并补齐显式命令与机检门控。
+- **为什么存在（当前）**: 当前由五元组成：skill-architecture-judgment（可执行工作流 + 内置 167 节点离线图谱 + schemas/templates/gate）、agent-architect-worker（可见子Agent，继承父会话模型，产出 ADR/多维权衡矩阵/边界设计说明）、instr-architecture-behavior（行为层全局强制：架构任务必加载 skill + 委派 worker + 门控）、command-arch（/arch 显式入口）、gate_architecture.py（--kind adr|boundary 机检门控，PASS 前不得交付）。知识分层刚性：方法论层 MTH 与本质层 ESS 重召回，技术实践层 TEC 仅作 standards_refs 选型标尺、不得进入 decision/rationale。
+- **怎么用（触发）**: 三条触发：①自动路由——任务涉及技术选型/架构风格/模块与服务边界与粒度/架构评审/质量属性权衡/技术债治理/演进治理时，主流程(plan/build)自动加载本 skill 并委派 architect-worker；②显式命令 /arch <任务描述> 或 /arch 选型|评审|边界|技术债 ...；③openspec design 工件生成或修改时由行为层 architecture-behavior.md 强制触发。
+- **怎么用（工作流）**: ①判场景：把问题归入 routing.md 的 18 个任务场景之一（先匹配触发问法）；②定产出类型：adr(+矩阵) / boundary 为门控级，review / tech-debt 为模板级；③委派 architect-worker，prompt 含 Skills to Load、对应模板与 schema、TEC 引用约束；④产出后必跑 gate_architecture.py（--kind adr|boundary，schema 与 graph 自动解析），FAIL 回传修正最多 2 轮，不得降级口头通过；⑤交付主产物 + 多维权衡矩阵（涉选型）+ 门控证据 + 命中场景节点；⑥主动询问是否需要 drawio 架构图（是则另委 drawio-worker，prompt 必含 drawio-reference）。
+- **怎么用（协作）**: 组成五元 = skill-architecture-judgment + agent-architect-worker + instr-architecture-behavior + command-arch + gate_architecture.py；依赖 opencode.jsonc agent 段（architect-worker 定义）与 config-main（instructions 数组引用 architecture-behavior.md）；与架构图委派链路（drawio-worker + drawio-reference）、kb-construction（内容交付型/上下文注入型）协作；知识图谱为母库离线资产（0910-软件工程架构方法论），不联网即可用。
 
 ## mech-browser-tabs — browser-tabs
 - 组: AQ-自进化机制 | Layer 0
@@ -61,7 +71,7 @@
 - **怎么用（协作）**: 指令源 instructions/auto-mode.md『Fault Tolerance』；与 SubAgent Rules('自修复失败 3 次记 errors 上报')和 Agent Protocol 的失败模式自查协作；影响返回 JSON 结构(status/errors 字段)。
 
 ## mech-gate — gate
-- 组: AQ-自进化机制 | Layer 0
+- 组: AQ-自进化机制 | Layer 1
 - 作用: MANDATORY GATE CHECK：范围/深度/操作/风险四维自评(1-5)输出总分→Daily/Deep
 - 提供: 
 - **为什么存在（历史）**: 为解决任务复杂度与推理深度不匹配导致的长任务输出截断/多轮重试成本失控，引入强制自评门控：任务开始前先量化影响范围/逻辑深度/操作数量/风险以决定用哪档推理。

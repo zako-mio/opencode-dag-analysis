@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>opencode-capability-extension · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>opencode-capability-extension <span class="tag">装配层</span></h1>
+  <div class="sub">skill-opencode-capability-extension · skill · A6a-配置知识 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>opencode 自身能力扩展 SOP。当需要为 opencode 新增/补齐一项能力（子Agent+Skill+行为层三层栈），诊断孤儿/半成品能力，统一 skill 双根，做引用普查防迁移断裂，落地契约+门控+冒烟，或用单一真相源+派生对账安装时使用。触发关键词：能力扩展、孤儿能力、三层栈、skill 双根、引用普查、能力注册表、契约先行、install</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 0911-opencode 架构能力实战（勘察宿主自改造架构→20 项决策计划→阶段 0 前置修复→阶段 1 MVP→三合一冒烟全过，cycles: cycle_20260911_opencode_arch_capability / phase2）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需要一套结构化 SOP 为 opencode 自身新增/补齐能力（子Agent + Skill + 行为层三层栈），诊断孤儿/半成品能力，统一 skill 双根，做引用普查防迁移断裂，落地契约+门控+冒烟，并用单一真相源+派生对账安装。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>需要为 opencode 新增/补齐一项能力（架构/检索/图表/视觉等）、某能力只有单层而成为孤儿/半成品、opencode 自身 skill/agent/instructions/门控需批量治理时加载。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①勘察（用五要素三层栈诊断孤儿/半成品）；②计划（分级介入强度，契约先行且 schema 由主Agent 亲写）；③阶段 0 前置修复（skill 双根统一迁移前备份、引用普查 grep 硬编码、stale 归档、能力注册表回填）；④阶段 1 MVP（skill 升级为可执行工作流 + 可见子Agent + 行为层全局强制 + /name 命令 + 独立 gate 脚本）；⑤单一真相源（占位符 + install 派生 + reconcile 逐字节对账，二次 apply 幂等）；⑥门控（字段级白名单判据 + 正负向自检 + 三合一冒烟）；⑦注册表闭环。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>以 architecture-judgment 三层栈为实战样例；与 opencode-config（能力注册表 local/capabilities.md）协作；与 architect-worker / architecture-behavior 同构；依赖 config-main。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

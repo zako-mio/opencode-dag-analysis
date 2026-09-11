@@ -36,6 +36,15 @@
     "enabled": true
   },
   {
+    "node_id": "agent-architect-worker",
+    "node_name": "architect-worker",
+    "kind": "agent",
+    "group": "AG2-子Agent",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "agent-vision-worker",
     "node_name": "vision-worker",
     "kind": "agent",
@@ -135,8 +144,8 @@
     "enabled": false
   },
   {
-    "node_id": "instr-agent-protocol",
-    "node_name": "agent-protocol",
+    "node_id": "instr-architecture-behavior",
+    "node_name": "architecture-behavior",
     "kind": "instruction",
     "group": "AG4-指令",
     "change": "新增装配",
@@ -180,17 +189,17 @@
     "enabled": true
   },
   {
-    "node_id": "tool-read",
-    "node_name": "read.ts",
-    "kind": "tool",
+    "node_id": "command-reflection",
+    "node_name": "reflection",
+    "kind": "command",
     "group": "AG5-工具插件",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
   },
   {
-    "node_id": "command-reflection",
-    "node_name": "reflection",
+    "node_id": "command-arch",
+    "node_name": "arch",
     "kind": "command",
     "group": "AG5-工具插件",
     "change": "新增装配",
@@ -207,55 +216,19 @@
     "enabled": true
   },
   {
+    "node_id": "skill-architecture-judgment",
+    "node_name": "architecture-judgment",
+    "kind": "skill",
+    "group": "A6n-架构判断",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-browser-harness",
     "node_name": "browser-harness",
     "kind": "skill",
     "group": "A6e-浏览器",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "skill-grill-me",
-    "node_name": "grill-me",
-    "kind": "skill",
-    "group": "A6a-角色调度",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "skill-headroom",
-    "node_name": "headroom",
-    "kind": "skill",
-    "group": "A6h-上下文压缩",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "skill-opencode-config",
-    "node_name": "opencode-config",
-    "kind": "skill",
-    "group": "A6a-配置知识",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "skill-recruit-assist",
-    "node_name": "recruit-assist",
-    "kind": "skill",
-    "group": "A6i-简历求职",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "skill-resume-builder",
-    "node_name": "resume-builder",
-    "kind": "skill",
-    "group": "A6i-简历求职",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -297,6 +270,51 @@
     "enabled": true
   },
   {
+    "node_id": "skill-github-bulk-upload",
+    "node_name": "github-bulk-upload",
+    "kind": "skill",
+    "group": "A6o-交付发布",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-grill-me",
+    "node_name": "grill-me",
+    "kind": "skill",
+    "group": "A6a-角色调度",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-headroom",
+    "node_name": "headroom",
+    "kind": "skill",
+    "group": "A6h-上下文压缩",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-job-listing-filter",
+    "node_name": "job-listing-filter",
+    "kind": "skill",
+    "group": "A6i-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-kb-construction",
+    "node_name": "kb-construction",
+    "kind": "skill",
+    "group": "A6q-知识库构建",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-lark-suite",
     "node_name": "lark-suite",
     "kind": "skill",
@@ -319,6 +337,24 @@
     "node_name": "multi-window-dag-delivery",
     "kind": "skill",
     "group": "A6c-DAG方法",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-opencode-capability-extension",
+    "node_name": "opencode-capability-extension",
+    "kind": "skill",
+    "group": "A6a-配置知识",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-opencode-config",
+    "node_name": "opencode-config",
+    "kind": "skill",
+    "group": "A6a-配置知识",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -441,6 +477,15 @@
     "enabled": true
   },
   {
+    "node_id": "skill-recruit-assist",
+    "node_name": "recruit-assist",
+    "kind": "skill",
+    "group": "A6i-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-release-openspec",
     "node_name": "release-openspec",
     "kind": "skill",
@@ -450,10 +495,46 @@
     "enabled": true
   },
   {
+    "node_id": "skill-restricted-corpus-acquisition",
+    "node_name": "restricted-corpus-acquisition",
+    "kind": "skill",
+    "group": "A6q-知识库构建",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-resumable-content-pipeline",
+    "node_name": "resumable-content-pipeline",
+    "kind": "skill",
+    "group": "A6q-知识库构建",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-resume-builder",
+    "node_name": "resume-builder",
+    "kind": "skill",
+    "group": "A6i-简历求职",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-search-methodology",
     "node_name": "search-methodology",
     "kind": "skill",
     "group": "A6j-联网搜索",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-single-source-docs-pipeline",
+    "node_name": "single-source-docs-pipeline",
+    "kind": "skill",
+    "group": "A6o-交付发布",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -648,6 +729,15 @@
     "enabled": true
   },
   {
+    "node_id": "mech-architecture",
+    "node_name": "架构判断机制",
+    "kind": "mechanism",
+    "group": "AQ-自进化机制",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "config-main",
     "node_name": "opencode.jsonc",
     "kind": "config",
@@ -657,28 +747,10 @@
     "enabled": true
   },
   {
-    "node_id": "oc-plugin",
-    "node_name": "plugin",
+    "node_id": "oc-server",
+    "node_name": "server",
     "kind": "package",
-    "group": "G7-插件SDK",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-llm",
-    "node_name": "llm",
-    "kind": "package",
-    "group": "G5-LLM请求层",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-opencode",
-    "node_name": "opencode",
-    "kind": "package",
-    "group": "G19-主入口",
+    "group": "G4-服务端",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true
@@ -693,10 +765,10 @@
     "enabled": true
   },
   {
-    "node_id": "oc-server",
-    "node_name": "server",
+    "node_id": "oc-plugin",
+    "node_name": "plugin",
     "kind": "package",
-    "group": "G4-服务端",
+    "group": "G7-插件SDK",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true
@@ -715,6 +787,24 @@
     "node_name": "sdk",
     "kind": "package",
     "group": "G3-客户端",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-opencode",
+    "node_name": "opencode",
+    "kind": "package",
+    "group": "G19-主入口",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-llm",
+    "node_name": "llm",
+    "kind": "package",
+    "group": "G5-LLM请求层",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true

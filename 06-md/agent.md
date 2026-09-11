@@ -1,4 +1,14 @@
-# agent 节点（9）
+# agent 节点（10）
+
+## agent-architect-worker — architect-worker
+- 组: AG2-子Agent | Layer 7
+- 作用: 架构判断与设计裁决专家。技术选型/架构风格/模块与服务边界/架构评审/质量属性权衡/技术债治理时委派。产出 ADR 与多维权衡矩阵，并经 gate_architecture.py 门控。
+- 提供: 
+- **为什么存在（历史）**: 0911 opencode 架构能力扩展实战——诊断「架构」能力为孤儿/半成品（仅有知识图谱与 skill 草案，缺可见子Agent/行为层/门控），按五要素三层栈补齐为独立的架构判断执行者。
+- **为什么存在（当前）**: 需求驱动：需要独立子Agent 承担架构判断与设计裁决，产出 ADR / 多维权衡矩阵 / 边界设计说明并自检；hidden=false 可见，用户可用 @architect-worker 直接召唤；无 model，继承父会话模型；权限收敛（task 全 deny 不可再委派，bash 仅 git status/diff allow）。
+- **怎么用（触发）**: 主Agent 判定架构类任务时委派；或用户 /arch 命令、@architect-worker 直接召唤；openspec design 阶段由行为层强制委派。
+- **怎么用（工作流）**: ①加载 architecture-judgment skill 按其 workflow.md 4 步执行；②判场景（18 场景）→ 定产出类型；③读速查/深链节点 → 按 schema 产 ADR（+矩阵）或边界说明，TEC 节点仅入 standards_refs；④自检；⑤返回结构化 JSON（artifact_path/matrix_path/graph_refs）。架构图不由本 Agent 产出，由主Agent 另委 drawio-worker。
+- **怎么用（协作）**: 依赖 skill-architecture-judgment（方法论与契约）、instr-architecture-behavior（行为层触发）、command-arch（显式入口）、gate_architecture.py（门控）与 opencode.jsonc agent 段定义；架构图另委 drawio-worker（含 drawio-reference 强制加载）；依赖 config-main。
 
 ## agent-build — build
 - 组: AG1-主Agent | Layer 6

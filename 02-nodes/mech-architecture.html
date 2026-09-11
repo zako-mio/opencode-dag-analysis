@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>architecture · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>architecture <span class="tag">装配层</span></h1>
+  <div class="sub">mech-architecture · mechanism · AQ-自进化机制 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>架构三层栈：skill-architecture-judgment + agent-architect-worker + 行为层强制 + /arch 命令 + gate 门控；ADR/权衡矩阵经 gate_architecture.py PASS 方可交付</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='skill-architecture-judgment.html'>architecture-judgment</a></td><td>mechanism</td><td><small>机制源头</small></td></tr><tr><td><a href='agent-architect-worker.html'>architect-worker</a></td><td>mechanism</td><td><small>驱动</small></td></tr><tr><td><a href='instr-architecture-behavior.html'>architecture-behavior</a></td><td>mechanism</td><td><small>行为层</small></td></tr><tr><td><a href='command-arch.html'>arch</a></td><td>mechanism</td><td><small>命令入口</small></td></tr><tr><td><a href='config-main.html'>main</a></td><td>mechanism</td><td><small>配置</small></td></tr><tr><td><a href='mech-gate.html'>gate</a></td><td>mechanism</td><td><small>门控</small></td></tr></table>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 0910-软件工程架构方法论知识图谱（167 节点/360 边/18 组/11 域/三层）交付与 0911 opencode 架构能力扩展实战：把「架构判断力」从速查+路径路由升级为 opencode 可执行的架构能力三层栈（能力 Skill + 可见子Agent + 行为层），并补齐显式命令与机检门控。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>当前由五元组成：skill-architecture-judgment（可执行工作流 + 内置 167 节点离线图谱 + schemas/templates/gate）、agent-architect-worker（可见子Agent，继承父会话模型，产出 ADR/多维权衡矩阵/边界设计说明）、instr-architecture-behavior（行为层全局强制：架构任务必加载 skill + 委派 worker + 门控）、command-arch（/arch 显式入口）、gate_architecture.py（--kind adr|boundary 机检门控，PASS 前不得交付）。知识分层刚性：方法论层 MTH 与本质层 ESS 重召回，技术实践层 TEC 仅作 standards_refs 选型标尺、不得进入 decision/rationale。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>三条触发：①自动路由——任务涉及技术选型/架构风格/模块与服务边界与粒度/架构评审/质量属性权衡/技术债治理/演进治理时，主流程(plan/build)自动加载本 skill 并委派 architect-worker；②显式命令 /arch &lt;任务描述&gt; 或 /arch 选型|评审|边界|技术债 ...；③openspec design 工件生成或修改时由行为层 architecture-behavior.md 强制触发。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①判场景：把问题归入 routing.md 的 18 个任务场景之一（先匹配触发问法）；②定产出类型：adr(+矩阵) / boundary 为门控级，review / tech-debt 为模板级；③委派 architect-worker，prompt 含 Skills to Load、对应模板与 schema、TEC 引用约束；④产出后必跑 gate_architecture.py（--kind adr|boundary，schema 与 graph 自动解析），FAIL 回传修正最多 2 轮，不得降级口头通过；⑤交付主产物 + 多维权衡矩阵（涉选型）+ 门控证据 + 命中场景节点；⑥主动询问是否需要 drawio 架构图（是则另委 drawio-worker，prompt 必含 drawio-reference）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>组成五元 = skill-architecture-judgment + agent-architect-worker + instr-architecture-behavior + command-arch + gate_architecture.py；依赖 opencode.jsonc agent 段（architect-worker 定义）与 config-main（instructions 数组引用 architecture-behavior.md）；与架构图委派链路（drawio-worker + drawio-reference）、kb-construction（内容交付型/上下文注入型）协作；知识图谱为母库离线资产（0910-软件工程架构方法论），不联网即可用。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

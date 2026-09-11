@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>agent-protocol · opencode DAG</title>
+<title>arch · opencode DAG</title>
 <style>
   :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -42,22 +42,35 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>agent-protocol <span class="tag">装配层</span></h1>
-  <div class="sub">instr-agent-protocol · instruction · AG4-指令 · Layer 1</div>
+  <h1>arch <span class="tag">装配层</span></h1>
+  <div class="sub">command-arch · command · AG5-工具插件 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>Agent Protocol (Cache-Stable Prefix)</p>
+  <p>自定义命令 arch.md</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>instruction-load</td><td><small>agent-protocol 作为 agent 指令</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>instruction-load</td><td><small>agent-protocol 作为 agent 指令</small></td></tr><tr><td><a href='agent-vision-worker.html'>vision-worker</a></td><td>route</td><td><small>MCP 路由 vision</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>command-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mech-architecture.html'>architecture</a></td><td>mechanism</td><td><small>命令入口</small></td></tr></table>
 
   
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>0911 架构能力扩展的显式入口——用户可用 /arch &lt;任务描述&gt; 强制走架构流程（agent: build），命令文件自包含、不依赖其他文档即可执行。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：为架构能力提供 build 模式下的显式命令入口，串起判场景→定产出→委派 architect-worker→门控→交付→询问架构图全流程，确保门控未过不声称完成。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>用户输入 /arch &lt;任务描述&gt; 或 /arch 选型|评审|边界|技术债 ... 时在 build 模式执行。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①读 routing.md §0 场景索引把任务归入 18 场景之一；②定产出类型（adr/boundary 门控级，review/tech-debt 模板级）；③委派 architect-worker（prompt 含 Skills to Load、契约、TEC 约束、Return Format）；④跑 gate_architecture.py（--kind adr|boundary），FAIL 把 checks/errors 原样回传修正最多 2 轮；⑤交付主产物 + 矩阵 + 门控证据 + 命中场景节点；⑥主动询问是否生成 drawio 架构图（是则委派 drawio-worker 且 prompt 必含 drawio-reference）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 skill-architecture-judgment（workflow/checklist/templates/schemas/gate_architecture.py）、agent-architect-worker、instr-architecture-behavior；架构图委派 drawio-worker；属架构三层栈显式入口；依赖 config-main（command 目录自动加载）。</p></div>
+  </div>
+
 
   
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>read · opencode DAG</title>
+<title>job-listing-filter · opencode DAG</title>
 <style>
   :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -42,11 +42,11 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>read <span class="tag">装配层</span></h1>
-  <div class="sub">tool-read · tool · AG5-工具插件 · Layer 1</div>
+  <h1>job-listing-filter <span class="tag">装配层</span></h1>
+  <div class="sub">skill-job-listing-filter · skill · A6i-简历求职 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>自定义工具 read.ts</p>
+  <p>岗位表批量筛选方法论。当任务涉及从 xlsx/表格按城市/学历/届数/岗位类型/截止日期筛选招聘岗位，或用 openpyxl 解析 WPS 生成表格、设计关键词集与排除词、审计子Agent筛选结果时使用。触发关键词：岗位筛选、校招筛选、招聘表、openpyxl、WPS xlsx、styles.xml、关键词集、排除词、可疑行审计。</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -55,9 +55,22 @@
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>tool-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-glm-api.html'>ext-glm-api</a></td><td>external</td><td><small>read.ts VLM 首选 GLM-4V</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>read.ts VLM 降级 DeepSeek 视觉</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 2026-08-24 校招岗位筛选实战（25MB 双总表→808 命中），由 reflection-worker 于 09-09 从 cycle_0824_job_filter 提炼，09-11 /reflection 采纳并安装至 skills/。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：批量筛选 = 表结构定位 + WPS xlsx 格式兼容 + 筛选口径参数化 + 关键词/排除词规则 + 子Agent 审计；筛选结果的正确性不由子Agent 自检保证，而由主Agent 的结果级审计保证。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>任务涉及从 xlsx/表格按城市/学历/届数/岗位类型/截止日期筛选招聘岗位、用 openpyxl 解析 WPS 生成表格、设计岗位类型关键词集与排除词、审计子Agent 筛选结果时加载。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①表结构定位（列全 sheet 名、注意表头偏移、字段画像）；②WPS xlsx 解析兼容（复制副本→剥离/替换 styles.xml→重打包读副本）；③筛选口径参数化（截止日期 Excel 序列号 epoch 1899-12-30、学历、城市、届数）；④关键词集与排除词铁律（宽词必配行业硬件排除词，禁裸词跨领域泛词）；⑤算法特赦规则（含「算法」且不含「嵌入式」保留）；⑥委派子Agent（禁私扩关键词）+ 主Agent 结果级审计（可疑行抽样/审计脚本）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 recruit-assist（招聘域）协作；依赖 openpyxl；check_suspect.py 类审计脚本随 skill 复用；依赖 config-main。</p></div>
+  </div>
+
 
   
 

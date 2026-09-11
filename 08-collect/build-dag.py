@@ -71,7 +71,7 @@ for pid, node in pkg_by_id.items():
     node["how_use"]=old.get("how_use","")
     node["how_scenario"]=old.get("how_scenario","")
     up = pkg_updates.get(pid,{})
-    node["version_delta"]=up.get("version_delta","v1.18.14 → v1.18.29")
+    node["version_delta"]=up.get("version_delta","v1.18.14 → v1.18.30")
     node["what_changed"]=up.get("what_changed","")
 # httpapi-codegen 专用
 pkg_by_id["oc-httpapi-codegen"]["implementation"]=httpapi["implementation"]
@@ -96,7 +96,7 @@ for e in pkg_deps["edges"]:
     if key in seen: continue
     seen.add(key)
     if all(k in pkg_by_id for k in key):
-        official_edges_std.append({"from":e["from"],"to":e["to"],"mechanism":"workspace-dep","evidence":"v1.18.29 workspace dep","evidence_example":"","import_refs":0})
+        official_edges_std.append({"from":e["from"],"to":e["to"],"mechanism":"workspace-dep","evidence":"v1.18.30 workspace dep","evidence_example":"","import_refs":0})
 # httpapi-codegen → oc-client（被 client 依赖）
 official_edges_std.append({"from":"oc-httpapi-codegen","to":"oc-client","mechanism":"workspace-dep","evidence":"client depends on httpapi-codegen","evidence_example":"","import_refs":0})
 # 去重
@@ -109,7 +109,7 @@ official_edges = dedup
 print("官方包节点:",len(official_nodes),"官方边:",len(official_edges))
 
 with open(os.path.join(DATA,"official-dag.json"),"w",encoding="utf-8") as f:
-    json.dump({"name":"official","title":"官方原版 opencode 包级 DAG (v1.18.29)","version_note":"基于官方源码 v1.18.29，36 workspace 包","nodes":official_nodes,"edges":official_edges,"groups":list(dict.fromkeys(n["group"] for n in official_nodes)),
+    json.dump({"name":"official","title":"官方原版 opencode 包级 DAG (v1.18.30)","version_note":"基于官方源码 v1.18.30，36 workspace 包","nodes":official_nodes,"edges":official_edges,"groups":list(dict.fromkeys(n["group"] for n in official_nodes)),
      "stats":{"nodes":len(official_nodes),"edges":len(official_edges),"layers":0,"groups":len(set(n["group"] for n in official_nodes)),"has_cycle":False,"modified_pkgs":0,"external_nodes":0}},f,ensure_ascii=False,indent=2)
 print("official 已写入")
 
@@ -159,7 +159,7 @@ for c in asm_inv:
             for pid in ["oc-opencode","oc-core","oc-schema","oc-llm","oc-plugin","oc-sdk","oc-server"]:
                 asm_to_pkg.append((pid,cid,"agent-core"))
         elif cid=="agent-vision-worker": asm_to_pkg.append(("oc-core","agent-vision-worker","agent-dep"))
-        elif cid in ("agent-pdf-worker","agent-drawio-worker","agent-reflection-worker"):
+        elif cid in ("agent-pdf-worker","agent-drawio-worker","agent-reflection-worker","agent-architect-worker"):
             asm_to_pkg.append(("oc-core",cid,"agent-dep"))
         elif cid in ("agent-general","agent-explore"): asm_to_pkg.append(("oc-schema",cid,"agent-dep"))
         elif cid=="agent-search-worker": asm_to_pkg.append(("oc-schema",cid,"agent-dep"))
@@ -185,7 +185,7 @@ ext_nodes = [
  {"id":"ext-drawio-service","name":"draw.io 服务","kind":"external","group":"X-外部服务","implementation":"draw.io 在线/本地图表渲染","provides":"图表导出","why_need":"drawio-worker 子Agent 依赖","how_integrate":"drawio-mcp-minimal + DRAWIO_BASE_URL","why_current":"启用 mcp-drawio","layer":0},
  {"id":"ext-sylphx-pdf","name":"@sylphx/pdf-reader-mcp","kind":"external","group":"X-外部服务","implementation":"PDF 文本提取 npm 包","provides":"PDF 提取","why_need":"pdf-worker 子Agent 依赖","how_integrate":"npx @sylphx/pdf-reader-mcp","why_current":"启用 mcp-pdf-reader","layer":0},
  {"id":"ext-opencode-plugin","name":"@opencode-ai/plugin SDK","kind":"external","group":"X-外部服务","implementation":"插件 SDK（node_modules 1.18.x）","provides":"插件钩子类型","why_need":"plugin 开发（已无插件但 SDK 保留）","how_integrate":"node_modules @opencode-ai/plugin","why_current":"插件目录已空","layer":0},
-  {"id":"ext-opencode-go","name":"OpenCode Go 套餐","kind":"external","group":"X-外部服务","implementation":"OpenAI 兼容协议（@ai-sdk/openai-compatible），baseURL=opencode.ai/zen/go/v1。订阅套餐 $10/月($60 额度)，DeepSeek Flash 包月 3x","provides":"deepseek-v4-flash(go) / glm-5.2 / kimi-k2.7-code / qwen3.7-plus / muse-spark-1.3-contributor / hy4-preview / omen-alpha(stealth) 模型","why_need":"覆盖高性价比编码模型（Flash 包月 3x 额度）+ v1.18.29 新增 Muse Spark 1.3/Hy4/Omen Alpha","how_integrate":"env OPENCODE_GO_API_KEY","why_current":"blacklist deepseek-v4-pro（仅官方直连）","layer":0},
+  {"id":"ext-opencode-go","name":"OpenCode Go 套餐","kind":"external","group":"X-外部服务","implementation":"OpenAI 兼容协议（@ai-sdk/openai-compatible），baseURL=opencode.ai/zen/go/v1。订阅套餐 $10/月($60 额度)，DeepSeek Flash 包月 3x","provides":"deepseek-v4-flash(go) / glm-5.2 / kimi-k2.7-code / qwen3.7-plus / muse-spark-1.3-contributor / hy4-preview / omen-alpha(stealth) 模型","why_need":"覆盖高性价比编码模型（Flash 包月 3x 额度）+ 新增 Muse Spark 1.3/Hy4/Omen Alpha","how_integrate":"env OPENCODE_GO_API_KEY","why_current":"blacklist deepseek-v4-pro（仅官方直连）","layer":0},
   {"id":"ext-tavily-api","name":"Tavily Search API","kind":"external","group":"X-外部服务","implementation":"外部搜索 API（web search，1 credit/次），search-methodology/skill 的发现层外部搜索降级链首选","provides":"外部事实搜索/网页检索","why_need":"search-methodology skill 依赖外部搜索后端做发现层；search-worker 子Agent 证据包构建","how_integrate":"env TAVILY_API_KEY → api.tavily.com/search","why_current":"0905 联网搜索能力架构新增；search-methodology/skill 依赖","layer":0},
 ]
 print("外部服务:",len(ext_nodes))
@@ -206,7 +206,7 @@ diff_edges=[dict(e) for e in official_edges]
 
 layer2=topo_layer(diff_nodes,diff_edges)
 for n in diff_nodes: n["layer"]=layer2.get(n["id"],0)
-diff_dag={"name":"diff","title":"官方 + 改造对比 DAG (v1.18.29 基线 + 装配层引用染色)","version_note":"官方 v1.18.29 基线；改造点=装配层引用（红）+ 外部服务（绿）","nodes":diff_nodes,"edges":diff_edges,"groups":list(dict.fromkeys(n["group"] for n in diff_nodes)),
+diff_dag={"name":"diff","title":"官方 + 改造对比 DAG (v1.18.30 基线 + 装配层引用染色)","version_note":"官方 v1.18.30 基线；改造点=装配层引用（红）+ 外部服务（绿）","nodes":diff_nodes,"edges":diff_edges,"groups":list(dict.fromkeys(n["group"] for n in diff_nodes)),
  "stats":{"nodes":len(diff_nodes),"edges":len(diff_edges),"layers":max(layer2.values())+1 if layer2 else 0,"groups":len(set(n["group"] for n in diff_nodes)),"has_cycle":has_cycle(diff_nodes,diff_edges),"modified_pkgs":len(pkg_used_by_asm),"external_nodes":sum(1 for n in diff_nodes if n.get("status")=="external")}}
 with open(os.path.join(DATA,"diff-dag.json"),"w",encoding="utf-8") as f: json.dump(diff_dag,f,ensure_ascii=False,indent=2)
 print(f"diff: {diff_dag['stats']}")
@@ -223,6 +223,11 @@ SKILL_GROUP={
  "openspec-archive-change":"A6l-OpenSpec工作流","openspec-bulk-archive-change":"A6l-OpenSpec工作流","openspec-sync-specs":"A6l-OpenSpec工作流",
  "openspec-update-change":"A6l-OpenSpec工作流","openspec-onboard":"A6l-OpenSpec工作流","release-openspec":"A6l-OpenSpec工作流",
  "superpowers-feature-workflow":"A6m-Superpowers","superpowers-learning-workflow":"A6m-Superpowers","superpowers-openspec-superpowers-workflow":"A6m-Superpowers",
+ "architecture-judgment":"A6n-架构判断",
+ "github-bulk-upload":"A6o-交付发布","single-source-docs-pipeline":"A6o-交付发布",
+ "job-listing-filter":"A6i-简历求职",
+ "kb-construction":"A6q-知识库构建","restricted-corpus-acquisition":"A6q-知识库构建","resumable-content-pipeline":"A6q-知识库构建",
+ "opencode-capability-extension":"A6a-配置知识",
 }
 AGENT_GROUP={"agent-plan":"AG1-主Agent","agent-build":"AG1-主Agent"}
 # 装配分组
@@ -290,12 +295,9 @@ asm_ext_rules=[
 ]
 for comp,ext,reason in asm_ext_rules:
     mod_edges.append({"from":ext,"to":comp,"mechanism":"external","evidence":reason,"evidence_example":"","import_refs":0})
-# vision-worker → GLM（VLM 双链路）也加
-mod_edges.append({"from":"ext-glm-api","to":"tool-read","mechanism":"external","evidence":"read.ts VLM 首选 GLM-4V","evidence_example":"","import_refs":0})
-mod_edges.append({"from":"ext-deepseek-api","to":"tool-read","mechanism":"external","evidence":"read.ts VLM 降级 DeepSeek 视觉","evidence_example":"","import_refs":0})
 # 3. 装配 ↔ 装配 边
 # agent-plan/build 委派子Agent
-for sub in ["agent-pdf-worker","agent-drawio-worker","agent-general","agent-explore","agent-reflection-worker","agent-vision-worker","agent-search-worker"]:
+for sub in ["agent-pdf-worker","agent-drawio-worker","agent-general","agent-explore","agent-reflection-worker","agent-vision-worker","agent-search-worker","agent-architect-worker"]:
     mod_edges.append({"from":"agent-plan","to":sub,"mechanism":"delegate","evidence":"plan 委派协议"})
     mod_edges.append({"from":"agent-build","to":sub,"mechanism":"delegate","evidence":"build 委派协议"})
 # drawio-worker → drawio-reference skill（强制加载）
@@ -306,16 +308,16 @@ mod_edges.append({"from":"skill-pdf-ocr","to":"agent-pdf-worker","mechanism":"sk
 mod_edges.append({"from":"skill-search-methodology","to":"agent-search-worker","mechanism":"skill-mandate","evidence":"search-methodology 强制加载"})
 # vision-worker → auto-mode（视觉路由）
 mod_edges.append({"from":"instr-auto-mode","to":"agent-vision-worker","mechanism":"hook-mount","evidence":"vision-worker 路由规则"})
-# instruction → agent（auto-mode, agent-protocol, search-behavior 被 agent 使用）
+# instruction → agent（auto-mode, architecture-behavior, search-behavior 被 agent 使用）
 for ag in ["agent-plan","agent-build"]:
     mod_edges.append({"from":"instr-auto-mode","to":ag,"mechanism":"instruction-load","evidence":"auto-mode.md 作为 agent 指令"})
-    mod_edges.append({"from":"instr-agent-protocol","to":ag,"mechanism":"instruction-load","evidence":"agent-protocol 作为 agent 指令"})
+    mod_edges.append({"from":"instr-architecture-behavior","to":ag,"mechanism":"instruction-load","evidence":"architecture-behavior 作为 agent 指令"})
     mod_edges.append({"from":"instr-search-behavior","to":ag,"mechanism":"instruction-load","evidence":"search-behavior 作为 agent 指令"})
     mod_edges.append({"from":"instr-browser-management","to":ag,"mechanism":"instruction-load","evidence":"browser-management 作为 agent 指令"})
     mod_edges.append({"from":"instr-downloads","to":ag,"mechanism":"instruction-load","evidence":"downloads 作为 agent 指令"})
-# agent-protocol → 子Agent 路由
-mod_edges.append({"from":"instr-agent-protocol","to":"agent-vision-worker","mechanism":"route","evidence":"MCP 路由 vision"})
+# 行为层路由子Agent
 mod_edges.append({"from":"instr-search-behavior","to":"agent-search-worker","mechanism":"route","evidence":"搜索行为路由 search-worker"})
+mod_edges.append({"from":"instr-architecture-behavior","to":"agent-architect-worker","mechanism":"route","evidence":"架构行为层路由 architect-worker"})
 # command-reflection → reflection-worker
 mod_edges.append({"from":"command-reflection","to":"agent-reflection-worker","mechanism":"command-use","evidence":"/reflection 调反射 worker"})
 # 4. 机制 → 受影响组件（全边丰富化）
@@ -340,6 +342,12 @@ mech_edges=[
  ("mech-session-memory","config-main","compaction 压缩配置"),("mech-session-memory","instr-auto-mode","压缩模板源"),
  ("mech-grill-me","skill-grill-me","机制源头"),
  ("mech-agents-protocol","skill-agency-agents","角色匹配"),
+ ("mech-architecture","skill-architecture-judgment","机制源头"),
+ ("mech-architecture","agent-architect-worker","驱动"),
+ ("mech-architecture","instr-architecture-behavior","行为层"),
+ ("mech-architecture","command-arch","命令入口"),
+ ("mech-architecture","config-main","配置"),
+ ("mech-architecture","mech-gate","门控"),
 ]
 for comp,target,reason in mech_edges:
     mod_edges.append({"from":comp,"to":target,"mechanism":"mechanism","evidence":reason,"evidence_example":"","import_refs":0})
@@ -361,7 +369,7 @@ print(f"modified 去重后边: {len(dedup_mod)} → 悬空清洗后: {len(clean_
 
 layer3=topo_layer(mod_nodes_all, clean_edges)
 for n in mod_nodes_all: n["layer"]=layer3.get(n["id"],0)
-mod_dag={"name":"modified","title":"改造版 opencode 包级 + 装配层双层 DAG (v1.18.29 + 自进化)","version_note":"官方 36 包（v1.18.29）+ 装配层 69 组件 + 外部服务 9","nodes":mod_nodes_all,"edges":clean_edges,"groups":list(dict.fromkeys(n["group"] for n in mod_nodes_all)),
+mod_dag={"name":"modified","title":"改造版 opencode 包级 + 装配层双层 DAG (v1.18.30 + 自进化)","version_note":"官方 36 包（v1.18.30）+ 装配层 83 组件 + 外部服务 10","nodes":mod_nodes_all,"edges":clean_edges,"groups":list(dict.fromkeys(n["group"] for n in mod_nodes_all)),
  "stats":{"nodes":len(mod_nodes_all),"edges":len(clean_edges),"layers":max(layer3.values())+1 if layer3 else 0,"groups":len(set(n["group"] for n in mod_nodes_all)),"has_cycle":has_cycle(mod_nodes_all,clean_edges),
   "pkg_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="package"),"asm_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="assembly"),"ext_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="external"),
   "mech_nodes":sum(1 for n in mod_nodes_all if n.get("kind")=="mechanism")}}

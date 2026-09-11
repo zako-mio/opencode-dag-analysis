@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>architecture-judgment · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>architecture-judgment <span class="tag">装配层</span></h1>
+  <div class="sub">skill-architecture-judgment · skill · A6n-架构判断 · Layer 1</div>
+
+  <h2>① 作用</h2>
+  <p>&gt;</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='mech-architecture.html'>architecture</a></td><td>mechanism</td><td><small>机制源头</small></td></tr></table>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 0910-软件工程架构方法论知识图谱交付（167 节点/360 边/18 组/11 域/三层）；0911 opencode 架构能力扩展实战中由「速查 + 路径路由」升级为 Agent 可执行工作流能力包（workflow/checklist/templates/schemas/gate/openspec 集成）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：把一个架构问题变成可解释、可复核、可交付的产物——先判决策类型再路由节点，最后产 ADR（必选）与多维权衡矩阵（选型场景），并过机检门控方可交付；内置离线图谱不联网可用，知识分层引用纪律防止技术层过度推荐。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>①自动路由：任务涉及技术选型/架构风格/模块与服务边界/架构评审/质量属性权衡/技术债治理/演进治理时，主流程自动加载；②显式命令 /arch；③openspec design 工件生成或修改时由行为层 architecture-behavior.md 强制触发。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①判类型：归入 routing.md 的 18 个任务场景之一；②读速查：用 cheatsheet.md 对应层条目做首轮判断得到支撑节点 id；③深链接：按 11-node-pages/&lt;ID&gt;.html 或 15-md/nodes/&lt;ID&gt;.md 读节点全文确认；④产出+自检：按 schemas/adr.schema.json 产 ADR（选型加矩阵），边界走 boundary schema，均以 gate_architecture.py --kind adr|boundary 自检，不过不得交付；TEC 节点仅写入 standards_refs。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>由 architect-worker 作为执行载体；受 instr-architecture-behavior 行为层约束；配套 workflow.md / checklist.md / templates / schemas / gate_architecture.py / integrations/openspec-design.md；权威源在 0910 任务仓 20-agent-skill（install-skill.py 派生安装）；与 command-arch、kb-construction（内容交付型/上下文注入型）协作。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

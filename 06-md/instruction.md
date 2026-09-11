@@ -1,14 +1,14 @@
 # instruction 节点（5）
 
-## instr-agent-protocol — agent-protocol
+## instr-architecture-behavior — architecture-behavior
 - 组: AG4-指令 | Layer 1
-- 作用: Agent Protocol (Cache-Stable Prefix)
+- 作用: ---
 - 提供: 
-- **为什么存在（历史）**: 
-- **为什么存在（当前）**: 
-- **怎么用（触发）**: 
-- **怎么用（工作流）**: 
-- **怎么用（协作）**: 
+- **为什么存在（历史）**: 0911 架构能力三层栈的行为层——对齐 search-behavior 的受管标记块范式（BEGIN/END），把「遇架构任务必须加载 skill + 委派 worker + 门控」编码为全局强制规则，避免能力成孤儿。
+- **为什么存在（当前）**: 需求驱动：为所有 Agent 提供架构任务的触发红线——架构类任务三步（加载 architecture-judgment skill / 委派 architect-worker / 方案设计与选型类过 gate_architecture.py 方可交付）；含知识分层策略（MTH/ESS 重召回，TEC 仅入 standards_refs）与 openspec design 刚性门控。
+- **怎么用（触发）**: 作为全局 instruction 加入 opencode.jsonc instructions 数组，所有 Agent 会话前缀加载；命中架构类任务（技术选型/架构风格/模块边界/服务边界/架构评审/质量属性权衡/敏感点权衡点/技术债/演进治理/可观测性与 SLO/部署发布/测试策略/交付效能）时生效。
+- **怎么用（工作流）**: ①架构任务 → 强制加载 architecture-judgment skill；②委派 architect-worker；③方案设计与选型类过 gate_architecture.py 门控，未过不得声称完成；④openspec design 工件：加载 skill 按 integrations/openspec-design.md 执行，委派 worker 产 ADR + 矩阵，gate PASS 前不得定稿 design.md，FAIL 回传修正最多 2 轮，结束把 change/adr 双落留档；⑤TEC 节点仅入 standards_refs。
+- **怎么用（协作）**: 行为层地基，与 skill-architecture-judgment（执行细节）、agent-architect-worker（委派执行）、command-arch（/arch 入口）共同构成架构三层栈；BEGIN/END 受管标记块保证对 prefix-cache 最小冲击，不污染 auto-mode.md；依赖 config-main（instructions 数组引用）。
 
 ## instr-auto-mode — auto-mode
 - 组: AG4-指令 | Layer 1

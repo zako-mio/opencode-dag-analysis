@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumable-content-pipeline · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>resumable-content-pipeline <span class="tag">装配层</span></h1>
+  <div class="sub">skill-resumable-content-pipeline · skill · A6q-知识库构建 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>大型内容/知识生产可续跑流水线。当任务涉及从零构建论文全集、课程知识库、方法论图谱等需多子Agent分片、数小时级、可中断续跑的内容生产时使用。触发关键词：知识库构建、论文全集、课程知识库、分片并行、可续跑、幂等生成脚本、超时治理、聚合终裁、多层门控。</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 2026-08-25 LLM 论文全集采集/全量分析、09-10 软件工程架构知识库、09-09 课程知识库等多轮大型内容生产实战，经合并批 batch_20260911 提炼。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：目标产物由 ≥50 个同构节点组成、单会话无法一次完成、需多路并行子Agent 分片产出且超时/中断后零浪费恢复，多形态交付并通过多层门控。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>任务涉及从零构建论文全集/课程知识库/方法论图谱等需多子Agent 分片、数小时级、可中断续跑的内容生产时加载；适用节点数多、耗时数小时、允许分阶段暂停续跑；不适用 &lt;20 节点小任务或每节点需强交互确认场景。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①契约先行落盘（contract.md：路径/命名/schema/信源分级/版权红线，长 prompt 委派引用短路径防 JSON 截断）；②骨架先行门控（先数据 JSON 层完成节点清单 + DAG 校验再并行写作）；③分片并行（按领域/主题/年代分片，子Agent 只写各自唯一文件域，预算约 20 token/s、单轮 &lt;10min）；④幂等脚本先落盘（每节点独立目录，超时复跑不重复不丢）；⑤聚合终裁（主Agent 去重、统一口径，不取平均不重跑，双路补漏）；⑥独立门控（主Agent 不信生产者自检，查数据完整性/结构/HTML/链接可达性/内容有无，CI 不可用层显式 SKIPPED）；⑦发布与 git diff 漂移检测。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>与 kb-construction（内容交付型）、single-source-docs-pipeline（多产物一致）、search-methodology（信源）、drawio-worker（图表）协作；契约先行原则对齐 mech-coding-discipline；依赖 config-main。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

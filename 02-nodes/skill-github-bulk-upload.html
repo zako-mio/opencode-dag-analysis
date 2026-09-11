@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>github-bulk-upload · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>github-bulk-upload <span class="tag">装配层</span></h1>
+  <div class="sub">skill-github-bulk-upload · skill · A6o-交付发布 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>GitHub 大仓库全量上传方法论。当任务涉及将大型交付物/源码克隆(100+MB/数千文件)上传至 GitHub 仓库、处理嵌套.git被识别为gitlink、大文件推送schannel中断、gh CLI代理登录、权限deny转手动push时使用。触发关键词：上传GitHub、GitHub上传、大仓库上传、gh repo create、git push、嵌</p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 DeepSeek Harness 源码解析交付物上传实战（100+MB/8102 文件→公开仓 deepseek-harness-analysis，提交 b22d6bc，远程 tree 9336 条目）；吸收三个开源 skill 方法论（上传预检/敏感扫描/gh CLI 纪律），补足嵌套 .git、断链、postBuffer、代理登录、权限移交等本项目独有场景。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：需将大型交付物/源码克隆全量上传 GitHub，处理 Windows 下嵌套 .git 被识别为 gitlink、schannel 中断、gh CLI 直连超时走代理设备码登录、push 被权限 deny 转用户手动，以及沙箱禁 push 时改用 Git Data API 整树推送。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>任务涉及将 100+MB/数千文件交付物或源码克隆上传 GitHub、处理嵌套 .git/gitlink、大文件 schannel 中断、gh 代理登录、权限 deny、批量仓库上传时加载。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>10 步：①准备环境（装 gh CLI/git 身份/敏感扫描）；②代理登录（HTTPS_PROXY + 设备码，非交互须移交用户）；③git 初始化；④断链修复；⑤嵌套 .git 处理（git ls-files -s 查模式 160000→删嵌套 .git）；⑥全量提交；⑦gh repo create + topics；⑧postBuffer 调 500MB/HTTP1.1；⑨推送与协作（deny 转用户手动）；⑩验证（tree 条目/README 大小/branch/visibility/topics 实测，不凭返回 200 推断成功）。沙箱禁 push 时改走 Git Data API（blob→tree→commit→ref）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 gh CLI 与 git（定向代理）；凭据按 L1/L2/L3 分层披露；与 single-source-docs-pipeline 分工（Contents API 单文件 vs Git Data API 整树）；依赖 config-main（permission 权限规则）。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>

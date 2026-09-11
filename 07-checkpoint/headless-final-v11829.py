@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""S8b: headless Chromium 验证 opencode DAG 交互图（Linux/WSL 适配版 v1.18.29）
+"""S8b: headless Chromium 验证 opencode DAG 交互图（Linux/WSL 适配版 v1.18.30）
 1. --dump-dom 三视图: zcount == 期望节点数（cytoscape layoutstop 后更新）
 2. --screenshot 三视图截图（供 VLM 验证）
 """
@@ -29,7 +29,7 @@ def run_chrome(url, dump=True, shot=None, wait_ms=8000):
 views = [
     ("view-official.html", "official", 36),
     ("view-diff.html", "diff", 46),
-    ("view-modified.html", "modified", 119),
+    ("view-modified.html", "modified", 129),
 ]
 
 all_ok = True
@@ -45,7 +45,7 @@ for fname, name, exp in views:
 # 截图三视图
 for fname, name, exp in views:
     url = f"file:///{os.path.join(INT, fname)}"
-    shot = os.path.join(OUT, f"final-v11829-{name}.png")
+    shot = os.path.join(OUT, f"final-v11830-{name}.png")
     run_chrome(url, dump=False, shot=shot, wait_ms=12000)
     size = os.path.getsize(shot) if os.path.exists(shot) else 0
     print(f"shot {name}: {size} bytes {'OK' if size > 20000 else 'TOO SMALL'}")

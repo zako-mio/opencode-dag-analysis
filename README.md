@@ -3,11 +3,11 @@
 ## 简介
 
 对 **opencode** 做 DAG 依赖分析，三图渐进式理解"官方原版 → 改造对比 → 改造版装配"：
-1. **图1 官方包级 DAG**：36 个 `@opencode-ai/*` workspace 包依赖关系（未改造基线，v1.18.29 源码）
+1. **图1 官方包级 DAG**：36 个 `@opencode-ai/*` workspace 包依赖关系（未改造基线，v1.18.30 版本标注；包级结构沿用 v1.18.29，v1.18.30 未变）
 2. **图2 官方+改造对比 DAG**：官方基线 + 被改造引用的包染色 + 外部服务
-3. **图3 改造版双层 DAG**：包级 + 装配层（skills/agents/mcp/tools/commands/instructions/config/mechanisms）+ 外部服务
+3. **图3 改造版双层 DAG**：包级 + 装配层（skills/agents/mcp/commands/instructions/config/mechanisms）+ 外部服务
 
-本次更新（2026-09-06）：**官方源码 v1.18.25 → v1.18.29 全量更新 + 装配层全量重建 + 自进化机制扩展**。opencode 自进化持续，装配层从 69 组件扩到 73 组件，新增 4 个联网搜索组件（search-worker / search-methodology / login-auth-channel / search-behavior）与 1 个 Session Memory 机制，DAG 从"自进化体系"进一步演化为"联网能力增强体系"。
+本次更新（2026-09-11）：**官方源码 v1.18.29 → v1.18.30 点检 + 装配层全量重建 + 架构判断能力入图**。官方侧仅版本标注/外部 SDK 升号，包级结构与依赖边无变化；装配层从 73 组件扩到 83 组件，新增 `architect-worker` 子Agent、8 个 skill（architecture-judgment / github-bulk-upload / job-listing-filter / kb-construction / opencode-capability-extension / restricted-corpus-acquisition / resumable-content-pipeline / single-source-docs-pipeline）、`architecture-behavior` 指令与 `/arch` 命令，并新增「架构三层栈」机制节点；退役 `tool-read`（改模型原生多模态）与 `instr-agent-protocol`（并入 auto-mode）。DAG 从"联网能力增强体系"进一步演化为"架构判断 + 交付发布 + 知识库构建"的多能力装配体系。
 
 ## 为什么与 deepseek-harness 分析不同
 
@@ -24,18 +24,18 @@
 |---------|------|
 | **三图交互总览**（官方/对比/改造切换） | `04-interactive/view-{official,diff,modified}.html` |
 | 根入口（简介+结论+时间线+导航） | `index.html` |
-| 每节点一页（**七段**：作用/提供/依赖/被依赖/**为什么存在(why)**/**怎么用(how)** + 内部结构 DAG） | `02-nodes/`（119 页） |
-| 组目录 | `03-groups/index.html`（40 组） |
+| 每节点一页（**七段**：作用/提供/依赖/被依赖/**为什么存在(why)**/**怎么用(how)** + 内部结构 DAG） | `02-nodes/`（129 页） |
+| 组目录 | `03-groups/index.html`（43 组） |
 | 改造差异清单表 | `05-diff/diff-list.html` |
 | AI 检索 MD 镜像（含 why/how） | `06-md/00-index.md` |
-| 静态 drawio 图 | `05-drawio/main/`（3 主图）+ `05-drawio/assembly/`（7 关键装配） |
+| 静态 drawio 图 | `05-drawio/main/`（3 主图）+ `05-drawio/assembly/`（关键装配） |
 | DAG 数据（JSON） | `01-dag-data/{official,diff,modified}-dag.json` |
-| 内部模块 import 数据 | `08-collect/internal-v1.18.29.json`（33 包 2251 模块 6079 边） |
+| 内部模块 import 数据 | `08-collect/internal-v1.18.29.json`（33 包 2251 模块 6079 边，v1.18.29 基线） |
 
 ## 内容深化（why - how）
 
-**119 节点全部七段**（三种节点类型各自适配的 why/how 结构）：
-- **装配层（73 组件）**：⑤ 为什么存在（历史引入动机 + 当前需求驱动）+ ⑥ 怎么用（触发/工作流/协作）
+**129 节点全部七段**（三种节点类型各自适配的 why/how 结构）：
+- **装配层（83 组件）**：⑤ 为什么存在（历史引入动机 + 当前需求驱动）+ ⑥ 怎么用（触发/工作流/协作）
 - **官方包（36 包）**：⑤ 为什么存在（设计意图官方 + 改造关联：本机为何引用/为何不引用）+ ⑥ 怎么用（入口/导出 API/命令 + 典型场景与协作）
 - **外部服务（10 个）**：⑤ 为什么存在（为什么需要 + 当前状态）+ ⑥ 怎么用（怎么接入 + 装配层调用）
 
@@ -43,28 +43,28 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 
 ## 核心数据
 
-- **图1 official**：36 包 / 68 边 / 6 层 / 19 组（v1.18.29 源码）
+- **图1 official**：36 包 / 68 边 / 6 层 / 19 组（v1.18.30 版本标注；包级结构沿用 v1.18.29）
 - **图2 diff**：46 节点 / 68 边（7 包被改造引用 + 10 外部）
-- **图3 modified**：119 节点 / 183 边 / 8 层 / 40 组（36 包 + 73 装配 + 10 外部，含 **17 个自进化机制 mechanism 节点**）
-- **装配层**：73 组件（33 skills + 9 agents + 6 mcp + 5 instructions + 1 tool + 1 command + 1 config + 17 mechanisms）
-- **内部结构**：33 包 / 2251 模块 / 6079 边（全量 import 解析，v1.18.29；opencode 主包 362 模块 / 1504 边）
-- **外部服务**：10 个（新增 **Tavily Search API**，OpenCode Go 套餐补 Muse Spark 1.3/Hy4/Omen Alpha 模型）
-- **版本基线**：官方 v1.18.25 → **v1.18.29**
+- **图3 modified**：129 节点 / 190 边 / 8 层 / 43 组（36 包 + 83 装配 + 10 外部，含 **18 个自进化机制 mechanism 节点**）
+- **装配层**：83 组件（41 skills + 10 agents + 6 mcp + 5 instructions + 0 tools + 2 commands + 1 config + 18 mechanisms）
+- **内部结构**：33 包 / 2251 模块 / 6079 边（全量 import 解析，沿用 v1.18.29 基线；opencode 主包 362 模块 / 1504 边）
+- **外部服务**：10 个（含 Tavily Search API）
+- **版本基线**：官方 v1.18.25 → **v1.18.30**
 
 ## 目录结构
 
 ```
 0902-opencode-dag/
 ├── 01-dag-data/          # DAG 数据: official/diff/modified-dag.json + diff-list.json
-├── 02-nodes/             # 119 节点页（36 包 + 73 装配 + 10 外部，七段式+内部结构DAG）
-├── 03-groups/            # 40 组索引页
+├── 02-nodes/             # 129 节点页（36 包 + 83 装配 + 10 外部，七段式+内部结构DAG）
+├── 03-groups/            # 43 组索引页
 ├── 04-interactive/       # cytoscape 三图交互（view-official/diff/modified.html）+ vendor
-├── 05-drawio/            # main/ 三主图 + assembly/ 7 关键装配节点图
+├── 05-drawio/            # main/ 三主图 + assembly/ 关键装配节点图
 ├── 05-diff/              # 改造差异清单表
 ├── 06-md/                # AI 友好 MD 镜像
 ├── 07-checkpoint/        # 采集/建模/生成/门控脚本 + 中间数据
-├── 08-collect/           # v1.18.29 采集数据 + 各阶段 stage-*.json
-├── opencode-src-v1.18.29/# 官方源码 worktree（v1.18.29 基线）
+├── 08-collect/           # v1.18.30 采集数据 + 各阶段 stage-*.json（内部结构沿用 v1.18.29 基线）
+├── opencode-src-v1.18.29/# 官方源码 worktree（v1.18.29 基线；v1.18.30 包级结构未变）
 └── index.html            # 根入口
 ```
 
@@ -73,12 +73,12 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 ```
 图1 官方包级 ──────────► 图2 官方+改造对比 ──────────► 图3 改造版双层
 (未改造基线)              (标明改造点)                  (包级+装配层)
-36 包依赖                  7 包被引用 + 外部             36 包 + 73 装配 + 10 外部
+36 包依赖                  7 包被引用 + 外部             36 包 + 83 装配 + 10 外部
 ```
 
-## 自进化机制（0906 版，17 个）
+## 自进化机制（0911 版，18 个）
 
-0902 的 16 个机制本次全量重扫并新增 **Session Memory 结构化压缩**，装配层自进化出完整的自进化机制体系（17 个），让装配层从"静态配置"升级为"可持续自进化的体系"：
+0906 的 17 个机制本次全量重扫并新增 **架构三层栈（架构判断机制）**，装配层自进化机制体系达 18 个，覆盖"角色编排、缓存与并行、故障自愈、编码安全、留档与记忆、联网与架构判断"：
 
 | 机制节点 | 价值 |
 |---------|------|
@@ -99,16 +99,17 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 | Universal SubAgent Rules | 子Agent 身份约束 + 结构化 JSON 返回契约 |
 | Universal Coding Discipline | 验证证据、磁盘重读、路径本地化、元数据不入输出 |
 | Session Memory 结构化压缩 | compaction 5 段模板（当前状态/关键文件/已做决策/待解决问题/经验教训） |
+| 架构三层栈（架构判断机制） | skill + agent + instruction + command + gate 五元机制，技术选型/架构评审必经 `gate_architecture.py` |
 
-本次更新为**官方源码 v1.18.25 → v1.18.29 + 装配层全量重建 + 联网搜索组件入图**三合一：36 包官方包结构随版本更新，装配层从 69 组件重建成 73 组件（新增 4 联网组件并新增 1 个 mechanism），10 个外部服务（含新增 Tavily Search API）。
+本次更新为**官方源码 v1.18.29 → v1.18.30 点检 + 装配层全量重建 + 架构判断能力入图**三合一：官方侧仅版本标注与外部 SDK 升号（36 包结构与依赖边不变），装配层从 73 组件重建成 83 组件（+12 新增 / −2 退役，新增架构三层栈机制），10 个外部服务维持不变。
 
 ## 关键发现
 
-1. **联网搜索能力落地**：0905 架构后新增 search-worker 子Agent + search-methodology skill + login-auth-channel skill + search-behavior instruction（4 组件），装配层从"自进化"扩展为"联网能力增强"
+1. **架构判断能力落地**：新增 `architecture-judgment` skill + `architect-worker` 子Agent + `architecture-behavior` 指令 + `/arch` 命令 + `gate_architecture.py` 五元机制，装配层从"联网能力增强"扩展为"架构判断 + 交付发布 + 知识库构建"多能力体系
 2. **改造仍浅**：仅 7 个官方包（opencode/core/schema/plugin/sdk/server/llm）被装配层直接引用，改造主体仍是配置装配层
-3. **装配层从"碎片化"变"能力增强体系"**：17 个机制节点 + 4 个联网搜索组件，DAG 呈现"可持续演进 + 外部事实获取"的双轨结构
-4. **skills 依赖外部服务为主**：33 个 skill 大多挂 GLM/高德/飞书/Chrome/drawio/Tavily 等外部服务（核心 10 大外部）
-5. **官方包 v1.18.29 内容演进**：Claude 5.1+ thinking block 容错、Azure 插件简化、Console 工作区迁移、Go 套餐新模型（Muse Spark 1.3/Hy4/Omen Alpha）
+3. **装配层能力扩张**：skills 33→41（+8）、agents 9→10（+1），新增能力覆盖 GitHub 大仓库上传、岗位表筛选、知识库构建、能力扩展 SOP、受限语料采集、可续跑流水线、单一真相源文档
+4. **退役清理**：`tool-read` 改模型原生多模态退役、`instr-agent-protocol` 并入 auto-mode，装配层去掉冗余工具节点
+5. **官方包 v1.18.30 内容演进**：外部 SDK 升号（@ai-sdk/azure、@ai-sdk/openai、gitlab-ai-provider）、Bedrock-DeepSeek id 修复补丁、console i18n 与多语言文档更新，不触及包间依赖图
 
 ## 大包内部结构（组级视图）
 
@@ -116,7 +117,7 @@ oc-opencode (362 模块) / oc-core / oc-app 等大包内部 DAG 采用**目录�
 
 ## 质量门控
 
-`08-collect/quality-gate.py` 25 项 ALL PASS：JSON 合法 / DAG 无环 / HTML 断链 0 / drawio 配套齐全 / 节点页 119 覆盖 / 交互图 DATA 一致 / MD 覆盖 / 七段完整 / 统计一致 / 悬空边清洗。
-headless + VLM 验证：三图 view-official/diff/modified 渲染正常，中文完整无截断（zcount 36/46/119 全匹配）。
+`08-collect/quality-gate.py` 30 项 ALL PASS：JSON 合法 / DAG 无环无悬空 / HTML 断链 0 / drawio 配套齐全 / 节点页 129 覆盖 / 无陈旧节点页 / 交互图 DATA 一致 / 三图节点数 36/46/129 / 装配 83 / 外部 10 / 机制 18 / 组 43 / 七段完整 / 统计一致。
+headless + VLM 验证：三图 view-official/diff/modified 渲染正常，中文完整无截断（zcount 36/46/129 全匹配）。
 
-*基线版本：官方 v1.18.29 ｜ 更新日期：2026-09-06*
+*基线版本：官方 v1.18.30（包级结构沿用 v1.18.29）｜ 更新日期：2026-09-11*

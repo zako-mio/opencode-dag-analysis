@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>restricted-corpus-acquisition · opencode DAG</title>
+<style>
+  :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:30px 20px 60px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin-bottom:6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
+  .tag { background:#20324f; color:#7fb0ff; padding:2px 10px; border-radius:20px; font-size:12px; }
+  .tag.yellow { background:#3a2f1a; color:#e0b25e; }
+  .tag.green { background:#1f3a2a; color:#5fd08a; }
+  .tag.red { background:#3a1f1f; color:#e06b6b; }
+  .nav { margin-bottom:20px; display:flex; gap:12px; align-items:center; }
+  .nav a { color:var(--accent); text-decoration:none; font-size:13px; }
+  .nav a:hover { text-decoration:underline; }
+  h2, h3 { margin:22px 0 10px; color:var(--dim); font-size:15px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  h3 { margin-top:30px; }
+  p { font-size:14px; line-height:1.8; color:var(--text); }
+  ul { font-size:14px; line-height:1.8; padding-left:22px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th, td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+  th { background:var(--panel); color:var(--dim); }
+  td a { color:var(--accent); text-decoration:none; }
+  td small { color:var(--dim); }
+  .empty { color:var(--dim); font-size:13px; font-style:italic; }
+  .why-block, .how-block { display:flex; flex-direction:column; gap:10px; }
+  .why-item, .how-item { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .why-label, .how-label { display:inline-block; background:#1f3a2a; color:#5fd08a; padding:2px 10px; border-radius:20px; font-size:12px; margin-bottom:6px; }
+  .how-label { background:#3a2f1a; color:#e0b25e; }
+  .why-item p, .how-item p { margin-top:4px; font-size:13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">← 根入口</a>
+    <a href="../04-interactive/view-modified.html">改造 DAG</a>
+    <a href="index.html">节点索引</a>
+  </div>
+  <h1>restricted-corpus-acquisition <span class="tag">装配层</span></h1>
+  <div class="sub">skill-restricted-corpus-acquisition · skill · A6q-知识库构建 · Layer 0</div>
+
+  <h2>① 作用</h2>
+  <p>受限/付费语料采集与私有化装配方法论。当任务涉及采集受版权/付费墙限制的书籍、论文、数据集语料，多来源解析与稳定下载，私有语料永不上传公开仓，声明式装配与 fail-closed 门控时使用。触发关键词：受限语料、私有语料、书籍采集、影子库、来源解析、manifest provenance、双仓隔离、git check-ignore、fail-closed </p>
+
+  <h2>② 提供能力</h2>
+  <p><span class="empty">暂无</span></p>
+
+  <h2>③ 依赖（上游）</h2>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
+
+  <h2>④ 被依赖（下游）</h2>
+  <p class="empty">无下游依赖</p>
+
+  
+  <h2>⑤ 为什么存在（why）</h2>
+  <div class="why-block">
+    <div class="why-item"><span class="why-label">历史引入动机</span><p>源自 0910-软件工程架构方法论阶段 2 书籍语料采集实战（30 本 paid/user-copy 经典著作「零购买最大可得」私有语料落地，76 文件/309MB + 官方结构层 11 源 613 文件，全程零进入公开仓，cycle_20260911_se_arch_book_collection）。</p></div>
+    <div class="why-item"><span class="why-label">当前需求驱动</span><p>需求驱动：受限语料的合规边界分层、有状态取用链的可靠性、来源可追溯、私有/公开隔离落机制层、装配默认拒绝（fail-closed）。</p></div>
+  </div>
+
+  <h2>⑥ 怎么用（how）</h2>
+  <div class="how-block">
+    <div class="how-item"><span class="how-label">触发方式</span><p>采集受版权/付费墙/机构库限制的语料（书籍/论文/数据集）、目标零购买最大可得、采集结果必须私有保存永不进入公开仓（含公开镜像/Pages）、需多来源解析/稳定下载/来源可追溯/多形态装配交付时加载。</p></div>
+    <div class="how-item"><span class="how-label">工作流/用法</span><p>①来源分层与合规边界（合法免费/机构库/版权不明三层，仅落私有层）；②来源解析（并行 search-worker，允许替代镜像，版次匹配或标 edition_mismatch）；③直链由 Agent 下、登录/借阅/网盘转用户手动；④有状态取用链（Referer + session cookie + 退避重试 + 镜像轮换）；⑤JS 风控壳改用 GitHub 镜像 + PDF /Title 校验；⑥manifest 逐文件固化 provenance（http_status/source_url/license/sha256 去重）；⑦私有隔离落 git 层（双仓 .gitignore + git check-ignore 实测）；⑧装配 fail-closed（publish-manifest + binary_allowlist 默认拒绝）；⑨可机械派生；⑩主Agent 回盘复验（版次用内容特征判定）。</p></div>
+    <div class="how-item"><span class="how-label">协作关系</span><p>依赖 search-worker/search-methodology（来源解析）、github-bulk-upload（公开侧上传与 Git Data API）；关联 kb-construction（语料资产型）；依赖 config-main。</p></div>
+  </div>
+
+
+  
+
+  
+</div>
+</body>
+</html>
