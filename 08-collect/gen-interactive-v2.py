@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 S4-v2: 生成三图交互 HTML（cytoscape 单入口三图切换）+ 根入口 index.html
-数据源: 01-dag-data/{official,diff,modified}-dag.json （v1.18.30 / 0902-opencode-dag）
+数据源: 01-dag-data/{official,diff,modified}-dag.json （v1.18.35 / 0902-opencode-dag）
 输出: index.html + 04-interactive/{view-official.html, view-diff.html, view-modified.html}
 改造点: BASE 路径/版本标题/机制(mech)图例/mech 归入 asm 样式/index 统计文案
 """
@@ -253,9 +253,9 @@ st_diff = dag_stats(diff)
 st_modified = dag_stats(modified)
 
 views = [
-    ("view-official.html", official, "图1 · 官方原版包级 DAG (v1.18.30)", "<b>官方基线</b>：36 workspace 包，workspace/import 依赖（v1.18.30 源码）"),
-    ("view-diff.html", diff, "图2 · 官方 + 改造对比 DAG (v1.18.30)", "<b>染色</b>：黄边=被改造引用的包；绿=外部服务"),
-    ("view-modified.html", modified, "图3 · 改造版双层 DAG (v1.18.30)", "<b>双层</b>：包级（上）+ 装配层（下）+ 外部服务（绿）；改造点=黄边；机制(mech)=自进化协议"),
+    ("view-official.html", official, "图1 · 官方原版包级 DAG (v1.18.35)", "<b>官方基线</b>：36 workspace 包，workspace/import 依赖（v1.18.35 源码）"),
+    ("view-diff.html", diff, "图2 · 官方 + 改造对比 DAG (v1.18.35)", "<b>染色</b>：黄边=被改造引用的包；绿=外部服务"),
+    ("view-modified.html", modified, "图3 · 改造版双层 DAG (v1.18.35)", "<b>双层</b>：包级（上）+ 装配层（下）+ 外部服务（绿）；改造点=黄边；机制(mech)=自进化协议"),
 ]
 for fname, dag, title, extra in views:
     layers = dag_stats(dag)["layers"]
@@ -305,7 +305,7 @@ idx = f"""<!DOCTYPE html>
 <body>
 <div class="wrap">
   <h1>opencode DAG 依赖分析</h1>
-  <div class="sub">三图渐进式：官方原版 → 对比 → 改造版双层。数据源：官方 v1.18.30 源码 + 本机 ~/.config/opencode 装配层</div>
+  <div class="sub">三图渐进式：官方原版 → 对比 → 改造版双层。数据源：官方 v1.18.35 源码 + 本机 ~/.config/opencode 装配层</div>
 
   <div class="cards">
     <a class="card" href="04-interactive/view-official.html">
@@ -332,7 +332,7 @@ idx = f"""<!DOCTYPE html>
       <a href="04-interactive/view-diff.html">图2 对比 DAG<small>{diff_s['nodes']} 节点 · {diff_s['edges']} 边</small></a>
       <a href="04-interactive/view-modified.html">图3 改造双层 DAG<small>{mod_s['nodes']} 节点 · {mod_s['groups']} 组</small></a>
       <a href="03-groups/index.html">组目录<small>{mod_s['groups']} 组索引</small></a>
-      <a href="02-nodes/index.html">节点页索引<small>36 包 + 83 装配 + 10 外部</small></a>
+      <a href="02-nodes/index.html">节点页索引<small>36 包 + 87 装配 + 10 外部</small></a>
       <a href="06-md/00-index.md">MD 镜像（AI 检索）<small>全节点文本</small></a>
       <a href="01-dag-data/official-dag.json">官方 DAG JSON<small>数据</small></a>
       <a href="01-dag-data/diff-dag.json">对比 DAG JSON<small>数据</small></a>

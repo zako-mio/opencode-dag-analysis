@@ -27,26 +27,8 @@
     "enabled": true
   },
   {
-    "node_id": "agent-drawio-worker",
-    "node_name": "drawio-worker",
-    "kind": "agent",
-    "group": "AG2-子Agent",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
     "node_id": "agent-architect-worker",
     "node_name": "architect-worker",
-    "kind": "agent",
-    "group": "AG2-子Agent",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "agent-vision-worker",
-    "node_name": "vision-worker",
     "kind": "agent",
     "group": "AG2-子Agent",
     "change": "新增装配",
@@ -90,6 +72,15 @@
     "enabled": true
   },
   {
+    "node_id": "agent-requirement-discovery-worker",
+    "node_name": "requirement-discovery-worker",
+    "kind": "agent",
+    "group": "AG2-子Agent",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "mcp-vscode-mcp-server",
     "node_name": "vscode-mcp-server",
     "kind": "mcp",
@@ -117,24 +108,6 @@
     "enabled": true
   },
   {
-    "node_id": "mcp-drawio",
-    "node_name": "drawio",
-    "kind": "mcp",
-    "group": "AG3-MCP",
-    "change": "新增装配",
-    "reason": "改造需求（见历史）",
-    "enabled": true
-  },
-  {
-    "node_id": "mcp-drawio-local",
-    "node_name": "drawio-local",
-    "kind": "mcp",
-    "group": "AG3-MCP",
-    "change": "新增（禁用）",
-    "reason": "改造需求（见历史）",
-    "enabled": false
-  },
-  {
     "node_id": "mcp-headroom",
     "node_name": "headroom",
     "kind": "mcp",
@@ -142,6 +115,15 @@
     "change": "新增（禁用）",
     "reason": "改造需求（见历史）",
     "enabled": false
+  },
+  {
+    "node_id": "instr-agent-protocol",
+    "node_name": "agent-protocol",
+    "kind": "instruction",
+    "group": "AG4-指令",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
   },
   {
     "node_id": "instr-architecture-behavior",
@@ -171,8 +153,8 @@
     "enabled": true
   },
   {
-    "node_id": "instr-downloads",
-    "node_name": "downloads",
+    "node_id": "instr-requirement-discovery-behavior",
+    "node_name": "requirement-discovery-behavior",
     "kind": "instruction",
     "group": "AG4-指令",
     "change": "新增装配",
@@ -207,6 +189,15 @@
     "enabled": true
   },
   {
+    "node_id": "command-rd",
+    "node_name": "rd",
+    "kind": "command",
+    "group": "AG5-工具插件",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-agency-agents",
     "node_name": "agency-agents",
     "kind": "skill",
@@ -234,6 +225,15 @@
     "enabled": true
   },
   {
+    "node_id": "skill-criterion-design-validation",
+    "node_name": "criterion-design-validation",
+    "kind": "skill",
+    "group": "A6a-配置知识",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-cytoscape-dag-visualization",
     "node_name": "cytoscape-dag-visualization",
     "kind": "skill",
@@ -252,17 +252,26 @@
     "enabled": true
   },
   {
-    "node_id": "skill-drawio-reference",
-    "node_name": "drawio-reference",
+    "node_id": "skill-design-material-library",
+    "node_name": "design-material-library",
     "kind": "skill",
-    "group": "A6b-图表",
+    "group": "A6d-前端设计",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
   },
   {
-    "node_id": "skill-frontend-design",
-    "node_name": "frontend-design",
+    "node_id": "skill-diagram-lite",
+    "node_name": "diagram-lite",
+    "kind": "skill",
+    "group": "A6d-前端设计",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-frontend-design-methodology",
+    "node_name": "frontend-design-methodology",
     "kind": "skill",
     "group": "A6d-前端设计",
     "change": "新增装配",
@@ -337,6 +346,15 @@
     "node_name": "multi-window-dag-delivery",
     "kind": "skill",
     "group": "A6c-DAG方法",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-opencode-capability-audit",
+    "node_name": "opencode-capability-audit",
+    "kind": "skill",
+    "group": "A6a-配置知识",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -495,6 +513,15 @@
     "enabled": true
   },
   {
+    "node_id": "skill-requirement-discovery",
+    "node_name": "requirement-discovery",
+    "kind": "skill",
+    "group": "A6n-架构判断",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
     "node_id": "skill-restricted-corpus-acquisition",
     "node_name": "restricted-corpus-acquisition",
     "kind": "skill",
@@ -571,6 +598,15 @@
     "node_name": "superpowers-openspec-superpowers-workflow",
     "kind": "skill",
     "group": "A6m-Superpowers",
+    "change": "新增装配",
+    "reason": "改造需求（见历史）",
+    "enabled": true
+  },
+  {
+    "node_id": "skill-version-upgrade-cascade",
+    "node_name": "version-upgrade-cascade",
+    "kind": "skill",
+    "group": "A6q-知识库构建",
     "change": "新增装配",
     "reason": "改造需求（见历史）",
     "enabled": true
@@ -747,37 +783,10 @@
     "enabled": true
   },
   {
-    "node_id": "oc-server",
-    "node_name": "server",
-    "kind": "package",
-    "group": "G4-服务端",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
     "node_id": "oc-schema",
     "node_name": "schema",
     "kind": "package",
     "group": "G1-数据模型",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-plugin",
-    "node_name": "plugin",
-    "kind": "package",
-    "group": "G7-插件SDK",
-    "change": "被装配层引用（配置修改）",
-    "reason": "官方包被本机配置引用",
-    "enabled": true
-  },
-  {
-    "node_id": "oc-core",
-    "node_name": "core",
-    "kind": "package",
-    "group": "G6-核心服务",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true
@@ -792,10 +801,37 @@
     "enabled": true
   },
   {
+    "node_id": "oc-plugin",
+    "node_name": "plugin",
+    "kind": "package",
+    "group": "G7-插件SDK",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
     "node_id": "oc-opencode",
     "node_name": "opencode",
     "kind": "package",
     "group": "G19-主入口",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-server",
+    "node_name": "server",
+    "kind": "package",
+    "group": "G4-服务端",
+    "change": "被装配层引用（配置修改）",
+    "reason": "官方包被本机配置引用",
+    "enabled": true
+  },
+  {
+    "node_id": "oc-core",
+    "node_name": "core",
+    "kind": "package",
+    "group": "G6-核心服务",
     "change": "被装配层引用（配置修改）",
     "reason": "官方包被本机配置引用",
     "enabled": true

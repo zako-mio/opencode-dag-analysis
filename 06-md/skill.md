@@ -1,4 +1,4 @@
-# skill 节点（41）
+# skill 节点（46）
 
 ## skill-agency-agents — agency-agents
 - 组: A6a-角色调度 | Layer 1
@@ -30,6 +30,16 @@
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
 
+## skill-criterion-design-validation — criterion-design-validation
+- 组: A6a-配置知识 | Layer 0
+- 作用: 判据（门控/机检/评分卡/词表/检查单）的构造—实现—验证—维护四阶段方法论与模板，跨域通用。当需要把模糊判据落成可执行物、写门控脚本或自检、判断"门控全绿是否可信"、排查假绿/假跑/恒真判据、或修判据而怕连带作废时使用。触发关键词：判据设计、判据构造、判据验证、判据可信度、假绿、假跑、恒真判据、负向测试、负例自检、空集、指标作用域、阈值推导、门控健全性、夹
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
+
 ## skill-cytoscape-dag-visualization — cytoscape-dag-visualization
 - 组: A6c-DAG方法 | Layer 0
 - 作用: cytoscape.js 交互 DAG 可视化构建方法论。当任务涉及构建组级+下钻交互 DAG 总览、向页面注入 DATA、环修复、disabled 节点标注、批量 HTML 页插入源码级动态 DAG、染色/排版/幂等防累积、VLM 验证渲染时使用。触发关键词：cytoscape、交互式DAG、DAG总览、下钻、DATA注入、disabled标注、环修复、动
@@ -50,9 +60,9 @@
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
 
-## skill-drawio-reference — drawio-reference
-- 组: A6b-图表 | Layer 1
-- 作用: draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型）、shape 搜索指南、强制导出规范。对 drawio-worker 子Agent 为强制加载项（含防截断规则），不可跳过。
+## skill-design-material-library — design-material-library
+- 组: A6d-前端设计 | Layer 0
+- 作用: >
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 
@@ -60,9 +70,19 @@
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
 
-## skill-frontend-design — frontend-design
+## skill-diagram-lite — diagram-lite
 - 组: A6d-前端设计 | Layer 0
-- 作用: 前端设计双引擎系统。先数据驱动 Top K 候选推荐，后设计主管创意裁决。覆盖网页设计、UI 页面、组件、配色、排版、布局、动效、可访问性、交互、表单、响应式、前端开发、landing page、设计系统。适用场景：新建页面/组件、UI 重构、设计审查、配色选型、字体选型。
+- 作用: 轻量出图档位路由与执行规范。当任务需要流程图、DAG 图、依赖图、架构图、时序图、状态图等任何图表产物时使用——先判档再选工具（T0 文本退化 / T1 模板填空 / T2 DSL→SVG 默认 / T3 发布级已落地，见 §九）。触发关键词：出图、画图、绘图、图表、流程图、依赖图、DAG 图、架构图、节点图、SVG、graphviz、dot、mermaid
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
+
+## skill-frontend-design-methodology — frontend-design-methodology
+- 组: A6d-前端设计 | Layer 0
+- 作用: 当你要设计、实现、改造或评估一个前端界面／页面时使用本方法论：它给出轻档（单人自用默认）与重档（出现外部通道／多平台／对外发布等事件后）两档逐步流程与事件式升降档规则，以及按需取用路由（参照做法／可调用能力／令牌契约／栈定位）。覆盖语义命名与令牌、配色与对比度、组件复用、响应式、无障碍与发布。
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 
@@ -142,7 +162,17 @@
 
 ## skill-multi-window-dag-delivery — multi-window-dag-delivery
 - 组: A6c-DAG方法 | Layer 0
-- 作用: 多层窗口接力 DAG 依赖链分析与交付方法论。当任务涉及将大型源码/插件库拆分为多窗口接力分析 DAG 依赖、每窗口产出 PLAN-layerN.md 接力文件、HTML/MD/drawio/交互图多形态交付、三硬依据溯源时使用。触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付。
+- 作用: 多层窗口接力 DAG 依赖链分析与交付方法论。当任务涉及将大型源码/插件库拆分为多窗口接力分析 DAG 依赖、每窗口产出 PLAN-layerN.md 接力文件、HTML/MD/SVG 图/交互图多形态交付、三硬依据溯源时使用。触发关键词：多层窗口DAG、DAG接力、插件依赖分析、层次遍历、拓扑分层、PACKAGE-MAP覆盖度、多窗口交付。
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
+
+## skill-opencode-capability-audit — opencode-capability-audit
+- 组: A6a-配置知识 | Layer 0
+- 作用: opencode 自身能力体检/再评估 SOP。当需要对 opencode 自改造能力集（agent/skill/command/MCP/instructions）做周期性复盘、与官方原版基线对比打分、核对评分档位锚点、审计治理门禁强制层级、或多库并行更新时使用。触发关键词：能力体检、再评估、精装度、评分模型、档位锚点、官方基线对齐、能力盘点、能力栈审计、自
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 
@@ -320,6 +350,16 @@
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
 
+## skill-requirement-discovery — requirement-discovery
+- 组: A6n-架构判断 | Layer 0
+- 作用: >
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
+
 ## skill-restricted-corpus-acquisition — restricted-corpus-acquisition
 - 组: A6q-知识库构建 | Layer 0
 - 作用: 受限/付费语料采集与私有化装配方法论。当任务涉及采集受版权/付费墙限制的书籍、论文、数据集语料，多来源解析与稳定下载，私有语料永不上传公开仓，声明式装配与 fail-closed 门控时使用。触发关键词：受限语料、私有语料、书籍采集、影子库、来源解析、manifest provenance、双仓隔离、git check-ignore、fail-closed 
@@ -403,6 +443,16 @@
 ## skill-superpowers-openspec-superpowers-workflow — superpowers-openspec-superpowers-workflow
 - 组: A6m-Superpowers | Layer 0
 - 作用: 完整交付流程——Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档。全程门控，需显式召唤。
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
+
+## skill-version-upgrade-cascade — version-upgrade-cascade
+- 组: A6q-知识库构建 | Layer 0
+- 作用: 上游版本升级 → 知识库/文档级联更新工作流。适用于「上游项目发布新版本，需将基于旧版本的产物（DAG知识库/插件页/文档/图表）级联升级到新版本」的任务；亦适用于**可扩展系统本体**（宿主源码树 ＋ 自定义插件/扩展）的版本升级与**破坏性契约兼容审计**（见 §四 通用经验 8–11）。核心方法论：三层差异分析（结构diff→源码diff→深入分析）、
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 

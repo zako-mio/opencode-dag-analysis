@@ -52,7 +52,7 @@
   <p>· 插件公共类型与 Hooks 契约（packages/plugin/src/index.ts:20-80）<br>· 工具 API：ToolContext/ToolDefinition/ToolResult（packages/plugin/src/tool.ts:3-20）<br>· Effect 原生 v2 插件 API：agent/command/skill/catalog/integration 注册（packages/plugin/src/v2/effect/plugin.ts）<br>· Promise 风格 v2 插件 API（packages/plugin/src/v2/promise/index.ts）<br>· TUI 插件接口（基于 @opentui，packages/plugin/src/tui.ts:19-33）<br>· shell 工具封装（packages/plugin/src/shell.ts）</p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-sdk.html'>sdk</a></td><td>workspace-dep</td><td><small>@opencode-ai/plugin/package.json dependencies.@opencode-ai/sdk</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>agent-core</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>agent-core</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='mcp-drawio.html'>drawio</a></td><td>mcp-dep</td><td><small>装配层→官方包</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-sdk.html'>sdk</a></td><td>workspace-dep</td><td><small>@opencode-ai/plugin/package.json dependencies.@opencode-ai/sdk</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>agent-core</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>agent-core</td><td><small>装配层→官方包</small></td></tr></table>
 
   <h2>④ 被依赖（下游）</h2>
   <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>workspace-dep</td><td><small>@opencode-ai/core/package.json dependencies.@opencode-ai/plugin</small></td></tr><tr><td><a href='oc-tui.html'>tui</a></td><td>workspace-dep</td><td><small>@opencode-ai/tui/package.json dependencies.@opencode-ai/plugin</small></td></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>semantic-dep</td><td><small>stage-01 opencode</small></td></tr></table>
@@ -74,7 +74,7 @@
   
 
   
-<h3>模块内部结构 DAG（34 模块 · 47 边）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.30 结构未变</span></h3>
+<h3>模块内部结构 DAG（34 模块 · 47 边）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.35 包级结构未变（36 包集合逐一致）</span></h3>
 <div id="int-oc-plugin" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>

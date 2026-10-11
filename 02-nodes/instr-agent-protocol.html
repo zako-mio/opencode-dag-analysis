@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>drawio-reference · opencode DAG</title>
+<title>agent-protocol · opencode DAG</title>
 <style>
   :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -42,20 +42,20 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>drawio-reference <span class="tag">装配层</span></h1>
-  <div class="sub">skill-drawio-reference · skill · A6b-图表 · Layer 1</div>
+  <h1>agent-protocol <span class="tag">装配层</span></h1>
+  <div class="sub">instr-agent-protocol · instruction · AG4-指令 · Layer 1</div>
 
   <h2>① 作用</h2>
-  <p>draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型）、shape 搜索指南、强制导出规范。对 drawio-worker 子Agent 为强制加载项（含防截断规则），不可跳过。</p>
+  <p>Agent Protocol</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
 
   <h2>③ 依赖（上游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='agent-drawio-worker.html'>drawio-worker</a></td><td>skill-mandate</td><td><small>drawio-reference 强制加载</small></td></tr></table>
+  <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='ext-drawio-service.html'>ext-drawio-service</a></td><td>external</td><td><small>draw.io 导出</small></td></tr></table>
+  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-opencode.html'>opencode</a></td><td>instruction-load</td><td><small>装配层→官方包</small></td></tr></table>
 
   
 

@@ -186,7 +186,7 @@ diff_page = f"""<!DOCTYPE html>
 <div class="wrap">
   <div class="nav"><a href="../index.html">← 根入口</a> · <a href="../04-interactive/view-diff.html">对比 DAG</a></div>
   <h1>改造差异清单（{len(diff_list)} 项）</h1>
-  <div class="sub">官方 v1.18.30 基线 → 本机装配层（~/.config/opencode）的改造点</div>
+  <div class="sub">官方 v1.18.35 基线 → 本机装配层（~/.config/opencode）的改造点</div>
   <table>
     <tr><th>节点</th><th>类型</th><th>组</th><th>变更</th><th>原因</th></tr>
     {diff_rows}

@@ -1,4 +1,14 @@
-# instruction 节点（5）
+# instruction 节点（6）
+
+## instr-agent-protocol — agent-protocol
+- 组: AG4-指令 | Layer 1
+- 作用: Agent Protocol
+- 提供: 
+- **为什么存在（历史）**: 
+- **为什么存在（当前）**: 
+- **怎么用（触发）**: 
+- **怎么用（工作流）**: 
+- **怎么用（协作）**: 
 
 ## instr-architecture-behavior — architecture-behavior
 - 组: AG4-指令 | Layer 1
@@ -30,9 +40,9 @@
 - **怎么用（工作流）**: 
 - **怎么用（协作）**: 
 
-## instr-downloads — downloads
+## instr-requirement-discovery-behavior — requirement-discovery-behavior
 - 组: AG4-指令 | Layer 1
-- 作用: 文件导出与下载默认路径
+- 作用: ---
 - 提供: 
 - **为什么存在（历史）**: 
 - **为什么存在（当前）**: 

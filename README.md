@@ -3,11 +3,13 @@
 ## 简介
 
 对 **opencode** 做 DAG 依赖分析，三图渐进式理解"官方原版 → 改造对比 → 改造版装配"：
-1. **图1 官方包级 DAG**：36 个 `@opencode-ai/*` workspace 包依赖关系（未改造基线，v1.18.30 版本标注；包级结构沿用 v1.18.29，v1.18.30 未变）
+1. **图1 官方包级 DAG**：36 个 `@opencode-ai/*` workspace 包依赖关系（未改造基线，v1.18.35 版本标注；包级结构沿用 v1.18.29，v1.18.35 未变）
 2. **图2 官方+改造对比 DAG**：官方基线 + 被改造引用的包染色 + 外部服务
 3. **图3 改造版双层 DAG**：包级 + 装配层（skills/agents/mcp/commands/instructions/config/mechanisms）+ 外部服务
 
 本次更新（2026-09-11）：**官方源码 v1.18.29 → v1.18.30 点检 + 装配层全量重建 + 架构判断能力入图**。官方侧仅版本标注/外部 SDK 升号，包级结构与依赖边无变化；装配层从 73 组件扩到 83 组件，新增 `architect-worker` 子Agent、8 个 skill（architecture-judgment / github-bulk-upload / job-listing-filter / kb-construction / opencode-capability-extension / restricted-corpus-acquisition / resumable-content-pipeline / single-source-docs-pipeline）、`architecture-behavior` 指令与 `/arch` 命令，并新增「架构三层栈」机制节点；退役 `tool-read`（改模型原生多模态）与 `instr-agent-protocol`（并入 auto-mode）。DAG 从"联网能力增强体系"进一步演化为"架构判断 + 交付发布 + 知识库构建"的多能力装配体系。
+
+本次更新（2026-10-11）：**官方基线 v1.18.30 → v1.18.35 点检 + 装配层再全量重建 + 需求发现能力入图**。官方侧 `29→35` 变更 328 文件（+17411/−8779），其中核心 `core` 仅 10 文件，**36 包集合与 v1.18.29 逐一致（无增删）**，包级依赖图仍为 36 包 / 68 边 / 6 层 / 19 组；装配层从 83 组件扩到 **87 组件**（skills 41→**46**、agents 10→**9**、mcp 6→**4**、instructions 5→**6**、commands 2→**3**、config 1、mechanisms 18 不变）：新增 `criterion-design-validation` / `design-material-library` / `diagram-lite` / `opencode-capability-audit` / `requirement-discovery` / `version-upgrade-cascade` / `frontend-design-methodology` 七个 skill、`requirement-discovery-worker` 子Agent、`requirement-discovery-behavior` 指令与 `/rd` 命令；退役 `drawio-worker` / `vision-worker` 子Agent、`drawio` / `drawio-local` 两个 mcp 与 `downloads` 指令（4 件停用 skill 迁入 `skills/disabled/`，不入图）。DAG 从 129 节点 / 190 边 / 43 组演进为 **133 节点 / 177 边 / 8 层 / 42 组**（diff 图 46 节点 / 68 边 / 20 组；差异清单 94 条）。
 
 ## 为什么与 deepseek-harness 分析不同
 
@@ -24,18 +26,18 @@
 |---------|------|
 | **三图交互总览**（官方/对比/改造切换） | `04-interactive/view-{official,diff,modified}.html` |
 | 根入口（简介+结论+时间线+导航） | `index.html` |
-| 每节点一页（**七段**：作用/提供/依赖/被依赖/**为什么存在(why)**/**怎么用(how)** + 内部结构 DAG） | `02-nodes/`（129 页） |
-| 组目录 | `03-groups/index.html`（43 组） |
+| 每节点一页（**七段**：作用/提供/依赖/被依赖/**为什么存在(why)**/**怎么用(how)** + 内部结构 DAG） | `02-nodes/`（133 页） |
+| 组目录 | `03-groups/index.html`（42 组） |
 | 改造差异清单表 | `05-diff/diff-list.html` |
 | AI 检索 MD 镜像（含 why/how） | `06-md/00-index.md` |
 | 静态 drawio 图 | `05-drawio/main/`（3 主图）+ `05-drawio/assembly/`（关键装配） |
 | DAG 数据（JSON） | `01-dag-data/{official,diff,modified}-dag.json` |
-| 内部模块 import 数据 | `08-collect/internal-v1.18.29.json`（33 包 2251 模块 6079 边，v1.18.29 基线） |
+| 内部模块 import 数据 | `08-collect/internal-v1.18.29.json`（33 包 2251 模块 6079 边，v1.18.29 基线；v1.18.35 包级结构未变，内部结构本轮不重采） |
 
 ## 内容深化（why - how）
 
-**129 节点全部七段**（三种节点类型各自适配的 why/how 结构）：
-- **装配层（83 组件）**：⑤ 为什么存在（历史引入动机 + 当前需求驱动）+ ⑥ 怎么用（触发/工作流/协作）
+**133 节点全部七段**（三种节点类型各自适配的 why/how 结构）：
+- **装配层（87 组件）**：⑤ 为什么存在（历史引入动机 + 当前需求驱动）+ ⑥ 怎么用（触发/工作流/协作）
 - **官方包（36 包）**：⑤ 为什么存在（设计意图官方 + 改造关联：本机为何引用/为何不引用）+ ⑥ 怎么用（入口/导出 API/命令 + 典型场景与协作）
 - **外部服务（10 个）**：⑤ 为什么存在（为什么需要 + 当前状态）+ ⑥ 怎么用（怎么接入 + 装配层调用）
 
@@ -43,28 +45,28 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 
 ## 核心数据
 
-- **图1 official**：36 包 / 68 边 / 6 层 / 19 组（v1.18.30 版本标注；包级结构沿用 v1.18.29）
-- **图2 diff**：46 节点 / 68 边（7 包被改造引用 + 10 外部）
-- **图3 modified**：129 节点 / 190 边 / 8 层 / 43 组（36 包 + 83 装配 + 10 外部，含 **18 个自进化机制 mechanism 节点**）
-- **装配层**：83 组件（41 skills + 10 agents + 6 mcp + 5 instructions + 0 tools + 2 commands + 1 config + 18 mechanisms）
+- **图1 official**：36 包 / 68 边 / 6 层 / 19 组（v1.18.35 版本标注；包级结构沿用 v1.18.29）
+- **图2 diff**：46 节点 / 68 边 / 6 层 / 20 组（7 包被改造引用 + 10 外部）
+- **图3 modified**：133 节点 / 177 边 / 8 层 / 42 组（36 包 + 87 装配 + 10 外部，含 **18 个自进化机制 mechanism 节点**）
+- **装配层**：87 组件（46 skills + 9 agents + 4 mcp + 6 instructions + 0 tools + 3 commands + 1 config + 18 mechanisms）
 - **内部结构**：33 包 / 2251 模块 / 6079 边（全量 import 解析，沿用 v1.18.29 基线；opencode 主包 362 模块 / 1504 边）
 - **外部服务**：10 个（含 Tavily Search API）
-- **版本基线**：官方 v1.18.25 → **v1.18.30**
+- **版本基线**：官方 v1.18.25 → **v1.18.35**（本机运行时；上游最新 v1.19.0 只登记不追）
 
 ## 目录结构
 
 ```
 0902-opencode-dag/
 ├── 01-dag-data/          # DAG 数据: official/diff/modified-dag.json + diff-list.json
-├── 02-nodes/             # 129 节点页（36 包 + 83 装配 + 10 外部，七段式+内部结构DAG）
-├── 03-groups/            # 43 组索引页
+├── 02-nodes/             # 133 节点页（36 包 + 87 装配 + 10 外部，七段式+内部结构DAG）
+├── 03-groups/            # 42 组索引页
 ├── 04-interactive/       # cytoscape 三图交互（view-official/diff/modified.html）+ vendor
 ├── 05-drawio/            # main/ 三主图 + assembly/ 关键装配节点图
-├── 05-diff/              # 改造差异清单表
+├── 05-diff/              # 改造差异清单表（94 条）
 ├── 06-md/                # AI 友好 MD 镜像
 ├── 07-checkpoint/        # 采集/建模/生成/门控脚本 + 中间数据
-├── 08-collect/           # v1.18.30 采集数据 + 各阶段 stage-*.json（内部结构沿用 v1.18.29 基线）
-├── opencode-src-v1.18.29/# 官方源码 worktree（v1.18.29 基线；v1.18.30 包级结构未变）
+├── 08-collect/           # v1.18.35 采集数据 + 各阶段 stage-*.json（内部结构沿用 v1.18.29 基线）
+├── opencode-src-v1.18.29/# 官方源码 worktree（v1.18.29 基线；v1.18.35 包级结构未变）
 └── index.html            # 根入口
 ```
 
@@ -73,7 +75,7 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 ```
 图1 官方包级 ──────────► 图2 官方+改造对比 ──────────► 图3 改造版双层
 (未改造基线)              (标明改造点)                  (包级+装配层)
-36 包依赖                  7 包被引用 + 外部             36 包 + 83 装配 + 10 外部
+36 包依赖                  7 包被引用 + 外部             36 包 + 87 装配 + 10 外部
 ```
 
 ## 自进化机制（0911 版，18 个）
@@ -117,7 +119,7 @@ oc-opencode (362 模块) / oc-core / oc-app 等大包内部 DAG 采用**目录�
 
 ## 质量门控
 
-`08-collect/quality-gate.py` 30 项 ALL PASS：JSON 合法 / DAG 无环无悬空 / HTML 断链 0 / drawio 配套齐全 / 节点页 129 覆盖 / 无陈旧节点页 / 交互图 DATA 一致 / 三图节点数 36/46/129 / 装配 83 / 外部 10 / 机制 18 / 组 43 / 七段完整 / 统计一致。
-headless + VLM 验证：三图 view-official/diff/modified 渲染正常，中文完整无截断（zcount 36/46/129 全匹配）。
+`08-collect/quality-gate.py` 31 项 ALL PASS（**黄金期望值改为从 `01-dag-data/modified-dag.json` 的 `stats` 动态读取**，并保留"不得为 0"非空断言，避免下次升级因写死值失效而假红）：JSON 合法 / DAG 无环无悬空 / HTML 断链 0 / drawio 配套齐全 / 节点页 133 覆盖 / 无陈旧节点页 / 交互图 DATA 一致 / 三图节点数 36/46/133 / 装配 87 / 外部 10 / 机制 18 / 组 42 / 七段完整 / 统计一致。
+headless + VLM 验证：三图 view-official/diff/modified 渲染正常，中文完整无截断（zcount 36/46/133 全匹配）。
 
-*基线版本：官方 v1.18.30（包级结构沿用 v1.18.29）｜ 更新日期：2026-09-11*
+*基线版本：官方 v1.18.35（包级结构沿用 v1.18.29）｜ 更新日期：2026-10-11*

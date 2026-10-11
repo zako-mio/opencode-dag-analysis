@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>opencode DAG 更新执行报告 (1011 · v1.18.35)</title>
+<style>
+:root{--bg:#0f1117;--panel:#161a22;--border:#2a2f3a;--text:#e6e8ee;--dim:#9aa3b2;--accent:#4f8cff;--ok:#3fb950;--warn:#d29922;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;padding:40px 20px;line-height:1.75}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+h2{font-size:20px;margin:28px 0 10px;color:var(--accent)}
+h3{font-size:16px;margin:16px 0 6px;color:#b48ae0}
+p{margin:6px 0}
+ul,ol{margin:6px 0 6px 24px}
+li{margin:4px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th{background:var(--panel);color:var(--dim);font-weight:600;padding:7px 10px;border:1px solid var(--border);text-align:left;font-size:13px}
+td{padding:7px 10px;border:1px solid var(--border);font-size:13px;vertical-align:top}
+.sub{color:var(--dim);font-size:13px;margin-bottom:6px}
+.meta{color:var(--dim);font-size:12px;margin-top:28px;border-top:1px solid var(--border);padding-top:10px}
+.ok{color:var(--ok);font-weight:600}
+.warn{color:var(--warn);font-weight:600}
+code{background:#20242e;border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:12.5px}
+.figs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.figs figure{flex:1 1 280px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px}
+.figs img{width:100%;border-radius:4px;display:block}
+.figs figcaption{color:var(--dim);font-size:12px;text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>1011-opencode-dag 执行报告（v1.18.35 + 装配层再全量重建 + 需求发现能力入图）</h1>
+<p class="sub">留档时间：2026-10-11 ｜ 交付路径：<code>0902-opencode-dag/</code>（仓库相对路径）</p>
+<p class="sub">上一版执行报告见 <code>执行报告-0911.md</code>；本轮 README 更新见 <code>README.md</code>「本次更新（2026-10-11）」段</p>
+
+<h2>一、本轮范围与基线</h2>
+<p>0911 版（v1.18.30 + 装配层 83 组件）交付后，出现两条需要处理的变化：</p>
+<ol>
+<li><strong>官方发布线继续推进</strong>：官方标注由 v1.18.30 前进到 <strong>v1.18.35</strong>（本轮另以 <code>git fetch --depth=1</code> 拉入 v1.18.35 做点检），需判定本机 DAG 是否随之变化；</li>
+<li><strong>本机装配层再次自进化</strong>：0911 之后新增需求发现/判据设计/设计素材/轻量出图/能力体检/升级级联/前端设计共 7 个 skill、<code>requirement-discovery-worker</code> 子Agent、<code>requirement-discovery-behavior</code> 指令与 <code>/rd</code> 命令；同时 <code>drawio-worker</code> / <code>vision-worker</code> 子Agent、<code>drawio</code> / <code>drawio-local</code> 两个 mcp、<code>downloads</code> 指令退役，另有 4 件 skill 停用。</li>
+</ol>
+<p><strong>本轮基线（0911 版）</strong>：官方标注 v1.18.30（源码树 <code>opencode-src-v1.18.29</code>）；装配层 83 组件（41 skills + 10 agents + 6 mcp + 5 instructions + 2 commands + 1 config + 18 mechanisms）；三图计数 36 / 46 / 129；组 43；diff-list 90 条。</p>
+<p><strong>本轮交付基线（1011 版）</strong>：官方标注 <strong>v1.18.35</strong>（源码树仍为 <code>opencode-src-v1.18.29</code>）；装配层 <strong>87 组件</strong>；三图计数 36 / 46 / <strong>133</strong>；组 <strong>42</strong>；diff-list <strong>94 条</strong>。</p>
+<p>只读约束：<code>~/.config/opencode/**</code> 只读采集；<code>01-dag-data</code> 三图数据由生成脚本重算，不做手工改数。</p>
+
+<h2>二、官方侧点检</h2>
+
+<h3>2.1 包级结构：零变化</h3>
+<table>
+<tr><th>判定项</th><th>0911</th><th>本轮</th><th>结论</th></tr>
+<tr><td>workspace 包数</td><td>36</td><td><strong>36</strong></td><td>不变</td></tr>
+<tr><td>包集合路径排序 diff</td><td>—</td><td><strong>完全一致</strong></td><td>无新增 / 无删除</td></tr>
+<tr><td><code>packages/</code> 顶层目录数</td><td>32</td><td><strong>32</strong></td><td>不变</td></tr>
+</table>
+
+<h3>2.2 文件变更量（实测）</h3>
+<table>
+<tr><th>对比区间</th><th>文件数</th><th>增 / 删</th><th>说明</th></tr>
+<tr><td><code>v1.18.29 → v1.18.30</code></td><td><strong>105 files</strong></td><td><strong>+1676 / −403</strong></td><td>与 KB 既有记录<strong>逐项吻合</strong>，用作方法自校验</td></tr>
+<tr><td><code>v1.18.29 → v1.18.35</code></td><td><strong>328 files</strong></td><td><strong>+17411 / −8779</strong></td><td>本轮点检主区间</td></tr>
+<tr><td><code>v1.18.30 → v1.18.35</code></td><td><strong>318 files</strong></td><td><strong>+15961 / −8602</strong></td><td>增量区间</td></tr>
+</table>
+<p>变更分布（29→35，按文件数）：<code>packages/stats</code> 73 · <code>packages/console</code> 73 · <code>packages/web</code> 60 · <code>packages/opencode</code> 39 · <code>artifacts/glm52-rise-video</code> 20 · <strong><code>packages/core</code> 仅 10</strong> · <code>packages/tui</code> 7 · <code>.github/workflows</code> 7 · <code>packages/ui</code> 4 · <code>packages/app</code> 3。</p>
+<p><strong>结论</strong>：328 文件的大体量变更集中在 stats / console / web / opencode 与 artifacts，<strong>核心 <code>core</code> 仅 10 文件</strong>，包集合与包间依赖线未变 ⇒ 官方三图不重算，仅版本标注升级到 v1.18.35（<code>title</code> / <code>version_note</code> 已实测为 v1.18.35）。</p>
+
+<h3>2.3 上游 release 登记（不追）</h3>
+<ul>
+<li>上游 <strong><code>v1.19.0</code>（2026-10-11）</strong> 是通往 <strong>OpenCode 2</strong> 的升级入口（<code>opencode upgrade --major</code>）。</li>
+<li>本轮<strong>只登记不追</strong>：OpenCode 2 属主版本跃迁，须单独立项做破坏性契约审计，不在本次点检范围。</li>
+</ul>
+
+<h2>三、装配层重建（83 → 87）</h2>
+<p>采集方式：<code>08-collect/s2-assembly-inventory.py</code> <strong>活体机械采集</strong>（直接遍历 <code>~/.config/opencode</code>，新组件自动纳入）→ <code>s2-merge-assembly.py</code> 合并机制节点与 config。</p>
+<table>
+<tr><th>类别</th><th>0911</th><th>本轮</th><th>变化</th></tr>
+<tr><td>skills</td><td>41</td><td><strong>46</strong></td><td>+7（另 4 件迁入 <code>skills/disabled/</code>，不入图）</td></tr>
+<tr><td>agents</td><td>10</td><td><strong>9</strong></td><td>−2（drawio-worker / vision-worker）+1（requirement-discovery-worker）</td></tr>
+<tr><td>mcp</td><td>6</td><td><strong>4</strong></td><td>−2（drawio / drawio-local）</td></tr>
+<tr><td>instructions</td><td>5</td><td><strong>6</strong></td><td>+1（requirement-discovery-behavior）−1（downloads）</td></tr>
+<tr><td>tools</td><td>0</td><td><strong>0</strong></td><td>0</td></tr>
+<tr><td>commands</td><td>2</td><td><strong>3</strong></td><td>+1（<code>/rd</code>）</td></tr>
+<tr><td>config</td><td>1</td><td><strong>1</strong></td><td>0</td></tr>
+<tr><td>mechanisms</td><td>18</td><td><strong>18</strong></td><td><strong>不变</strong></td></tr>
+<tr><td><strong>合计</strong></td><td><strong>83</strong></td><td><strong>87</strong></td><td><strong>+4</strong></td></tr>
+</table>
+
+<h3>新增明细</h3>
+<ul>
+<li><strong>7 skill</strong>：<code>criterion-design-validation</code> / <code>design-material-library</code> / <code>diagram-lite</code> / <code>opencode-capability-audit</code> / <code>requirement-discovery</code> / <code>version-upgrade-cascade</code> / <code>frontend-design-methodology</code></li>
+<li><strong>1 agent</strong>：<code>agent-requirement-discovery-worker</code></li>
+<li><strong>1 instruction</strong>：<code>instr-requirement-discovery-behavior</code></li>
+<li><strong>1 command</strong>：<code>command-rd</code></li>
+</ul>
+
+<h3>退役 / 停用明细</h3>
+<ul>
+<li>退役：<code>agent-drawio-worker</code>、<code>agent-vision-worker</code>、<code>mcp-drawio</code>、<code>mcp-drawio-local</code>、<code>instr-downloads</code></li>
+<li>停用迁出：4 件 skill 迁入 <code>skills/disabled/</code>（<code>amap-jsapi-skill</code>、<code>amap-lbs-skill</code>、<code>amap-budget-control</code>、<code>model-switcher</code>）⇒ 因采集脚本只扫 <code>skills/</code> 顶层含 <code>SKILL.md</code> 的目录，<strong>停用件天然不入图</strong>（已实测 <code>skills/disabled/</code> 下 4 目录存在）</li>
+</ul>
+
+<h3>新 skill 的组归属（不新造组名，组总数仍 42）</h3>
+<table>
+<tr><th>skill</th><th>归属组</th></tr>
+<tr><td><code>criterion-design-validation</code></td><td>A6a-配置知识</td></tr>
+<tr><td><code>opencode-capability-audit</code></td><td>A6a-配置知识</td></tr>
+<tr><td><code>requirement-discovery</code></td><td>A6n-架构判断</td></tr>
+<tr><td><code>version-upgrade-cascade</code></td><td>A6q-知识库构建</td></tr>
+<tr><td><code>design-material-library</code></td><td>A6d-前端设计</td></tr>
+<tr><td><code>diagram-lite</code></td><td>A6d-前端设计</td></tr>
+<tr><td><code>frontend-design-methodology</code></td><td>A6d-前端设计</td></tr>
+</table>
+<p>即：A6a-配置知识 ×2 / A6n-架构判断 ×1 / A6q-知识库构建 ×1 / A6d-前端设计 ×3，按能力细分归入既有组。</p>
+
+<h2>四、DAG 数据与产物对账</h2>
+
+<h3>4.1 主指标对账</h3>
+<table>
+<tr><th>指标</th><th>0911</th><th>本轮</th><th>变化</th></tr>
+<tr><td>modified 节点</td><td>129</td><td><strong>133</strong></td><td>+4（36 包 + 87 装配 + 10 外部）</td></tr>
+<tr><td>modified 边</td><td>190</td><td><strong>177</strong></td><td>−13（悬空清洗所致，见 4.3）</td></tr>
+<tr><td>拓扑层</td><td>8</td><td><strong>8</strong></td><td>不变</td></tr>
+<tr><td>组</td><td>43</td><td><strong>42</strong></td><td>−1（陈旧组 A6b 删除）</td></tr>
+<tr><td>diff 图</td><td>46 节点 / 68 边 / 20 组</td><td><strong>46 / 68 / 20</strong></td><td><strong>不变</strong></td></tr>
+<tr><td>diff-list 条目</td><td>90</td><td><strong>94</strong></td><td>+4</td></tr>
+<tr><td>节点页</td><td>129</td><td><strong>133</strong></td><td>+4（另 +index）</td></tr>
+<tr><td>组页</td><td>43</td><td><strong>42</strong></td><td>−1（另 +index）</td></tr>
+</table>
+<p>三图节点数（headless 实测 <code>zcount</code>）：<strong>official 36 / diff 46 / modified 133</strong>。</p>
+
+<h3>4.2 产物重生成</h3>
+<ul>
+<li>重生成时<strong>删除 7 个陈旧节点页</strong>：<code>skill-frontend-design</code>、<code>skill-drawio-reference</code>、<code>mcp-drawio-local</code>、<code>agent-drawio-worker</code>、<code>mcp-drawio</code>、<code>instr-downloads</code>、<code>agent-vision-worker</code>（已实测这 7 页均不存在）。</li>
+<li>重生成时<strong>删除 1 个陈旧组页</strong>：<code>A6b</code>（已实测 <code>03-groups/</code> 下无 A6b.html，组页共 42 + index）。</li>
+<li>新增组件节点页已实测齐全：10 个新组件页（7 skill + 1 agent + 1 instr + 1 command）全部落盘。</li>
+<li>配套：<code>03-groups/</code> 42 组 + index；<code>05-diff/diff-list.html</code> 实测标注「改造差异清单（94 项）」；<code>06-md/</code> 10 个 MD 镜像；根入口 <code>index.html</code> 实测标注「节点 133 · 边 177 · 层 8 · 组 42」与「36 包 + 87 装配 + 10 外部」。</li>
+</ul>
+
+<h3>4.3 悬空边清洗</h3>
+<p>装配层退役带来旧规则残留边：清洗前 <strong>189 条 → 清洗后 177 条（丢弃 12 条悬空边）</strong>，其中包含已退役 drawio / vision / downloads 相关规则产生的边。清洗后三图 <code>stats.has_cycle</code> 均为 false，门控的「无悬空边」检查全部 PASS。</p>
+
+<h2>五、门控与验证</h2>
+
+<h3>5.1 质量门控 <code>08-collect/quality-gate.py</code></h3>
+<p><span class="ok">33/33 ALL PASS</span>（脚本实测共 33 项检查）。本轮对门控脚本做了两处加固：</p>
+<ol>
+<li><strong>期望值动态化</strong>：9 类期望值（nodes / pkg_nodes / asm_nodes / ext_nodes / mech_nodes / groups，以及三图节点数）<strong>优先从 <code>01-dag-data/modified-dag.json</code> 的 <code>stats</code> 动态读取</strong>，黄金值仅作兜底并统一带 <code># GOLDEN:</code> 注释（<code>GOLDEN = {nodes:133, pkg_nodes:36, asm_nodes:87, ext_nodes:10, mech_nodes:18, groups:42}</code>）；</li>
+<li><strong>新增非空断言</strong>：<code>黄金期望值非空(不得为 0)</code> —— 防止动态读取拿到空/缺字段导致门控<strong>恒真</strong>。</li>
+</ol>
+<p>⇒ 下次升级不再因黄金值失效而「假红」，也不会因读取失败而「假绿」。</p>
+
+<h3>5.2 headless 渲染验证 <code>07-checkpoint/headless-final-v11829.py</code></h3>
+<p><span class="ok">ALL OK</span>：</p>
+<ul>
+<li><code>zcount</code> = <strong>36 / 46 / 133</strong> 全对；</li>
+<li>三张截图 <strong>255–276 KB</strong>（实测 <code>final-v11835-official.png</code> 262,618 B / <code>final-v11835-diff.png</code> 275,720 B / <code>final-v11835-modified.png</code> 255,001 B，均 1920×1080）；</li>
+<li>节点页 <code>oc-opencode.html</code> h2 段数 = <strong>6</strong>（脚本判据 ≥4）。</li>
+</ul>
+<p><strong>本轮修复（把环境限制写进脚本而非一次性绕过）</strong>：脚本原先写死 <code>CHROME="chromium-browser"</code>，而本机该名是 snap 包装脚本、容器内缺 <code>cap_dac_override</code> 无法启动（表现为 dump-dom 空输出 / 截图 0 字节）⇒ 改为 <code>detect_browser()</code> <strong>自动探测</strong>：优先 playwright 自带 chrome-for-testing → 其次系统 chromium → 最后回退旧名。</p>
+<div class="figs">
+<figure><img src="07-checkpoint/screenshots/final-v11835-official.png" alt="official 视图截图（zcount=36）"><figcaption>图1 official · zcount=36</figcaption></figure>
+<figure><img src="07-checkpoint/screenshots/final-v11835-diff.png" alt="diff 视图截图（zcount=46）"><figcaption>图2 diff · zcount=46</figcaption></figure>
+<figure><img src="07-checkpoint/screenshots/final-v11835-modified.png" alt="modified 视图截图（zcount=133）"><figcaption>图3 modified · zcount=133</figcaption></figure>
+</div>
+
+<h2>六、未做项登记</h2>
+<p><strong>本轮约定范围内的 5 项未做（如实登记）</strong>：</p>
+<ol>
+<li><strong>2 个新插件未入图</strong>：<code>system-date-transform.ts</code> / <code>notify-on-pause.ts</code> —— pipeline 无 <code>plugin</code> kind，需新增 kind + 组 + 2 个节点页（已实测：<code>02-nodes/</code> 无对应页，<code>08-collect/</code> 无对应采集记录）。</li>
+<li><strong>drawio 图未重生成</strong>：<code>05-drawio/main</code> 3 主图 + <code>05-drawio/assembly</code> 关键装配图仍为 0911 版（无生成脚本，属手工产物）。</li>
+<li><strong>内部模块 import 数据仍用 v1.18.29 基线</strong>（<code>08-collect/internal-v1.18.29.json</code>，33 包 / 2251 模块 / 6079 边）：因包集合未变、<code>core</code> 仅 10 文件变更，本轮未重采。</li>
+<li><code>08-collect/build-dag.py</code> <strong>仍保留引用已退役组件的旧规则</strong>（<code>asm_to_pkg</code>、委派名单、<code>asm_ext_rules</code> 中的 drawio / vision / downloads / amap 残留）：悬空边由清洗逻辑丢弃，<strong>不影响 133/177</strong>，但下轮宜一并修订。</li>
+<li><strong>委派名单未含新增的 <code>agent-requirement-discovery-worker</code></strong>（本轮约定不改）。</li>
+</ol>
+<p><strong>本轮另发现（非任务内约定，供下轮排期）</strong>：</p>
+<ol start="6">
+<li><strong><code>08-collect/s2-merge-assembly.py</code> 文档串与产物不一致</strong>：脚本首行 docstring 仍写「64 装配 + 1 config + 18 机制 = 83」，实际合并结果为 <strong>87</strong>；且其校验用的 <code>stage-03-new-assembly.json</code> 仍为 0911 的 12 条（7 个新 skill 与 <code>requirement-discovery-worker</code> 不在其中，故该步校验对新组件不产生约束）。</li>
+<li><strong>README 门控条目数与实际不符</strong>：<code>README.md</code> 质量门控段写「31 项 ALL PASS」，而脚本实测为 <strong>33 项</strong>（本轮按实测 33 登记，README 该处待下轮同步）。</li>
+<li><strong>modified 图 <code>stats.layers</code> 与官方图统计口径不一</strong>：modified 为 8、diff 为 6，而 official 的 <code>stats.layers</code> 实测为 <strong>0</strong>（0911 报告按 6 层叙述）。三图节点/边/组计数均正确，仅 official 的层统计字段待校准。</li>
+</ol>
+
+<h2>七、结论与下轮建议</h2>
+<p><strong>结论</strong>：本轮为「官方 v1.18.30 → v1.18.35 点检 + 装配层再全量重建 + 需求发现能力入图」三合一。官方侧 328 文件变更<strong>未触及包集合与包间依赖</strong>（36 包集合与 v1.18.29 逐一致），官方三图仅升级版本标注；装配层由 83 重建为 <strong>87 组件</strong>（能力细分归入既有组，组总数仍 42）；DAG 演进为 <strong>133 节点 / 177 边 / 8 层 / 42 组</strong>，diff 图维持 46 / 68 / 20；门控 <span class="ok">33/33 ALL PASS</span>、headless <span class="ok">ALL OK</span>。</p>
+<p><strong>下轮建议</strong>：</p>
+<ol>
+<li><strong>补 <code>plugin</code> kind</strong>：把 <code>system-date-transform.ts</code> / <code>notify-on-pause.ts</code> 纳入 pipeline（新增 kind + 组 + 节点页），使装配层对「插件」这一类载体不再有盲区。</li>
+<li><strong>清理生成脚本的退役残留</strong>：修订 <code>build-dag.py</code> 的 <code>asm_to_pkg</code> / 委派名单 / <code>asm_ext_rules</code>，并同步 <code>s2-merge-assembly.py</code> docstring 与 <code>stage-03-new-assembly.json</code>，避免「靠清洗逻辑兜底」长期化。</li>
+<li><strong>单一真相源治理统计口径</strong>：把 official 的 <code>stats.layers</code> 校准（0 → 实际层数），并让 README 的门控条目数从门控脚本输出派生，消除「文档数与实测数分叉」。</li>
+<li><strong>OpenCode 2 单独立项</strong>：上游 <code>v1.19.0</code> 是主版本跃迁入口（<code>opencode upgrade --major</code>），须做破坏性契约审计（配置 schema、agent/skill 契约、plugin API）后再决定是否升级本机装配层。</li>
+<li><strong>内部结构按需重采</strong>：若下一版涉及 <code>core</code> / <code>opencode</code> 主包的跨模块 import 变化，重跑 <code>s1-parse-internal.py</code> 并把版本串统一到当轮基线（同时治理 <code>stage-00-version-baseline.json</code> 仍为 v1.18.29 的漂移）。</li>
+<li><strong>drawio 链路治理</strong>：<code>05-drawio</code> 主图与装配图仍是 0911 手工版，建议先补生成脚本（或明确降级为「静态留存、不随轮更新」并在 README 标注），避免「图与数据不同步」。</li>
+</ol>
+
+<div class="meta">留档时间：2026-10-11 · 交付路径：<code>0902-opencode-dag/</code>（仓库相对路径）</div>
+</div>
+</body>
+</html>

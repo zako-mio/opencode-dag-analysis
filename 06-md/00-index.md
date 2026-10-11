@@ -1,6 +1,6 @@
 # opencode DAG 分析 — AI 检索镜像
 
-三图：官方包级 / 对比 / 改造双层。共 129 节点。
+三图：官方包级 / 对比 / 改造双层。共 133 节点。
 
 ## 官方包（36）
 | 节点 | 名称 | 组 | 层 | 作用 |
@@ -42,30 +42,29 @@
 | oc-ui | ui | G9-UI组件 | 3 | SolidJS UI 组件库。src/components/ 含 50+ 基础组件（button/avatar/dialog/context-menu/diff |
 | oc-web | web | G11-文档站点 | 0 | 基于 Astro + Starlight 的文档与分享站点。src/pages/s/[id].astro:2-8 渲染会话分享页（Share.tsx 消费 op |
 
-## 装配层（83）
+## 装配层（87）
 | 节点 | 名称 | 类型 | 组 | 层 | 作用 | why（需求驱动） |
 |---|---|---|---|---|---|---|
 | agent-architect-worker | architect-worker | agent | AG2-子Agent | 7 | 架构判断与设计裁决专家。技术选型/架构风格/模块与服务边界/架构评审/质量属性权衡/技术债治理时委派。产出 ADR 与多 | 需求驱动：需要独立子Agent 承担架构判断与设计裁决，产出 ADR / 多维权衡矩阵 / 边界设计说明并自检；hidd |
 | agent-build | build | agent | AG1-主Agent | 6 |  |  |
-| agent-drawio-worker | drawio-worker | agent | AG2-子Agent | 7 | Diagram creation specialist using draw.io. Use for flowchart |  |
 | agent-explore | explore | agent | AG2-子Agent | 7 | Fast agent specialized for exploring codebases. Inherits par |  |
 | agent-general | general | agent | AG2-子Agent | 7 | General-purpose agent for researching complex questions and  |  |
 | agent-pdf-worker | pdf-worker | agent | AG2-子Agent | 7 | PDF reader, OCR, and document analysis specialist. Use for a |  |
 | agent-plan | plan | agent | AG1-主Agent | 6 |  |  |
 | agent-reflection-worker | reflection-worker | agent | AG2-子Agent | 7 | Reflection specialist for the self-evolution system. Analyze |  |
+| agent-requirement-discovery-worker | requirement-discovery-worker | agent | AG2-子Agent | 0 | 需求发现与澄清专家（需求层·内部意图固化）。需求表述模糊、含互斥走法、可行性未知或需按产品设计复杂度走一遍时委派。产出  |  |
 | agent-search-worker | search-worker | agent | AG2-子Agent | 7 | 搜索管线执行 Agent。只做搜索管线(发现+获取+交叉验证)，输出结构化证据包。Use for any task re | 需求驱动：需要实体消歧、多源事实核查、证据包构建等高价值搜索场景，由独立子Agent 承担可将方法论/后端退化链固化，且 |
-| agent-vision-worker | vision-worker | agent | AG2-子Agent | 7 | Vision analysis specialist using DeepSeek vision model. Use  |  |
 | command-arch | arch | command | AG5-工具插件 | 1 | 自定义命令 arch.md | 需求驱动：为架构能力提供 build 模式下的显式命令入口，串起判场景→定产出→委派 architect-worker→ |
+| command-rd | rd | command | AG5-工具插件 | 1 | 自定义命令 rd.md |  |
 | command-reflection | reflection | command | AG5-工具插件 | 1 | 自定义命令 reflection.md |  |
 | config-main | main | config | AG6-配置本体 | 2 | 主配置：agent/provider/mcp/compaction/skills/instructions/permis |  |
+| instr-agent-protocol | agent-protocol | instruction | AG4-指令 | 1 | Agent Protocol |  |
 | instr-architecture-behavior | architecture-behavior | instruction | AG4-指令 | 1 | --- | 需求驱动：为所有 Agent 提供架构任务的触发红线——架构类任务三步（加载 architecture-judgment |
 | instr-auto-mode | auto-mode | instruction | AG4-指令 | 1 | Agent Universal Protocol (Cache-Stable Prefix — Do NOT modif |  |
 | instr-browser-management | browser-management | instruction | AG4-指令 | 1 | 浏览器标签页管理 |  |
-| instr-downloads | downloads | instruction | AG4-指令 | 1 | 文件导出与下载默认路径 |  |
+| instr-requirement-discovery-behavior | requirement-discovery-behavior | instruction | AG4-指令 | 1 | --- |  |
 | instr-search-behavior | search-behavior | instruction | AG4-指令 | 1 | --- | 需求驱动：为所有 Agent 提供外部信息实证的最低行为红线——凡结论依赖外部事实必须先搜索并打开来源验证；搜索页/摘要 |
 | mcp-amap | amap | mcp | AG3-MCP | 1 | 【已禁用】12 个工具 ~2000 tokens 极低频 |  |
-| mcp-drawio | drawio | mcp | AG3-MCP | 5 | 【启用】draw.io 图表创建（本地精简版 v1.5.0）。仅 drawio-worker 子Agent 使用 |  |
-| mcp-drawio-local | drawio-local | mcp | AG3-MCP | 0 | 【禁用·离线兜底】断网时启用，与主 drawio 同一实例 |  |
 | mcp-headroom | headroom | mcp | AG3-MCP | 0 | 【已禁用 2026-08-12】量化亏损（工具开销 > 收益）。切 Claude Code/Codex 走 proxy  |  |
 | mcp-pdf-reader | pdf-reader | mcp | AG3-MCP | 6 | 【启用】PDF 文本提取。仅 pdf-worker 子Agent 使用（4 工具） |  |
 | mcp-vscode-mcp-server | vscode-mcp-server | mcp | AG3-MCP | 0 | 【已禁用】仅 6 个工具(~692 tokens) 极少使用。审计报告见 Mission-file\\2026-08\\ |  |
@@ -90,10 +89,12 @@
 | skill-agency-agents | agency-agents | skill | A6a-角色调度 | 1 | 专业AI角色调度系统。当用户任务较为复杂/专业时激活，根据任务内容自动匹配最合适的AI Agent角色，加载其专业pro |  |
 | skill-architecture-judgment | architecture-judgment | skill | A6n-架构判断 | 1 | > | 需求驱动：把一个架构问题变成可解释、可复核、可交付的产物——先判决策类型再路由节点，最后产 ADR（必选）与多维权衡矩阵 |
 | skill-browser-harness | browser-harness | skill | A6e-浏览器 | 1 | "Always use browser-use for any web interaction: automation, |  |
+| skill-criterion-design-validation | criterion-design-validation | skill | A6a-配置知识 | 0 | 判据（门控/机检/评分卡/词表/检查单）的构造—实现—验证—维护四阶段方法论与模板，跨域通用。当需要把模糊判据落成可执行 |  |
 | skill-cytoscape-dag-visualization | cytoscape-dag-visualization | skill | A6c-DAG方法 | 0 | cytoscape.js 交互 DAG 可视化构建方法论。当任务涉及构建组级+下钻交互 DAG 总览、向页面注入 DAT |  |
 | skill-dag-tutorial-authoring | dag-tutorial-authoring | skill | A6c-DAG方法 | 0 | DAG 教程编写方法论（零基础读者导向）。当任务涉及编写面向初学者的概念/技能 DAG 教程、将可读性规律编码为门控、调 |  |
-| skill-drawio-reference | drawio-reference | skill | A6b-图表 | 1 | draw.io 图表完整参考文档。包含 XML schema 样式库、Mermaid.js 全语法参考（28种图表类型） |  |
-| skill-frontend-design | frontend-design | skill | A6d-前端设计 | 0 | 前端设计双引擎系统。先数据驱动 Top K 候选推荐，后设计主管创意裁决。覆盖网页设计、UI 页面、组件、配色、排版、布 |  |
+| skill-design-material-library | design-material-library | skill | A6d-前端设计 | 0 | > |  |
+| skill-diagram-lite | diagram-lite | skill | A6d-前端设计 | 0 | 轻量出图档位路由与执行规范。当任务需要流程图、DAG 图、依赖图、架构图、时序图、状态图等任何图表产物时使用——先判档再 |  |
+| skill-frontend-design-methodology | frontend-design-methodology | skill | A6d-前端设计 | 0 | 当你要设计、实现、改造或评估一个前端界面／页面时使用本方法论：它给出轻档（单人自用默认）与重档（出现外部通道／多平台／对 |  |
 | skill-github-bulk-upload | github-bulk-upload | skill | A6o-交付发布 | 0 | GitHub 大仓库全量上传方法论。当任务涉及将大型交付物/源码克隆(100+MB/数千文件)上传至 GitHub 仓库 | 需求驱动：需将大型交付物/源码克隆全量上传 GitHub，处理 Windows 下嵌套 .git 被识别为 gitlin |
 | skill-grill-me | grill-me | skill | A6a-角色调度 | 4 | Interview the user relentlessly about a plan or design until |  |
 | skill-headroom | headroom | skill | A6h-上下文压缩 | 4 | Headroom 上下文压缩层（CLI 版）。支持 headroom proxy / audit-reads / sav |  |
@@ -102,6 +103,7 @@
 | skill-lark-suite | lark-suite | skill | A6f-办公集成 | 1 | 飞书/Lark 全功能操作入口。通过 lark-cli 操作日历、消息、文档、云盘、多维表格、任务、会议、通讯录、审批、 |  |
 | skill-login-auth-channel | login-auth-channel | skill | A6j-联网搜索 | 1 | 登录态渠道交互式登录 SOP。命中需登录平台（知乎/闲鱼/淘宝/京东/小红书/拼多多/微博）且需登录态拿完整数据时，指导 | 需求驱动：需在登录态下才能拿到完整数据（知乎/闲鱼/淘宝/京东/小红书/拼多多等 8 渠道），平台风控各异（小红书 x- |
 | skill-multi-window-dag-delivery | multi-window-dag-delivery | skill | A6c-DAG方法 | 0 | 多层窗口接力 DAG 依赖链分析与交付方法论。当任务涉及将大型源码/插件库拆分为多窗口接力分析 DAG 依赖、每窗口产出 |  |
+| skill-opencode-capability-audit | opencode-capability-audit | skill | A6a-配置知识 | 0 | opencode 自身能力体检/再评估 SOP。当需要对 opencode 自改造能力集（agent/skill/com |  |
 | skill-opencode-capability-extension | opencode-capability-extension | skill | A6a-配置知识 | 0 | opencode 自身能力扩展 SOP。当需要为 opencode 新增/补齐一项能力（子Agent+Skill+行为层 | 需求驱动：需要一套结构化 SOP 为 opencode 自身新增/补齐能力（子Agent + Skill + 行为层三层 |
 | skill-opencode-config | opencode-config | skill | A6a-配置知识 | 4 | OpenCode 配置架构索引 + 路由地图。只承载 模块结构、职责边界、场景/域入口路由、维护约定；不内嵌任何配置具体 |  |
 | skill-openspec-apply-change | openspec-apply-change | skill | A6l-OpenSpec工作流 | 0 | 执行 tasks.md 中的实现任务——逐条完成并打勾。tasks.md 就绪后开始编码时使用。 |  |
@@ -119,6 +121,7 @@
 | skill-pdf-ocr | pdf-ocr | skill | A6g-文档处理 | 1 | PDF OCR 识别专项。处理扫描件、图片型 PDF、含水印/印章的文档。支持多语言 OCR（中英）、表格区域提取、印章 |  |
 | skill-recruit-assist | recruit-assist | skill | A6i-简历求职 | 0 | 简历投递辅助。支持投简历（打开招聘页+记录跟踪表）、识别简历（扫描表单字段+匹配信息库）、更新信息库、记录投递状态、跟踪 |  |
 | skill-release-openspec | release-openspec | skill | A6l-OpenSpec工作流 | 0 | OpenSpec 自身发布管理。仅 OpenSpec 维护者使用。 |  |
+| skill-requirement-discovery | requirement-discovery | skill | A6n-架构判断 | 0 | > |  |
 | skill-restricted-corpus-acquisition | restricted-corpus-acquisition | skill | A6q-知识库构建 | 0 | 受限/付费语料采集与私有化装配方法论。当任务涉及采集受版权/付费墙限制的书籍、论文、数据集语料，多来源解析与稳定下载，私 | 需求驱动：受限语料的合规边界分层、有状态取用链的可靠性、来源可追溯、私有/公开隔离落机制层、装配默认拒绝（fail-cl |
 | skill-resumable-content-pipeline | resumable-content-pipeline | skill | A6q-知识库构建 | 0 | 大型内容/知识生产可续跑流水线。当任务涉及从零构建论文全集、课程知识库、方法论图谱等需多子Agent分片、数小时级、可中 | 需求驱动：目标产物由 ≥50 个同构节点组成、单会话无法一次完成、需多路并行子Agent 分片产出且超时/中断后零浪费恢 |
 | skill-resume-builder | resume-builder | skill | A6i-简历求职 | 0 | 当用户请求制作简历、修改简历、优化简历、写CV、写求职信、准备面试或咨询求职相关问题时必须主动使用此技能。支持简历内容创 |  |
@@ -128,6 +131,7 @@
 | skill-superpowers-feature-workflow | superpowers-feature-workflow | skill | A6m-Superpowers | 0 | 规范开发流程——需求澄清→方案设计→TDD 实现→验证。不依赖 OpenSpec CLI，轻量级规范编程。 |  |
 | skill-superpowers-learning-workflow | superpowers-learning-workflow | skill | A6m-Superpowers | 0 | 会话后知识沉淀——回写项目记忆、决策记录、可复用教训。按需显式召唤。 |  |
 | skill-superpowers-openspec-superpowers-workflow | superpowers-openspec-superpowers-workflow | skill | A6m-Superpowers | 0 | 完整交付流程——Superpowers 探索→OpenSpec 锁定→TDD 实施→验证→归档。全程门控，需显式召唤。 |  |
+| skill-version-upgrade-cascade | version-upgrade-cascade | skill | A6q-知识库构建 | 0 | 上游版本升级 → 知识库/文档级联更新工作流。适用于「上游项目发布新版本，需将基于旧版本的产物（DAG知识库/插件页/文 |  |
 
 ## 外部服务（10）
 | 节点 | 名称 | 作用 | why（为什么需要） |
@@ -149,33 +153,34 @@
 | agent-plan | agent | 新增装配 |
 | agent-build | agent | 新增装配 |
 | agent-pdf-worker | agent | 新增装配 |
-| agent-drawio-worker | agent | 新增装配 |
 | agent-architect-worker | agent | 新增装配 |
-| agent-vision-worker | agent | 新增装配 |
 | agent-general | agent | 新增装配 |
 | agent-explore | agent | 新增装配 |
 | agent-reflection-worker | agent | 新增装配 |
 | agent-search-worker | agent | 新增装配 |
+| agent-requirement-discovery-worker | agent | 新增装配 |
 | mcp-vscode-mcp-server | mcp | 新增（禁用） |
 | mcp-amap | mcp | 新增（禁用） |
 | mcp-pdf-reader | mcp | 新增装配 |
-| mcp-drawio | mcp | 新增装配 |
-| mcp-drawio-local | mcp | 新增（禁用） |
 | mcp-headroom | mcp | 新增（禁用） |
+| instr-agent-protocol | instruction | 新增装配 |
 | instr-architecture-behavior | instruction | 新增装配 |
 | instr-auto-mode | instruction | 新增装配 |
 | instr-browser-management | instruction | 新增装配 |
-| instr-downloads | instruction | 新增装配 |
+| instr-requirement-discovery-behavior | instruction | 新增装配 |
 | instr-search-behavior | instruction | 新增装配 |
 | command-reflection | command | 新增装配 |
 | command-arch | command | 新增装配 |
+| command-rd | command | 新增装配 |
 | skill-agency-agents | skill | 新增装配 |
 | skill-architecture-judgment | skill | 新增装配 |
 | skill-browser-harness | skill | 新增装配 |
+| skill-criterion-design-validation | skill | 新增装配 |
 | skill-cytoscape-dag-visualization | skill | 新增装配 |
 | skill-dag-tutorial-authoring | skill | 新增装配 |
-| skill-drawio-reference | skill | 新增装配 |
-| skill-frontend-design | skill | 新增装配 |
+| skill-design-material-library | skill | 新增装配 |
+| skill-diagram-lite | skill | 新增装配 |
+| skill-frontend-design-methodology | skill | 新增装配 |
 | skill-github-bulk-upload | skill | 新增装配 |
 | skill-grill-me | skill | 新增装配 |
 | skill-headroom | skill | 新增装配 |
@@ -184,6 +189,7 @@
 | skill-lark-suite | skill | 新增装配 |
 | skill-login-auth-channel | skill | 新增装配 |
 | skill-multi-window-dag-delivery | skill | 新增装配 |
+| skill-opencode-capability-audit | skill | 新增装配 |
 | skill-opencode-capability-extension | skill | 新增装配 |
 | skill-opencode-config | skill | 新增装配 |
 | skill-openspec-apply-change | skill | 新增装配 |
@@ -201,6 +207,7 @@
 | skill-pdf-ocr | skill | 新增装配 |
 | skill-recruit-assist | skill | 新增装配 |
 | skill-release-openspec | skill | 新增装配 |
+| skill-requirement-discovery | skill | 新增装配 |
 | skill-restricted-corpus-acquisition | skill | 新增装配 |
 | skill-resumable-content-pipeline | skill | 新增装配 |
 | skill-resume-builder | skill | 新增装配 |
@@ -210,6 +217,7 @@
 | skill-superpowers-feature-workflow | skill | 新增装配 |
 | skill-superpowers-learning-workflow | skill | 新增装配 |
 | skill-superpowers-openspec-superpowers-workflow | skill | 新增装配 |
+| skill-version-upgrade-cascade | skill | 新增装配 |
 | mech-grill-me | mechanism | 新增装配 |
 | mech-agents-protocol | mechanism | 新增装配 |
 | mech-gate | mechanism | 新增装配 |
@@ -229,10 +237,10 @@
 | mech-session-memory | mechanism | 新增装配 |
 | mech-architecture | mechanism | 新增装配 |
 | config-main | config | 新增装配 |
-| oc-server | package | 被装配层引用（配置修改） |
 | oc-schema | package | 被装配层引用（配置修改） |
-| oc-plugin | package | 被装配层引用（配置修改） |
-| oc-core | package | 被装配层引用（配置修改） |
 | oc-sdk | package | 被装配层引用（配置修改） |
+| oc-plugin | package | 被装配层引用（配置修改） |
 | oc-opencode | package | 被装配层引用（配置修改） |
+| oc-server | package | 被装配层引用（配置修改） |
+| oc-core | package | 被装配层引用（配置修改） |
 | oc-llm | package | 被装配层引用（配置修改） |

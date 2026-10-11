@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>vision-worker · opencode DAG</title>
+<title>frontend-design-methodology · opencode DAG</title>
 <style>
   :root { --bg:#0f1117; --panel:#161a22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#4f8cff; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -42,11 +42,11 @@
     <a href="../04-interactive/view-modified.html">改造 DAG</a>
     <a href="index.html">节点索引</a>
   </div>
-  <h1>vision-worker <span class="tag">装配层</span></h1>
-  <div class="sub">agent-vision-worker · agent · AG2-子Agent · Layer 7</div>
+  <h1>frontend-design-methodology <span class="tag">装配层</span></h1>
+  <div class="sub">skill-frontend-design-methodology · skill · A6d-前端设计 · Layer 0</div>
 
   <h2>① 作用</h2>
-  <p>Vision analysis specialist using DeepSeek vision model. Use for image understanding, screenshot analysis, UI restoration, and any task requiring direct image input.</p>
+  <p>当你要设计、实现、改造或评估一个前端界面／页面时使用本方法论：它给出轻档（单人自用默认）与重档（出现外部通道／多平台／对外发布等事件后）两档逐步流程与事件式升降档规则，以及按需取用路由（参照做法／可调用能力／令牌契约／栈定位）。覆盖语义命名与令牌、配色与对比度、组件复用、响应式、无障碍与发布。</p>
 
   <h2>② 提供能力</h2>
   <p><span class="empty">暂无</span></p>
@@ -55,7 +55,7 @@
   <p class="empty">无内部依赖（或为叶子/外部）</p>
 
   <h2>④ 被依赖（下游）</h2>
-  <table><tr><th>节点</th><th>机制</th><th>证据</th></tr><tr><td><a href='oc-core.html'>core</a></td><td>agent-dep</td><td><small>装配层→官方包</small></td></tr><tr><td><a href='ext-deepseek-api.html'>ext-deepseek-api</a></td><td>external</td><td><small>vision 模型依赖官方 DeepSeek</small></td></tr><tr><td><a href='agent-plan.html'>plan</a></td><td>delegate</td><td><small>plan 委派协议</small></td></tr><tr><td><a href='agent-build.html'>build</a></td><td>delegate</td><td><small>build 委派协议</small></td></tr><tr><td><a href='instr-auto-mode.html'>auto-mode</a></td><td>hook-mount</td><td><small>vision-worker 路由规则</small></td></tr></table>
+  <p class="empty">无下游依赖</p>
 
   
 

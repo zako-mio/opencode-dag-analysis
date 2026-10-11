@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """S4: 重建三图 DAG（official / diff / modified），含 mechanism 节点与全边丰富化"""
+# 基线：2026-10-11（官方 v1.18.35 标注 / 装配层 87 组件 / 133 节点）；官方包集合与 v1.18.29 一致
 import json, os, sys
 sys.stdout.reconfigure(encoding="utf-8")
 BASE = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag"
@@ -71,7 +72,7 @@ for pid, node in pkg_by_id.items():
     node["how_use"]=old.get("how_use","")
     node["how_scenario"]=old.get("how_scenario","")
     up = pkg_updates.get(pid,{})
-    node["version_delta"]=up.get("version_delta","v1.18.14 → v1.18.30")
+    node["version_delta"]=up.get("version_delta","v1.18.14 → v1.18.35")
     node["what_changed"]=up.get("what_changed","")
 # httpapi-codegen 专用
 pkg_by_id["oc-httpapi-codegen"]["implementation"]=httpapi["implementation"]
@@ -96,7 +97,7 @@ for e in pkg_deps["edges"]:
     if key in seen: continue
     seen.add(key)
     if all(k in pkg_by_id for k in key):
-        official_edges_std.append({"from":e["from"],"to":e["to"],"mechanism":"workspace-dep","evidence":"v1.18.30 workspace dep","evidence_example":"","import_refs":0})
+        official_edges_std.append({"from":e["from"],"to":e["to"],"mechanism":"workspace-dep","evidence":"v1.18.35 workspace dep","evidence_example":"","import_refs":0})
 # httpapi-codegen → oc-client（被 client 依赖）
 official_edges_std.append({"from":"oc-httpapi-codegen","to":"oc-client","mechanism":"workspace-dep","evidence":"client depends on httpapi-codegen","evidence_example":"","import_refs":0})
 # 去重
@@ -109,7 +110,7 @@ official_edges = dedup
 print("官方包节点:",len(official_nodes),"官方边:",len(official_edges))
 
 with open(os.path.join(DATA,"official-dag.json"),"w",encoding="utf-8") as f:
-    json.dump({"name":"official","title":"官方原版 opencode 包级 DAG (v1.18.30)","version_note":"基于官方源码 v1.18.30，36 workspace 包","nodes":official_nodes,"edges":official_edges,"groups":list(dict.fromkeys(n["group"] for n in official_nodes)),
+    json.dump({"name":"official","title":"官方原版 opencode 包级 DAG (v1.18.35)","version_note":"基于官方源码 v1.18.35，36 workspace 包","nodes":official_nodes,"edges":official_edges,"groups":list(dict.fromkeys(n["group"] for n in official_nodes)),
      "stats":{"nodes":len(official_nodes),"edges":len(official_edges),"layers":0,"groups":len(set(n["group"] for n in official_nodes)),"has_cycle":False,"modified_pkgs":0,"external_nodes":0}},f,ensure_ascii=False,indent=2)
 print("official 已写入")
 
@@ -206,13 +207,20 @@ diff_edges=[dict(e) for e in official_edges]
 
 layer2=topo_layer(diff_nodes,diff_edges)
 for n in diff_nodes: n["layer"]=layer2.get(n["id"],0)
-diff_dag={"name":"diff","title":"官方 + 改造对比 DAG (v1.18.30 基线 + 装配层引用染色)","version_note":"官方 v1.18.30 基线；改造点=装配层引用（红）+ 外部服务（绿）","nodes":diff_nodes,"edges":diff_edges,"groups":list(dict.fromkeys(n["group"] for n in diff_nodes)),
+diff_dag={"name":"diff","title":"官方 + 改造对比 DAG (v1.18.35 基线 + 装配层引用染色)","version_note":"官方 v1.18.35 基线；改造点=装配层引用（红）+ 外部服务（绿）","nodes":diff_nodes,"edges":diff_edges,"groups":list(dict.fromkeys(n["group"] for n in diff_nodes)),
  "stats":{"nodes":len(diff_nodes),"edges":len(diff_edges),"layers":max(layer2.values())+1 if layer2 else 0,"groups":len(set(n["group"] for n in diff_nodes)),"has_cycle":has_cycle(diff_nodes,diff_edges),"modified_pkgs":len(pkg_used_by_asm),"external_nodes":sum(1 for n in diff_nodes if n.get("status")=="external")}}
 with open(os.path.join(DATA,"diff-dag.json"),"w",encoding="utf-8") as f: json.dump(diff_dag,f,ensure_ascii=False,indent=2)
 print(f"diff: {diff_dag['stats']}")
 
 # ============ modified 图（包级 + 装配层双层 + mechanism）============
 # skill 功能域子分组
+# 2026-10-11 基线补齐：新增 7 个 skill 的组归属（沿用既有组 id，不新造组名）
+#   - criterion-design-validation → A6a-配置知识（判据/门控族，与 opencode-capability-extension 同组）
+#   - opencode-capability-audit   → A6a-配置知识（与 opencode-capability-extension 同组）
+#   - requirement-discovery       → A6n-架构判断（与 architecture-judgment 同组）
+#   - version-upgrade-cascade     → A6q-知识库构建（与 kb-construction 同组）
+#   - frontend-design-methodology / design-material-library / diagram-lite
+#       → A6d-前端设计（设计族，与既有 frontend-design 同组；diagram-lite 属该族出图档位）
 SKILL_GROUP={
  "agency-agents":"A6a-角色调度","grill-me":"A6a-角色调度","opencode-config":"A6a-配置知识",
  "drawio-reference":"A6b-图表","cytoscape-dag-visualization":"A6c-DAG方法","multi-window-dag-delivery":"A6c-DAG方法","dag-tutorial-authoring":"A6c-DAG方法",
@@ -228,6 +236,10 @@ SKILL_GROUP={
  "job-listing-filter":"A6i-简历求职",
  "kb-construction":"A6q-知识库构建","restricted-corpus-acquisition":"A6q-知识库构建","resumable-content-pipeline":"A6q-知识库构建",
  "opencode-capability-extension":"A6a-配置知识",
+ # 2026-10-11 新增（7）
+ "criterion-design-validation":"A6a-配置知识","opencode-capability-audit":"A6a-配置知识",
+ "requirement-discovery":"A6n-架构判断","version-upgrade-cascade":"A6q-知识库构建",
+ "frontend-design-methodology":"A6d-前端设计","design-material-library":"A6d-前端设计","diagram-lite":"A6d-前端设计",
 }
 AGENT_GROUP={"agent-plan":"AG1-主Agent","agent-build":"AG1-主Agent"}
 # 装配分组
@@ -369,7 +381,7 @@ print(f"modified 去重后边: {len(dedup_mod)} → 悬空清洗后: {len(clean_
 
 layer3=topo_layer(mod_nodes_all, clean_edges)
 for n in mod_nodes_all: n["layer"]=layer3.get(n["id"],0)
-mod_dag={"name":"modified","title":"改造版 opencode 包级 + 装配层双层 DAG (v1.18.30 + 自进化)","version_note":"官方 36 包（v1.18.30）+ 装配层 83 组件 + 外部服务 10","nodes":mod_nodes_all,"edges":clean_edges,"groups":list(dict.fromkeys(n["group"] for n in mod_nodes_all)),
+mod_dag={"name":"modified","title":"改造版 opencode 包级 + 装配层双层 DAG (v1.18.35 + 自进化)","version_note":"官方 36 包（v1.18.35）+ 装配层 87 组件 + 外部服务 10","nodes":mod_nodes_all,"edges":clean_edges,"groups":list(dict.fromkeys(n["group"] for n in mod_nodes_all)),
  "stats":{"nodes":len(mod_nodes_all),"edges":len(clean_edges),"layers":max(layer3.values())+1 if layer3 else 0,"groups":len(set(n["group"] for n in mod_nodes_all)),"has_cycle":has_cycle(mod_nodes_all,clean_edges),
   "pkg_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="package"),"asm_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="assembly"),"ext_nodes":sum(1 for n in mod_nodes_all if n.get("layer_type")=="external"),
   "mech_nodes":sum(1 for n in mod_nodes_all if n.get("kind")=="mechanism")}}

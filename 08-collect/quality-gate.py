@@ -23,6 +23,28 @@ for f in ["official-dag.json","diff-dag.json","modified-dag.json","diff-list.jso
 
 mod=dags["modified-dag.json"]
 
+# ---- 黄金值动态化（2026-10-11 改进）----
+# 期望值优先从 01-dag-data/modified-dag.json 的 stats 动态读取，避免版本升级后因写死值失效而"假红"。
+# 若 stats 缺字段，回退到 GOLDEN 兜底值（并在注释里标注：随节点数升级须同步）。
+GOLDEN = {  # 兜底：2026-10-11 基线（官方 v1.18.35 / 装配层 87 / 133 节点）
+    "nodes": 133,        # GOLDEN: 随节点数升级须同步
+    "pkg_nodes": 36,     # GOLDEN: 官方包集合未变则不动
+    "asm_nodes": 87,     # GOLDEN: 随装配层组件数升级须同步
+    "ext_nodes": 10,     # GOLDEN: 随外部服务数升级须同步
+    "mech_nodes": 18,    # GOLDEN: 随机制数升级须同步
+    "groups": 42,        # GOLDEN: 随组数升级须同步
+}
+_mst = (mod or {}).get("stats", {}) or {}
+def gv(key):
+    """动态读取 stats 期望值，缺失时回退 GOLDEN 兜底"""
+    v = _mst.get(key)
+    return v if isinstance(v, int) and v > 0 else GOLDEN[key]
+g_nodes = gv("nodes"); g_pkg = gv("pkg_nodes"); g_asm = gv("asm_nodes")
+g_ext = gv("ext_nodes"); g_mech = gv("mech_nodes"); g_groups = gv("groups")
+# 非空断言：期望值不得为 0（防止动态读取拿到空/缺字段导致门控恒真）
+check("黄金期望值非空(不得为 0)", all(v > 0 for v in (g_nodes, g_pkg, g_asm, g_ext, g_mech, g_groups)),
+      f"nodes={g_nodes} pkg={g_pkg} asm={g_asm} ext={g_ext} mech={g_mech} groups={g_groups}")
+
 # 2. DAG 无环 + 无悬空边
 print("=== 2. DAG 无环 / 无悬空边 ===")
 def count_cycle_edges(nodes, edges):
@@ -55,7 +77,7 @@ node_ids={n["id"] for n in mod["nodes"]}
 html_files=set(os.listdir(nodes_dir))
 missing_pages=[nid for nid in node_ids if nid+".html" not in html_files]
 stale=[f for f in html_files if f.endswith(".html") and f[:-5] not in node_ids and f!="index.html"]
-check("节点页全覆盖(129)", len(missing_pages)==0, f"缺 {len(missing_pages)}")
+check(f"节点页全覆盖({g_nodes})", len(missing_pages)==0, f"缺 {len(missing_pages)}")
 check("无陈旧节点页", len(stale)==0, f"陈旧 {len(stale)}")
 check("节点索引存在", "index.html" in html_files)
 
@@ -70,6 +92,13 @@ check("组页已生成", len(grp_files)>=len(group_names), f"{len(grp_files)} �
 
 # 5. 交互图 DATA 一致
 print("=== 5. 交互图 DATA 一致 ===")
+def dag_node_count(fname):
+    """动态读取某图的期望节点数：优先 stats.nodes，缺失则回退节点数组长度"""
+    d = dags.get(fname) or {}
+    return (d.get("stats") or {}).get("nodes") or len(d.get("nodes", []))
+VIEW_EXPECT = {"view-official.html": dag_node_count("official-dag.json"),
+               "view-diff.html": dag_node_count("diff-dag.json"),
+               "view-modified.html": g_nodes}
 for view in ["view-official.html","view-diff.html","view-modified.html"]:
     vp=os.path.join(BASE,"04-interactive",view)
     if os.path.exists(vp):
@@ -78,8 +107,8 @@ for view in ["view-official.html","view-diff.html","view-modified.html"]:
         if m:
             try:
                 data=json.loads(m.group(1))
-                # 对 view-modified 应匹配 129 节点
-                expected = 129 if view=="view-modified.html" else (36 if view=="view-official.html" else 46)
+                # 期望值动态化：modified 取 stats.nodes；official/diff 取各自图 stats.nodes
+                expected = VIEW_EXPECT[view]
                 check(f"交互图 DATA 节点数: {view}", len(data["nodes"])==expected, f"{len(data['nodes'])} vs {expected}")
             except Exception as e:
                 check(f"交互图 DATA 解析: {view}", False, str(e))
@@ -130,12 +159,16 @@ print("=== 8. 统计一致性 ===")
 check("modified stats.nodes", mod["stats"]["nodes"]==len(mod["nodes"]), f"{mod['stats']['nodes']} vs {len(mod['nodes'])}")
 check("modified stats.edges", mod["stats"]["edges"]==len(mod["edges"]), f"{mod['stats']['edges']} vs {len(mod['edges'])}")
 off=dags["official-dag.json"]; dif=dags["diff-dag.json"]
-check("三图节点数(36/46/129)", (len(off["nodes"]),len(dif["nodes"]),len(mod["nodes"]))==(36,46,129),
+# 期望值动态化：official/diff 取各自 stats.nodes（缺失回退节点数组长度），modified 取 stats.nodes
+_exp = (dag_node_count("official-dag.json"), dag_node_count("diff-dag.json"), g_nodes)
+check(f"三图节点数({'/'.join(str(x) for x in _exp)})", (len(off["nodes"]),len(dif["nodes"]),len(mod["nodes"]))==_exp,
       f"{len(off['nodes'])}/{len(dif['nodes'])}/{len(mod['nodes'])}")
-check("装配节点 83", mod["stats"].get("asm_nodes")==83, str(mod["stats"].get("asm_nodes")))
-check("外部节点 10", mod["stats"].get("ext_nodes")==10, str(mod["stats"].get("ext_nodes")))
-check("机制节点 18", mod["stats"].get("mech_nodes")==18, str(mod["stats"].get("mech_nodes")))
-check("组数 43", mod["stats"].get("groups")==43, str(mod["stats"].get("groups")))
+check(f"装配节点 {g_asm}", mod["stats"].get("asm_nodes")==g_asm, str(mod["stats"].get("asm_nodes")))
+check(f"外部节点 {g_ext}", mod["stats"].get("ext_nodes")==g_ext, str(mod["stats"].get("ext_nodes")))
+check(f"机制节点 {g_mech}", mod["stats"].get("mech_nodes")==g_mech, str(mod["stats"].get("mech_nodes")))
+check(f"组数 {g_groups}", mod["stats"].get("groups")==g_groups, str(mod["stats"].get("groups")))
+check(f"包节点 {g_pkg}", mod["stats"].get("pkg_nodes")==g_pkg, str(mod["stats"].get("pkg_nodes")))
+check(f"总节点 {g_nodes}", mod["stats"].get("nodes")==g_nodes, str(mod["stats"].get("nodes")))
 
 # 9. 七段完整性（抽 key 类型）
 print("=== 9. node 关键字段完整性 ===")

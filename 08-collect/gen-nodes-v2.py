@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 S4b-v2: 生成节点详情页（五段：作用/依赖/被依赖/改造原因/内部结构）
-数据源: 01-dag-data/modified-dag.json (官方 v1.18.30) + 08-collect/internal-v1.18.29.json
-       内部结构基线 v1.18.29（v1.18.30 包级结构未变，故沿用该基线文件、不重命名）
+数据源: 01-dag-data/modified-dag.json (官方 v1.18.35) + 08-collect/internal-v1.18.29.json
+       内部结构基线 v1.18.29（v1.18.35 包级结构未变，故沿用该基线文件、不重命名；内部结构数据本轮不重采）
 输出: 02-nodes/{id}.html + 02-nodes/index.html
-改造点: 数据源路径 v2；内部结构 DAG 换 new internal；索引副标题改为 36+83+10；清理陈旧节点页
+改造点: 数据源路径 v2；内部结构 DAG 换 new internal；索引副标题改为 36+87+10；清理陈旧节点页
 """
 import json, os, sys, html
 
@@ -163,7 +163,7 @@ def internal_dag_html(nid):
         drill_json = json.dumps(drill_data, ensure_ascii=False)
 
         return f"""
-<h3>模块内部结构 DAG（{int_data['module_count']} 模块 · {int_data['edge_count']} 边 · 组级视图）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.30 结构未变</span></h3>
+<h3>模块内部结构 DAG（{int_data['module_count']} 模块 · {int_data['edge_count']} 边 · 组级视图）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.35 包级结构未变（36 包集合逐一致）</span></h3>
 <p style="color:var(--dim);font-size:12px;margin:4px 0;">按目录分组的组级视图：点击组节点下钻查看组内模块依赖；点击模块节点查看完整路径。</p>
 <div id="int-nav-{esc(nid)}" style="display:flex;align-items:center;gap:10px;margin:8px 0;">
   <button id="int-back-{esc(nid)}" style="display:none;background:#20324f;color:#7fb0ff;border:1px solid #2a2f3a;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;">← 返回组级视图</button>
@@ -243,7 +243,7 @@ document.getElementById('int-back-{esc(nid)}').addEventListener('click', () => {
     jsid = nid.replace("-", "_")
     data_json = json.dumps({"nodes": nodes, "edges": es}, ensure_ascii=False)
     return f"""
-<h3>模块内部结构 DAG（{int_data['module_count']} 模块 · {int_data['edge_count']} 边）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.30 结构未变</span></h3>
+<h3>模块内部结构 DAG（{int_data['module_count']} 模块 · {int_data['edge_count']} 边）<span style="font-weight:normal;font-size:12px;">　内部结构基线 v1.18.29，v1.18.35 包级结构未变（36 包集合逐一致）</span></h3>
 <div id="int-{esc(nid)}" style="width:100%;height:520px;background:#0b0e14;border:1px solid var(--border);border-radius:8px;"></div>
 <script src="vendor/cytoscape.min.js"></script>
 <script src="vendor/cytoscape-dagre.min.js"></script>
@@ -496,7 +496,7 @@ idx = f"""<!DOCTYPE html>
 <div class="wrap">
   <div class="nav"><a href="../index.html">← 根入口</a></div>
   <h1>节点页索引（{len(node_by_id)} 节点）</h1>
-  <div class="sub">36 官方包 + 83 装配组件 + 10 外部服务 · 官方 v1.18.30 · 内部结构基线 v1.18.29（v1.18.30 结构未变）</div>
+  <div class="sub">36 官方包 + 87 装配组件 + 10 外部服务 · 官方 v1.18.35 · 内部结构基线 v1.18.29，v1.18.35 包级结构未变（36 包集合逐一致）</div>
   <table>
     <tr><th>节点</th><th>类型</th><th>组</th><th>层</th></tr>
     {node_rows()}
