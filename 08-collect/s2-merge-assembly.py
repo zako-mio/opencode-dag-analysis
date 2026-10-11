@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""合并装配层清单为 s2-all-components.json（64 装配 + 1 config + 18 机制 = 83）"""
+"""合并装配层清单为 s2-all-components.json
+
+口径（2026-10-11）：68 实采组件（46 skill + 9 agent + 4 mcp + 6 instruction + 3 command）
++ 1 config + 18 mechanism = **87**。此前注释记「64 装配 + 1 + 18 = 83」为 0911 口径。
+注意：本脚本**不写死数量**——实际条目数由 s2-assembly-inventory.json 与机制表决定，
+下方注释仅供读者了解当前规模，升级时无需同步。
+"""
 import json, sys
 sys.stdout.reconfigure(encoding="utf-8")
 BASE = "/home/zako-mio/opencode/archive/Mission-file/2026-09/0902-opencode-dag/08-collect"

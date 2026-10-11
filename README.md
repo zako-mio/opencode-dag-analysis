@@ -45,7 +45,7 @@ why/how 由多路子Agent 深挖三源还原（留档报告 / MEMORY.md / config
 
 ## 核心数据
 
-- **图1 official**：36 包 / 68 边 / 6 层 / 19 组（v1.18.35 版本标注；包级结构沿用 v1.18.29）
+- **图1 official**：36 包 / 68 边 / 19 组（v1.18.35 版本标注；包级结构沿用 v1.18.29；**包级图不参与拓扑分层**，全部节点 layer=0 ⇒ `stats.layers` = 0，此前 README 记「6 层」为误记，2026-10-11 校准）
 - **图2 diff**：46 节点 / 68 边 / 6 层 / 20 组（7 包被改造引用 + 10 外部）
 - **图3 modified**：133 节点 / 177 边 / 8 层 / 42 组（36 包 + 87 装配 + 10 外部，含 **18 个自进化机制 mechanism 节点**）
 - **装配层**：87 组件（46 skills + 9 agents + 4 mcp + 6 instructions + 0 tools + 3 commands + 1 config + 18 mechanisms）
@@ -119,7 +119,7 @@ oc-opencode (362 模块) / oc-core / oc-app 等大包内部 DAG 采用**目录�
 
 ## 质量门控
 
-`08-collect/quality-gate.py` 31 项 ALL PASS（**黄金期望值改为从 `01-dag-data/modified-dag.json` 的 `stats` 动态读取**，并保留"不得为 0"非空断言，避免下次升级因写死值失效而假红）：JSON 合法 / DAG 无环无悬空 / HTML 断链 0 / drawio 配套齐全 / 节点页 133 覆盖 / 无陈旧节点页 / 交互图 DATA 一致 / 三图节点数 36/46/133 / 装配 87 / 外部 10 / 机制 18 / 组 42 / 七段完整 / 统计一致。
+`08-collect/quality-gate.py` **33 项 ALL PASS**（**黄金期望值改为从 `01-dag-data/modified-dag.json` 的 `stats` 动态读取**，并保留"不得为 0"非空断言，避免下次升级因写死值失效而假红）：JSON 合法 / DAG 无环无悬空 / HTML 断链 0 / drawio 配套齐全 / 节点页 133 覆盖 / 无陈旧节点页 / 交互图 DATA 一致 / 三图节点数 36/46/133 / 装配 87 / 外部 10 / 机制 18 / 组 42 / 包节点 36 / 总节点 133 / 七段完整 / 统计一致。
 headless + VLM 验证：三图 view-official/diff/modified 渲染正常，中文完整无截断（zcount 36/46/133 全匹配）。
 
 *基线版本：官方 v1.18.35（包级结构沿用 v1.18.29）｜ 更新日期：2026-10-11*
